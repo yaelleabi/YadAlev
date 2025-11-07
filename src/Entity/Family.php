@@ -6,42 +6,35 @@ use App\Repository\FamilyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\AidList;
+use App\Entity\AidRequest;
 
 #[ORM\Entity(repositoryClass: FamilyRepository::class)]
 class Family extends User
 {
-   /* #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;*/
-
     /**
-     * @var Collection<int, aidList>
+     * @var Collection<int, AidList>
      */
-    #[ORM\ManyToMany(targetEntity: aidList::class, inversedBy: 'families')]
+    #[ORM\ManyToMany(targetEntity: AidList::class, inversedBy: 'families')]
     private Collection $aidList;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?aidRequest $aidRequest = null;
+    private ?AidRequest $aidRequest = null;
 
     public function __construct()
     {
         $this->aidList = new ArrayCollection();
     }
 
-    /*public function getId(): ?int
-    {
-        return $this->id;
-    }*/
     /**
-     * @return Collection<int, aidList>
+     * @return Collection<int, AidList>
      */
     public function getAidList(): Collection
     {
         return $this->aidList;
     }
 
-    public function addAidList(aidList $aidList): static
+    public function addAidList(AidList $aidList): static
     {
         if (!$this->aidList->contains($aidList)) {
             $this->aidList->add($aidList);
@@ -50,19 +43,19 @@ class Family extends User
         return $this;
     }
 
-    public function removeAidList(aidList $aidList): static
+    public function removeAidList(AidList $aidList): static
     {
         $this->aidList->removeElement($aidList);
 
         return $this;
     }
 
-    public function getAidRequest(): ?aidRequest
+    public function getAidRequest(): ?AidRequest
     {
         return $this->aidRequest;
     }
 
-    public function setAidRequest(?aidRequest $aidRequest): static
+    public function setAidRequest(?AidRequest $aidRequest): static
     {
         $this->aidRequest = $aidRequest;
 

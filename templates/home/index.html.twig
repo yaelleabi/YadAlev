@@ -1,20 +1,246 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Yad Alev - Accueil{% endblock %}
 
 {% block body %}
+<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="text-center mb-4">
+        <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="logo">
+
+        <h2 class="text-primary fw-bold">Yad Alev</h2>
+        <p class="text-muted">
+            Bienvenue sur la plateforme de l'association Yad Alev.<br>
+            Connectez-vous ou créez un compte pour accéder à nos services.
+        </p>
+    </div>
+
+    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+        <!-- Boutons bascule -->
+        <div class="btn-group w-100 mb-4" role="group">
+            <button id="loginBtn" class="btn btn-primary w-50 active">Connexion</button>
+            <button id="signupBtn" class="btn btn-outline-primary w-50">Créer un compte</button>
+        </div>
+
+        <!-- 🔹 FORMULAIRE DE CONNEXION -->
+        <form id="loginForm" method="post" action="{{ path('app_login') }}" class="auth-form">
+            {% if error %}
+                <div class="alert alert-danger text-center py-2">Identifiants invalides</div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="inputEmail" class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input type="email" name="email" id="inputEmail" class="form-control"
+                           value="{{ last_username }}" placeholder="votre.email@example.com" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="inputPassword" class="form-label">Mot de passe</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+        </form>
+
+        <!-- 🔹 FORMULAIRE D’INSCRIPTION -->
+        <div id="signupForm" class="auth-form d-none">
+
+            {# ✅ Message de succès placé en haut #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success text-center mb-3">
+                    {{ message }}<br>
+                    <a href="#" id="goToLogin" class="text-decoration-none fw-semibold text-success">
+                        Cliquez ici pour vous connecter
+                    </a>
+                </div>
+            {% endfor %}
+
+            {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.name, 'Nom complet *') }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Jean Dupont'}}) }}
+                    {% for error in form.name.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.email, 'Email *') }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'votre.email@example.com'}}) }}
+                    {% for error in form.email.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.phoneNumber, 'Téléphone') }}
+                    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control' ~ (form.phoneNumber.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '+33 6 12 34 56 78'}}) }}
+                    {% for error in form.phoneNumber.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+                  
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Type de compte *</label>
+                    <div class="d-flex flex-row gap-4 align-items-center role-options">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" type="radio" id="role_family" name="{{ form.roles.vars.full_name }}" value="ROLE_FAMILY" {% if form.roles.vars.value == 'ROLE_FAMILY' %}checked{% endif %}>
+                            <label class="form-check-label" for="role_family">
+                                <i class="bi bi-house-heart me-1 text-primary"></i> Famille
+                            </label>
+                        </div>
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" type="radio" id="role_volunteer" name="{{ form.roles.vars.full_name }}" value="ROLE_VOLUNTEER" {% if form.roles.vars.value == 'ROLE_VOLUNTEER' %}checked{% endif %}>
+                            <label class="form-check-label" for="role_volunteer">
+                                <i class="bi bi-people-fill me-1 text-success"></i> Volontaire
+                            </label>
+                        </div>
+                    </div>
+                    {% for error in form.roles.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.plainPassword.first, 'Mot de passe *') }}
+                    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control' ~ (form.plainPassword.first.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '••••••••'}}) }}
+                    {% for error in form.plainPassword.first.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.plainPassword.second, 'Confirmer le mot de passe *') }}
+                    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control' ~ (form.plainPassword.second.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '••••••••'}}) }}
+                    {% for error in form.plainPassword.second.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form_widget(form._token) }}
+                <button type="submit" class="btn btn-primary w-100">Créer mon compte</button>
+
+            {{ form_end(form, {'render_rest': false}) }}
+        </div>
+    </div>
+</div>
+
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+body {
+  background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+  overflow-x: hidden;
+}
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+}
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-1px);
+}
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+}
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+.form-control {
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+.form-check {
+  display: inline-block;
+  margin-right: 1.5rem;
+}
+.form-check-label {
+  margin-left: 0.25rem;
+  font-weight: 500;
+}
+.auth-form {
+  animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeLogo 1.2s ease-out forwards;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+}
+@keyframes fadeLogo {
+  0% { opacity: 0; transform: scale(0.98) translateY(-8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<script>
+const loginBtn  = document.getElementById('loginBtn');
+const signupBtn = document.getElementById('signupBtn');
+const loginForm = document.getElementById('loginForm');
+const signupForm= document.getElementById('signupForm');
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/PC/PROJETS/YadAlev/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/PC/PROJETS/YadAlev/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+function activateLogin() {
+  loginBtn?.classList.add('btn-primary','active');
+  loginBtn?.classList.remove('btn-outline-primary');
+  signupBtn?.classList.remove('btn-primary','active');
+  signupBtn?.classList.add('btn-outline-primary');
+  signupForm?.classList.add('d-none');
+  loginForm?.classList.remove('d-none');
+  sessionStorage.setItem('activeTab', 'login');
+}
+
+function activateSignup() {
+  signupBtn?.classList.add('btn-primary','active');
+  signupBtn?.classList.remove('btn-outline-primary');
+  loginBtn?.classList.remove('btn-primary','active');
+  loginBtn?.classList.add('btn-outline-primary');
+  loginForm?.classList.add('d-none');
+  signupForm?.classList.remove('d-none');
+  sessionStorage.setItem('activeTab', 'signup');
+}
+
+loginBtn?.addEventListener('click', (e) => { e.preventDefault(); activateLogin(); });
+signupBtn?.addEventListener('click', (e) => { e.preventDefault(); activateSignup(); });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const savedTab = sessionStorage.getItem('activeTab');
+  if (savedTab === 'signup') activateSignup(); else activateLogin();
+
+  const goToLoginLink = document.getElementById('goToLogin');
+  if (goToLoginLink) {
+    goToLoginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      activateLogin();
+    });
+  }
+});
+</script>
 {% endblock %}
