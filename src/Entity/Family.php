@@ -21,9 +21,16 @@ class Family extends User
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?AidRequest $aidRequest = null;
 
+    /**
+     * @var Collection<int, AidRequest>
+     */
+    #[ORM\OneToMany(targetEntity: AidRequest::class, mappedBy: 'Family')]
+    private Collection $aidRequests;
+
     public function __construct()
     {
         $this->aidList = new ArrayCollection();
+        $this->aidRequests = new ArrayCollection();
     }
 
     /**
@@ -58,6 +65,36 @@ class Family extends User
     public function setAidRequest(?AidRequest $aidRequest): static
     {
         $this->aidRequest = $aidRequest;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AidRequest>
+     */
+    public function getAidRequests(): Collection
+    {
+        return $this->aidRequests;
+    }
+
+    public function addAidRequest(AidRequest $aidRequest): static
+    {
+        if (!$this->aidRequests->contains($aidRequest)) {
+            $this->aidRequests->add($aidRequest);
+            $aidRequest->setFamily($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAidRequest(AidRequest $aidRequest): static
+    {
+        if ($this->aidRequests->removeElement($aidRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($aidRequest->getFamily() === $this) {
+                $aidRequest->setFamily(null);
+            }
+        }
 
         return $this;
     }

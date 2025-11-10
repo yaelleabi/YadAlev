@@ -1,0 +1,170 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AidRequest{% endblock %}
+
+{% block body %}
+    <h1>AidRequest</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ aid_request.id }}</td>
+            </tr>
+            <tr>
+                <th>CreatedAt</th>
+                <td>{{ aid_request.createdAt ? aid_request.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>LastName</th>
+                <td>{{ aid_request.lastName }}</td>
+            </tr>
+            <tr>
+                <th>FirstName</th>
+                <td>{{ aid_request.firstName }}</td>
+            </tr>
+            <tr>
+                <th>DateOfBirth</th>
+                <td>{{ aid_request.dateOfBirth ? aid_request.dateOfBirth|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ aid_request.email }}</td>
+            </tr>
+            <tr>
+                <th>PhoneNumber</th>
+                <td>{{ aid_request.phoneNumber }}</td>
+            </tr>
+            <tr>
+                <th>HousingStatus</th>
+                <td>{{ aid_request.housingStatus }}</td>
+            </tr>
+            <tr>
+                <th>MaritalStatus</th>
+                <td>{{ aid_request.maritalStatus }}</td>
+            </tr>
+            <tr>
+                <th>DependantsCount</th>
+                <td>{{ aid_request.dependantsCount }}</td>
+            </tr>
+            <tr>
+                <th>EmploymentStatus</th>
+                <td>{{ aid_request.employmentStatus }}</td>
+            </tr>
+            <tr>
+                <th>MonthlyIncome</th>
+                <td>{{ aid_request.monthlyIncome }}</td>
+            </tr>
+            <tr>
+                <th>SpouseEmploymentStatus</th>
+                <td>{{ aid_request.spouseEmploymentStatus }}</td>
+            </tr>
+            <tr>
+                <th>SpouseMonthlyIncome</th>
+                <td>{{ aid_request.spouseMonthlyIncome }}</td>
+            </tr>
+            <tr>
+                <th>FamilyAllowanceAmount</th>
+                <td>{{ aid_request.familyAllowanceAmount }}</td>
+            </tr>
+            <tr>
+                <th>AlimonyAmount</th>
+                <td>{{ aid_request.alimonyAmount }}</td>
+            </tr>
+            <tr>
+                <th>RentAmountNetAide</th>
+                <td>{{ aid_request.rentAmountNetAide }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ aid_request.status }}</td>
+            </tr>
+            <tr>
+                <th>RequestType</th>
+                <td>{{ aid_request.requestType }}</td>
+            </tr>
+            <tr>
+                <th>RequestDuration</th>
+                <td>{{ aid_request.requestDuration }}</td>
+            </tr>
+            <tr>
+                <th>OtherRequestDuration</th>
+                <td>{{ aid_request.otherRequestDuration }}</td>
+            </tr>
+            <tr>
+                <th>RequestReason</th>
+                <td>{{ aid_request.requestReason }}</td>
+            </tr>
+            <tr>
+                <th>OtherRequestReason</th>
+                <td>{{ aid_request.otherRequestReason }}</td>
+            </tr>
+            <tr>
+                <th>UrgencyExplanation</th>
+                <td>{{ aid_request.urgencyExplanation }}</td>
+            </tr>
+            <tr>
+                <th>UrgencyLevel</th>
+                <td>{{ aid_request.urgencyLevel }}</td>
+            </tr>
+            <tr>
+                <th>OtherNeed</th>
+                <td>{{ aid_request.otherNeed }}</td>
+            </tr>
+            <tr>
+                <th>CurrentSituation</th>
+                <td>{{ aid_request.currentSituation }}</td>
+            </tr>
+            <tr>
+                <th>FinancialDifficulties</th>
+                <td>{{ aid_request.financialDifficulties }}</td>
+            </tr>
+            <tr>
+                <th>OtherComment</th>
+                <td>{{ aid_request.otherComment }}</td>
+            </tr>
+            <tr>
+                <th>PrivacyConsent</th>
+                <td>{{ aid_request.privacyConsent ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>IdentityProofFilename</th>
+                <td>{{ aid_request.identityProofFilename }}</td>
+            </tr>
+            <tr>
+                <th>IncomeProofFilename</th>
+                <td>{{ aid_request.incomeProofFilename }}</td>
+            </tr>
+            <tr>
+                <th>TaxNoticeFilename</th>
+                <td>{{ aid_request.taxNoticeFilename }}</td>
+            </tr>
+            <tr>
+                <th>OtherDocumentFilename</th>
+                <td>{{ aid_request.otherDocumentFilename }}</td>
+            </tr>
+            <tr>
+                <th>Adress.PostalCode</th>
+                <td>{{ aid_request.adress.PostalCode }}</td>
+            </tr>
+            <tr>
+                <th>Adress.Street</th>
+                <td>{{ aid_request.adress.Street }}</td>
+            </tr>
+            <tr>
+                <th>Adress.City</th>
+                <td>{{ aid_request.adress.City }}</td>
+            </tr>
+            <tr>
+                <th>Adress.streetNumber</th>
+                <td>{{ aid_request.adress.streetNumber }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_aid_request_index') }}">back to list</a>
+
+    <a href="{{ path('app_aid_request_edit', {'id': aid_request.id}) }}">edit</a>
+
+    {{ include('aid_request/_delete_form.html.twig') }}
+{% endblock %}

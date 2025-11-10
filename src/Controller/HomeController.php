@@ -29,6 +29,10 @@ class HomeController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
         $form->handleRequest($request);
+        if ($request->isMethod('POST') && $request->request->has('email') && !$request->request->has('password')) {
+                $form->handleRequest($request);
+            }
+
 
         
 

@@ -10,13 +10,13 @@ class Adress
 {
    
     #[ORM\Column(length: 255)]
-    private ?string $PostalCode = null;
+    private ?string $postalCode = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $Street = null;
+    private ?string $street = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $City = null;
+    private ?string $city = null;
 
     #[ORM\Column(length: 255)]
     private ?string $streetNumber = null;
@@ -25,36 +25,36 @@ class Adress
 
     public function getPostalCode(): ?string
     {
-        return $this->PostalCode;
+        return $this->postalCode;
     }
 
-    public function setPostalCode(string $PostalCode): static
+    public function setPostalCode(string $postalCode): static
     {
-        $this->PostalCode = $PostalCode;
+        $this->postalCode = $postalCode;
 
         return $this;
     }
 
     public function getStreet(): ?string
     {
-        return $this->Street;
+        return $this->street;
     }
 
-    public function setStreet(string $Street): static
+    public function setStreet(string $street): static
     {
-        $this->Street = $Street;
+        $this->street = $street;
 
         return $this;
     }
 
     public function getCity(): ?string
     {
-        return $this->City;
+        return $this->city;
     }
 
-    public function setCity(string $City): static
+    public function setCity(string $city): static
     {
-        $this->City = $City;
+        $this->city = $city;
 
         return $this;
     }

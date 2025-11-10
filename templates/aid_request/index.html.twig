@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}AidRequest index{% endblock %}
+
+{% block body %}
+    <h1>AidRequest index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>CreatedAt</th>
+                <th>LastName</th>
+                <th>FirstName</th>
+                <th>DateOfBirth</th>
+                <th>Email</th>
+                <th>PhoneNumber</th>
+                <th>HousingStatus</th>
+                <th>MaritalStatus</th>
+                <th>DependantsCount</th>
+                <th>EmploymentStatus</th>
+                <th>MonthlyIncome</th>
+                <th>SpouseEmploymentStatus</th>
+                <th>SpouseMonthlyIncome</th>
+                <th>FamilyAllowanceAmount</th>
+                <th>AlimonyAmount</th>
+                <th>RentAmountNetAide</th>
+                <th>Status</th>
+                <th>RequestType</th>
+                <th>RequestDuration</th>
+                <th>OtherRequestDuration</th>
+                <th>RequestReason</th>
+                <th>OtherRequestReason</th>
+                <th>UrgencyExplanation</th>
+                <th>UrgencyLevel</th>
+                <th>OtherNeed</th>
+                <th>CurrentSituation</th>
+                <th>FinancialDifficulties</th>
+                <th>OtherComment</th>
+                <th>PrivacyConsent</th>
+                <th>IdentityProofFilename</th>
+                <th>IncomeProofFilename</th>
+                <th>TaxNoticeFilename</th>
+                <th>OtherDocumentFilename</th>
+                <th>Adress.PostalCode</th>
+                <th>Adress.Street</th>
+                <th>Adress.City</th>
+                <th>Adress.streetNumber</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for aid_request in aid_requests %}
+            <tr>
+                <td>{{ aid_request.id }}</td>
+                <td>{{ aid_request.createdAt ? aid_request.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ aid_request.lastName }}</td>
+                <td>{{ aid_request.firstName }}</td>
+                <td>{{ aid_request.dateOfBirth ? aid_request.dateOfBirth|date('Y-m-d') : '' }}</td>
+                <td>{{ aid_request.email }}</td>
+                <td>{{ aid_request.phoneNumber }}</td>
+                <td>{{ aid_request.housingStatus }}</td>
+                <td>{{ aid_request.maritalStatus }}</td>
+                <td>{{ aid_request.dependantsCount }}</td>
+                <td>{{ aid_request.employmentStatus }}</td>
+                <td>{{ aid_request.monthlyIncome }}</td>
+                <td>{{ aid_request.spouseEmploymentStatus }}</td>
+                <td>{{ aid_request.spouseMonthlyIncome }}</td>
+                <td>{{ aid_request.familyAllowanceAmount }}</td>
+                <td>{{ aid_request.alimonyAmount }}</td>
+                <td>{{ aid_request.rentAmountNetAide }}</td>
+                <td>{{ aid_request.status }}</td>
+                <td>{{ aid_request.requestType }}</td>
+                <td>{{ aid_request.requestDuration }}</td>
+                <td>{{ aid_request.otherRequestDuration }}</td>
+                <td>{{ aid_request.requestReason }}</td>
+                <td>{{ aid_request.otherRequestReason }}</td>
+                <td>{{ aid_request.urgencyExplanation }}</td>
+                <td>{{ aid_request.urgencyLevel }}</td>
+                <td>{{ aid_request.otherNeed }}</td>
+                <td>{{ aid_request.currentSituation }}</td>
+                <td>{{ aid_request.financialDifficulties }}</td>
+                <td>{{ aid_request.otherComment }}</td>
+                <td>{{ aid_request.privacyConsent ? 'Yes' : 'No' }}</td>
+                <td>{{ aid_request.identityProofFilename }}</td>
+                <td>{{ aid_request.incomeProofFilename }}</td>
+                <td>{{ aid_request.taxNoticeFilename }}</td>
+                <td>{{ aid_request.otherDocumentFilename }}</td>
+                <td>{{ aid_request.adress.PostalCode }}</td>
+                <td>{{ aid_request.adress.Street }}</td>
+                <td>{{ aid_request.adress.City }}</td>
+                <td>{{ aid_request.adress.streetNumber }}</td>
+                <td>
+                    <a href="{{ path('app_aid_request_show', {'id': aid_request.id}) }}">show</a>
+                    <a href="{{ path('app_aid_request_edit', {'id': aid_request.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="39">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_aid_request_new') }}">Create new</a>
+{% endblock %}

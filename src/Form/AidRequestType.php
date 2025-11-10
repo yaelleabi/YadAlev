@@ -1,0 +1,324 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\AidRequest;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use App\Form\AdressType;
+
+class AidRequestType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            // ✅ Informations personnelles
+            ->add('lastName', TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control', 'maxlength' => 100],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le nom est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/^[A-Za-zÀ-ÿ\s\-]+$/u',
+                        'message' => 'Le nom ne doit contenir que des lettres et des espaces.',
+                    ]),
+                    new Assert\Length([
+                        'min' => 2,
+                        'minMessage' => 'Le nom doit comporter au moins {{ limit }} caractères.',
+                        'max' => 100,
+                        'maxMessage' => 'Le nom ne peut pas dépasser {{ limit }} caractères.',
+                    ]),
+                ],
+            ])
+            ->add('firstName', TextType::class, [
+                'label' => 'Prénom',
+                'attr' => ['class' => 'form-control', 'maxlength' => 100],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le prénom est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/^[A-Za-zÀ-ÿ\s\-]+$/u',
+                        'message' => 'Le prénom ne doit contenir que des lettres et des espaces.',
+                    ]),
+                    new Assert\Length([
+                        'min' => 2,
+                        'minMessage' => 'Le prénom doit comporter au moins {{ limit }} caractères.',
+                        'max' => 100,
+                    ]),
+                ],
+            ])
+            ->add('dateOfBirth', DateType::class, [
+                'label' => 'Date de naissance',
+                'widget' => 'single_text',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'La date de naissance est obligatoire.']),
+                    new Assert\LessThan([
+                        'value' => 'today',
+                        'message' => 'La date de naissance doit être antérieure à aujourd’hui.',
+                    ]),
+                ],
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Adresse e-mail',
+                'attr' => ['class' => 'form-control'],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'L’adresse e-mail est obligatoire.']),
+                    new Assert\Email(['message' => 'Veuillez saisir une adresse e-mail valide.']),
+                ],
+            ])
+            ->add('phoneNumber', TextType::class, [
+                'label' => 'Numéro de téléphone',
+                'attr' => ['class' => 'form-control', 'maxlength' => 20],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Le numéro de téléphone est obligatoire.']),
+                    new Assert\Regex([
+                        'pattern' => '/^\+?\d{9,15}$/',
+                        'message' => 'Le numéro de téléphone doit comporter entre 9 et 15 chiffres.',
+                    ]),
+                ],
+            ])
+            ->add('adress', AdressType::class, [
+                'label' => false,
+            ])
+
+            // ✅ Situation familiale & logement
+            ->add('housingStatus', ChoiceType::class, [
+                'label' => 'Situation de logement',
+                'choices' => [
+                    'Locataire' => 'Locataire',
+                    'Propriétaire' => 'Propriétaire',
+                    'Hébergé(e)' => 'Hébergé(e)',
+                    'Autre' => 'Autre',
+                ],
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation de logement.'])],
+            ])
+            ->add('maritalStatus', ChoiceType::class, [
+                'label' => 'Situation familiale',
+                'choices' => [
+                    'Célibataire' => 'Célibataire',
+                    'Marié(e)' => 'Marié(e)',
+                    'Divorcé(e)' => 'Divorcé(e)',
+                    'Veuf(ve)' => 'Veuf(ve)',
+                    'Séparé(e)' => 'Séparé(e)',
+                ],
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation familiale.'])],
+            ])
+            ->add('dependantsCount', NumberType::class, [
+                'label' => 'Nombre d’enfants à charge',
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer le nombre d’enfants.']),
+                    new Assert\PositiveOrZero(['message' => 'Le nombre d’enfants doit être positif.']),
+                ],
+            ])
+
+            // ✅ Revenus & emploi
+            ->add('employmentStatus', ChoiceType::class, [
+                'label' => 'Situation professionnelle',
+                'choices' => [
+                    'CDI' => 'CDI',
+                    'CDD' => 'CDD',
+                    'Intérim' => 'Intérim',
+                    'Auto-entrepreneur' => 'Auto-entrepreneur',
+                    'Chômage' => 'Chômage',
+                    'Invalidité' => 'Invalidité',
+                    'RSA' => 'RSA',
+                    'Autre' => 'Autre',
+                ],
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation professionnelle.'])],
+            ])
+            ->add('monthlyIncome', NumberType::class, [
+                'label' => 'Revenu mensuel (€)',
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer votre revenu mensuel.']),
+                    new Assert\PositiveOrZero(['message' => 'Le revenu doit être positif.']),
+                ],
+            ])
+            ->add('spouseEmploymentStatus', TextType::class, [
+                'label' => 'Situation professionnelle du conjoint',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'maxlength' => 50],
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => '/^[A-Za-zÀ-ÿ\s\-]*$/u',
+                        'message' => 'Le champ ne doit contenir que des lettres et des espaces.',
+                    ]),
+                    new Assert\Length(['max' => 50]),
+                ],
+            ])
+            ->add('spouseMonthlyIncome', NumberType::class, [
+                'label' => 'Revenu mensuel du conjoint (€)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [new Assert\PositiveOrZero()],
+            ])
+            ->add('familyAllowanceAmount', NumberType::class, [
+                'label' => 'Allocations familiales (€)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [new Assert\PositiveOrZero()],
+            ])
+            ->add('alimonyAmount', NumberType::class, [
+                'label' => 'Pension alimentaire (€)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [new Assert\PositiveOrZero()],
+            ])
+            ->add('rentAmountNetAide', NumberType::class, [
+                'label' => 'Montant du loyer (net des aides) (€)',
+                'required' => false,
+                'attr' => ['class' => 'form-control', 'min' => 0],
+                'constraints' => [new Assert\PositiveOrZero()],
+            ])
+
+            // ✅ Détails de la demande
+            ->add('requestType', ChoiceType::class, [
+                'label' => 'Type de demande',
+                'choices' => [
+                    'Aide urgente' => 'Aide urgente',
+                    'Aide ponctuelle' => 'Aide ponctuelle',
+                    'Autre' => 'Autre',
+                ],
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez sélectionner un type de demande.'])],
+            ])
+            ->add('requestDuration', ChoiceType::class, [
+                'label' => 'Durée de la demande',
+                'choices' => [
+                    '1 mois' => '1 mois',
+                    '3 mois' => '3 mois',
+                    '6 mois' => '6 mois',
+                    'Autre' => 'Autre',
+                ],
+                'placeholder' => 'Sélectionnez une durée',
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez sélectionner une durée.'])],
+            ])
+            ->add('otherRequestDuration', TextType::class, [
+                'label' => 'Autre durée (si "Autre")',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('requestReason', TextareaType::class, [
+                'label' => 'Motif de la demande',
+                'attr' => ['rows' => 3, 'class' => 'form-control'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer le motif de votre demande.'])],
+            ])
+            ->add('otherNeed', TextareaType::class, [
+                'label' => 'Autre besoin éventuel',
+                'required' => false,
+                'attr' => ['rows' => 2, 'class' => 'form-control'],
+            ])
+            ->add('urgencyLevel', ChoiceType::class, [
+                'label' => 'Niveau d’urgence',
+                'choices' => [
+                    'Faible' => 'Faible',
+                    'Moyenne' => 'Moyenne',
+                    'Élevée' => 'Élevée',
+                ],
+                'attr' => ['class' => 'form-select'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer le niveau d’urgence.'])],
+            ])
+            ->add('urgencyExplanation', TextareaType::class, [
+                'label' => 'Expliquez l’urgence de votre situation',
+                'required' => false,
+                'attr' => ['rows' => 3, 'class' => 'form-control'],
+            ])
+            ->add('currentSituation', TextareaType::class, [
+                'label' => 'Situation actuelle',
+                'attr' => ['rows' => 4, 'class' => 'form-control'],
+                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez décrire votre situation actuelle.'])],
+            ])
+            ->add('otherComment', TextareaType::class, [
+                'label' => 'Autre commentaire',
+                'required' => false,
+                'attr' => ['rows' => 3, 'class' => 'form-control'],
+            ])
+
+            // ✅ Fichiers justificatifs
+            ->add('identityProofFilename', FileType::class, [
+                'label' => 'Justificatif d’identité',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('incomeProofFilename', FileType::class, [
+                'label' => 'Justificatif de revenus',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('taxNoticeFilename', FileType::class, [
+                'label' => 'Avis d’imposition (original recto-verso)',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('quittanceLoyer', FileType::class, [
+                'label' => 'Dernière quittance de loyer',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('avisCharge', FileType::class, [
+                'label' => 'Avis de charges',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('taxeFonciere', FileType::class, [
+                'label' => 'Taxe foncière',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('fraisScolarite', FileType::class, [
+                'label' => 'Frais de scolarité',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('attestationCaf', FileType::class, [
+                'label' => 'Attestation CAF',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+            ->add('otherDocumentFilename', FileType::class, [
+                'label' => 'Autre document',
+                'mapped' => false,
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
+            ])
+
+            // ✅ Consentement RGPD
+            ->add('privacyConsent', CheckboxType::class, [
+                'label' => 'J’accepte le traitement de mes données personnelles',
+                'required' => true,
+                'constraints' => [
+                    new Assert\IsTrue(['message' => 'Vous devez accepter la politique de confidentialité.']),
+                ],
+            ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => AidRequest::class,
+        ]);
+    }
+}
