@@ -3,12 +3,18 @@
 
 {% block body %}
 <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-page">
-  <div class="card wizard-card shadow-sm p-4" style="max-width: 920px; width:100%;">
-    <div class="text-center mb-3">
-      <h2 class="text-primary fw-bold">Nouvelle demande d’aide</h2>
-      <p class="text-muted mb-0">Complétez chaque étape puis validez à la fin.</p>
-    </div>
+  
+  <!-- Logo et en-tête -->
+  <div class="text-center mb-4">
+    <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="logo">
+    <h2 class="text-primary fw-bold mt-2">Nouvelle demande d’aide</h2>
+    <p class="text-muted mb-0">Complétez chaque étape puis validez à la fin.</p>
+  </div>
 
+  <!-- Carte du formulaire -->
+  <div class="card wizard-card shadow-sm p-4" style="max-width: 920px; width:100%;">
+    
+    <!-- Barre d’étapes -->
     <ul class="nav nav-pills justify-content-between flex-wrap gap-2 mb-4 wizard-tabs" role="tablist">
       <li class="nav-item"><button class="nav-link active" id="step1-tab" data-step="0">1. Identité</button></li>
       <li class="nav-item"><button class="nav-link disabled" id="step2-tab" data-step="1" tabindex="-1">2. Famille et logement</button></li>
@@ -25,39 +31,21 @@
       attr: {
         id: 'aidrequest-form',
         'data-turbo': 'false',
-        onkeydown: "return event.key!='Enter';"
+        onkeydown: "return event.key!='Enter';",
+        novalidate: 'novalidate'
       }
     }) }}
 
+      <!-- Étapes du formulaire -->
       <div class="tab-content">
         <div class="tab-pane fade show active" id="step1">
           <h5 class="text-secondary mb-3">Étape 1 — Informations personnelles</h5>
           <div class="row g-3">
-            <div class="col-md-6">
-              {{ form_label(form.lastName) }}
-              {{ form_widget(form.lastName) }}
-              {{ form_errors(form.lastName) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_label(form.firstName) }}
-              {{ form_widget(form.firstName) }}
-              {{ form_errors(form.firstName) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_label(form.dateOfBirth) }}
-              {{ form_widget(form.dateOfBirth) }}
-              {{ form_errors(form.dateOfBirth) }}
-            </div>
-            <div class="col-md-6">
-              {{ form_label(form.phoneNumber) }}
-              {{ form_widget(form.phoneNumber) }}
-              {{ form_errors(form.phoneNumber) }}
-            </div>
-            <div class="col-12">
-              {{ form_label(form.email) }}
-              {{ form_widget(form.email) }}
-              {{ form_errors(form.email) }}
-            </div>
+            <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+            <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+            <div class="col-md-6">{{ form_row(form.dateOfBirth) }}</div>
+            <div class="col-md-6">{{ form_row(form.phoneNumber) }}</div>
+            <div class="col-12">{{ form_row(form.email) }}</div>
           </div>
 
           {% if form.adress is defined %}
@@ -84,7 +72,6 @@
             <div class="col-md-6">{{ form_row(form.dependantsCount) }}</div>
             <div class="col-md-6">{{ form_row(form.housingStatus) }}</div>
           </div>
-
           <div class="d-flex justify-content-between mt-4">
             <button type="button" class="btn btn-outline-secondary" data-prev>Précédent</button>
             <button type="button" class="btn btn-primary" data-next>Suivant</button>
@@ -102,7 +89,6 @@
             <div class="col-md-6">{{ form_row(form.alimonyAmount) }}</div>
             <div class="col-md-6">{{ form_row(form.rentAmountNetAide) }}</div>
           </div>
-
           <div class="d-flex justify-content-between mt-4">
             <button type="button" class="btn btn-outline-secondary" data-prev>Précédent</button>
             <button type="button" class="btn btn-primary" data-next>Suivant</button>
@@ -118,11 +104,9 @@
             <div class="col-md-6">{{ form_row(form.urgencyLevel) }}</div>
             <div class="col-12">{{ form_row(form.requestReason) }}</div>
             <div class="col-12">{{ form_row(form.urgencyExplanation) }}</div>
-            <div class="col-12">{{ form_row(form.currentSituation) }}</div>
             <div class="col-12">{{ form_row(form.otherNeed) }}</div>
             <div class="col-12">{{ form_row(form.otherComment) }}</div>
           </div>
-
           <div class="d-flex justify-content-between mt-4">
             <button type="button" class="btn btn-outline-secondary" data-prev>Précédent</button>
             <button type="button" class="btn btn-primary" data-next>Suivant</button>
@@ -152,19 +136,90 @@
       </div>
 
     {{ form_end(form) }}
+
+    <p class="text-muted mt-4 small text-center">
+      <span class="text-danger">*</span> Les champs obligatoires sont marqués d’une étoile.
+    </p>
   </div>
 </div>
 
 <style>
-.bg-page { background: linear-gradient(135deg, #f8f9fc, #eef2f7); }
-.wizard-card { border: 1px solid #e2e8f0; border-radius: 1rem; }
-.wizard-tabs .nav-link { border-radius: 999px; padding: .5rem 1rem; }
-.wizard-tabs .nav-link.disabled { pointer-events: none; opacity: .6; }
-.form-control, .form-select { border-radius: .5rem; }
-.btn { border-radius: .6rem; }
+.bg-page {
+  background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+  overflow-x: hidden;
+}
+.logo {
+  width: 120px;
+  height: auto;
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeLogo 1.2s ease-out forwards;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+}
+@keyframes fadeLogo {
+  0% { opacity: 0; transform: scale(0.98) translateY(-8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.card {
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+}
+.wizard-tabs .nav-link {
+  border-radius: 999px;
+  padding: .5rem 1rem;
+  transition: all 0.3s ease;
+}
+.wizard-tabs .nav-link.active {
+  background-color: #0d6efd;
+}
+.wizard-tabs .nav-link.disabled {
+  pointer-events: none;
+  opacity: .6;
+}
+.form-control, .form-select {
+  border-radius: .5rem;
+  transition: all 0.3s ease;
+}
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+.btn {
+  border-radius: .6rem;
+  transition: all 0.3s ease;
+}
+.btn:hover {
+  transform: translateY(-1px);
+}
 </style>
 
+
+
 <script>
+// ⭐ Ajoute automatiquement une étoile rouge sur les labels des champs obligatoires
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('label[for]').forEach(label => {
+    const fieldId = label.getAttribute('for');
+    const field = document.getElementById(fieldId);
+
+    // Détection robuste du caractère obligatoire :
+    const isRequired =
+      (field && (field.required || field.getAttribute('aria-required') === 'true')) || // Cas standard
+      label.closest('.form-group, .col-md-6, .col-12')?.querySelector('.required');   // Cas ChoiceType/Checkbox
+
+    // Si c'est un champ requis et qu'aucune étoile n'est déjà présente
+    if (isRequired && !label.querySelector('.text-danger')) {
+      label.innerHTML = label.innerHTML + ' <span class="text-danger">*</span>';
+    }
+  });
+});
+
 (function() {
   const tabs = [
     {btn: document.getElementById('step1-tab'), pane: document.getElementById('step1')},
@@ -175,11 +230,35 @@
   ];
 
   const progress = document.getElementById('wizardProgress');
+  const formEl = document.getElementById('aidrequest-form');
   let current = 0;
   activate(0);
 
   document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => step(1)));
   document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', () => step(-1)));
+
+  // ⛔ Empêche la soumission si le consentement ou les validations échouent
+  formEl.addEventListener('submit', (e) => {
+    if (!validateStep(current)) {
+      e.preventDefault();
+      e.stopPropagation();
+      activate(current);
+      return;
+    }
+
+    if (current === 4) {
+      const privacyCheckbox = document.querySelector('input[id$="_privacyConsent"]');
+      if (privacyCheckbox && !privacyCheckbox.checked) {
+        e.preventDefault();
+        e.stopPropagation();
+        const container = privacyCheckbox.closest('.form-check') 
+          || privacyCheckbox.closest('.form-group, .col-12') 
+          || privacyCheckbox.parentElement;
+        showError(privacyCheckbox, container, 'Vous devez accepter le traitement de vos données personnelles pour continuer.');
+        activate(4);
+      }
+    }
+  });
 
   function step(delta) {
     if (delta > 0 && !validateStep(current)) return;
@@ -207,61 +286,135 @@
     let valid = true;
 
     inputs.forEach(input => {
-      const container = input.closest('.form-group, .col-md-6, .col-12') || input.parentElement;
+      const container = input.parentElement;
       const oldError = container.querySelector('.invalid-feedback');
       if (oldError) oldError.remove();
       input.classList.remove('is-invalid');
 
       const name = input.name.toLowerCase();
+      const isCheckbox = input.type === 'checkbox';
+      const isFile = input.type === 'file';
+      const isSelect = input.tagName === 'SELECT';
+      const isTextarea = input.tagName === 'TEXTAREA';
+      const isInput = input.tagName === 'INPUT';
 
-      if (input.required && !input.value.trim()) {
+      const isRequired =
+        input.hasAttribute('required') ||
+        input.getAttribute('aria-required') === 'true' ||
+        (input.closest('.form-group, .col-md-6, .col-12')?.querySelector('label')?.textContent?.includes('*'));
+
+      let isEmpty = false;
+
+      if (isCheckbox) isEmpty = !input.checked;
+      else if (isFile) isEmpty = input.files.length === 0;
+      else if (isSelect) isEmpty = !input.value || input.value === '';
+      else if (isTextarea || isInput) isEmpty = !input.value.trim();
+
+      if (isRequired && isEmpty) {
         showError(input, container, 'Ce champ est obligatoire.');
         valid = false;
       }
 
-      // ✅ Lettres + espaces uniquement, et au moins 2 caractères pour nom, prénom, ville
-        if (/(lastname|firstname|city)/.test(name) && input.value.trim()) {
+      if (/(lastname|firstname|city)/.test(name) && input.value.trim()) {
         const value = input.value.trim();
         if (!/^[A-Za-zÀ-ÿ\s]+$/.test(value)) {
-            showError(input, container, 'Seules les lettres et espaces sont autorisées.');
-            valid = false;
+          showError(input, container, 'Seules les lettres et espaces sont autorisées.');
+          valid = false;
         } else if (value.length < 2) {
-            showError(input, container, 'Ce champ doit contenir au moins 2 lettres.');
-            valid = false;
+          showError(input, container, 'Ce champ doit contenir au moins 2 lettres.');
+          valid = false;
         }
-        }
-        // ✅ Lettres, chiffres et espaces uniquement pour le champ rue
-        if (input.id.includes('adress_street')) {
+      }
+
+      if (input.id.endsWith('adress_street')) {
         const value = input.value.trim();
         if (value && !/^[A-Za-zÀ-ÿ0-9\s]+$/.test(value)) {
-            showError(input, container, 'Seules les lettres, chiffres et espaces sont autorisés.');
-            valid = false;
+          showError(input, container, 'Seules les lettres, chiffres et espaces sont autorisés.');
+          valid = false;
         } else if (value && value.length < 2) {
-            showError(input, container, 'Ce champ doit contenir au moins 2 caractères.');
-            valid = false;
+          showError(input, container, 'Ce champ doit contenir au moins 2 caractères.');
+          valid = false;
         }
-        }
+      }
 
-
-
-      // ✅ Numéro de rue uniquement chiffres
       if (name.includes('streetnumber') && input.value.trim() && !/^\d+$/.test(input.value.trim())) {
         showError(input, container, 'Uniquement des chiffres sont autorisés.');
         valid = false;
       }
 
-      // ✅ Téléphone → 9 à 15 chiffres
       if (name.includes('phonenumber') && input.value.trim() && !/^\+?\d{9,15}$/.test(input.value.trim())) {
         showError(input, container, 'Le numéro de téléphone doit comporter entre 9 et 15 chiffres.');
         valid = false;
       }
 
-      // ✅ Code postal → 5 chiffres
       if (name.includes('postalcode') && input.value.trim() && !/^\d{5}$/.test(input.value.trim())) {
         showError(input, container, 'Le code postal doit comporter exactement 5 chiffres.');
         valid = false;
       }
-    });
+
+      if (
+        name.includes('dependantscount') || 
+        name.includes('monthlyincome') || 
+        name.includes('spousemonthlyincome') || 
+        name.includes('familyallowanceamount') || 
+        name.includes('alimonyamount') || 
+        name.includes('rentamountnetaide')
+      ) {
+        const value = input.value.trim();
+        if (value && !/^\d+([.,]\d{1,2})?$/.test(value)) {
+          showError(input, container, 'Uniquement des chiffres sont autorisés (vous pouvez utiliser une virgule ou un point pour les décimales).');
+          valid = false;
+        }
+      }
+
+      if (name.includes('email') && input.value.trim()) {
+        const value = input.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        if (!emailRegex.test(value)) {
+          showError(input, container, 'Veuillez entrer une adresse e-mail valide.');
+          valid = false;
+        }
+      }
+
+      if (name.includes('dateofbirth') && input.value.trim()) {
+        const value = input.value.trim();
+        const inputDate = new Date(value);
+        const today = new Date();
+        inputDate.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
+        if (isNaN(inputDate.getTime())) {
+          showError(input, container, 'Date de naissance invalide.');
+          valid = false;
+        } else if (inputDate >= today) {
+          showError(input, container, 'La date de naissance doit être antérieure à aujourd’hui.');
+          valid = false;
+        } else if (inputDate.getFullYear() < 1900) {
+          showError(input, container, 'La date de naissance semble invalide.');
+          valid = false;
+        } else {
+          const ageDiffMs = today - inputDate;
+          const ageDate = new Date(ageDiffMs);
+          const age = Math.abs(ageDate.getUTCFullYear() - 1970);
+          if (age < 18) {
+            showError(input, container, 'Vous devez avoir au moins 18 ans pour soumettre une demande.');
+            valid = false;
+          }
+        }
+      }
+    }); // ← FIN du forEach
+
+    // ✅ Vérification du consentement à la politique de confidentialité
+    if (stepIndex === 4) { // Étape 5 (index 4)
+      const privacyCheckbox = document.querySelector('input[id$="_privacyConsent"]');
+      if (privacyCheckbox && !privacyCheckbox.checked) {
+        const container = privacyCheckbox.closest('.form-check') 
+          || privacyCheckbox.closest('.form-group, .col-12') 
+          || privacyCheckbox.parentElement;
+        showError(privacyCheckbox, container, 'Vous devez accepter le traitement de vos données personnelles pour continuer.');
+        valid = false;
+      }
+    }
 
     if (!valid) window.scrollTo({ top: 0, behavior: 'smooth' });
     return valid;
@@ -272,8 +425,17 @@
     const error = document.createElement('div');
     error.className = 'invalid-feedback';
     error.textContent = message;
-    container.appendChild(error);
+
+    if (input.type === 'checkbox') {
+      const label = container.querySelector('label');
+      if (label) label.insertAdjacentElement('afterend', error);
+      else container.appendChild(error);
+      error.style.display = 'block';
+    } else {
+      container.appendChild(error);
+    }
   }
 })();
 </script>
+
 {% endblock %}

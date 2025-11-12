@@ -23,6 +23,7 @@ class RegisterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+             
             ->add('name', null, [
                 'attr' => [
                     'class' => 'form-control',

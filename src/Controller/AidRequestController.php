@@ -15,18 +15,34 @@ class AidRequestController extends AbstractController
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $aidRequest = new AidRequest();
+        $aidRequest->setFamily($this->getUser());
+
+        // ✅ Pré-remplir avec les infos du user connecté
+        $user = $this->getUser();
+        if ($user) {
+            if (method_exists($user, 'getName')) {
+                $aidRequest->setFirstName($user->getName());
+            }
+            if (method_exists($user, 'getName')) {
+                $aidRequest->setLastName($user->getName());
+            }
+            if (method_exists($user, 'getEmail')) {
+                $aidRequest->setEmail($user->getEmail());
+            }
+            if (method_exists($user, 'getPhoneNumber')) {
+                $aidRequest->setPhoneNumber($user->getPhoneNumber());
+            }
+        }
+
         $form = $this->createForm(AidRequestType::class, $aidRequest);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $aidRequest->setFamily($this->getUser());
-            $aidRequest->setCreatedAtValue(new \DateTimeImmutable());
-
             $em->persist($aidRequest);
             $em->flush();
 
             $this->addFlash('success', 'Votre demande a bien été envoyée.');
-            return $this->redirectToRoute('app_family_dashboard');
+            return $this->redirectToRoute('app_family');
         }
 
         return $this->render('aid_request/new.html.twig', [

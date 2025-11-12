@@ -53,7 +53,6 @@ class AidRequest
     private ?string $maritalStatus = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Assert\NotBlank]
     #[Assert\PositiveOrZero]
     private ?int $dependantsCount = null;
 
@@ -98,13 +97,11 @@ class AidRequest
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $otherRequestDuration = null;
 
-    #[ORM\Column(length: 50)]
-    #[Assert\NotBlank]
+   #[ORM\Column(type: Types::TEXT)]
+   #[Assert\NotBlank]
     private ?string $requestReason = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $otherRequestReason = null;
-
+    
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank]
     private ?string $urgencyExplanation = null;
@@ -116,13 +113,9 @@ class AidRequest
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $otherNeed = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank]
-    private ?string $currentSituation = null;
+  
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank]
-    private ?string $financialDifficulties = null;
+    
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $otherComment = null;
@@ -146,21 +139,21 @@ class AidRequest
     #[ORM\ManyToOne(inversedBy: 'aidRequests')]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull(message: "Une famille doit être associée à cette demande.")]
-    private ?Family $Family = null;
+    private ?Family $family = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $quittanceLoyer = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $avisCharge = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $taxeFonciere = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $fraisScolarite = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $attestationCaf = null;
 
     public function __construct()
@@ -245,8 +238,7 @@ class AidRequest
     public function getRequestReason(): ?string { return $this->requestReason; }
     public function setRequestReason(?string $requestReason): self { $this->requestReason = $requestReason; return $this; }
 
-    public function getOtherRequestReason(): ?string { return $this->otherRequestReason; }
-    public function setOtherRequestReason(?string $otherRequestReason): self { $this->otherRequestReason = $otherRequestReason; return $this; }
+   
 
     public function getUrgencyExplanation(): ?string { return $this->urgencyExplanation; }
     public function setUrgencyExplanation(?string $urgencyExplanation): self { $this->urgencyExplanation = $urgencyExplanation; return $this; }
@@ -257,12 +249,9 @@ class AidRequest
     public function getOtherNeed(): ?string { return $this->otherNeed; }
     public function setOtherNeed(?string $otherNeed): self { $this->otherNeed = $otherNeed; return $this; }
 
-    public function getCurrentSituation(): ?string { return $this->currentSituation; }
-    public function setCurrentSituation(?string $currentSituation): self { $this->currentSituation = $currentSituation; return $this; }
+    
 
-    public function getFinancialDifficulties(): ?string { return $this->financialDifficulties; }
-    public function setFinancialDifficulties(?string $financialDifficulties): self { $this->financialDifficulties = $financialDifficulties; return $this; }
-
+    
     public function getOtherComment(): ?string { return $this->otherComment; }
     public function setOtherComment(?string $otherComment): self { $this->otherComment = $otherComment; return $this; }
 
@@ -281,8 +270,8 @@ class AidRequest
     public function getOtherDocumentFilename(): ?string { return $this->otherDocumentFilename; }
     public function setOtherDocumentFilename(?string $otherDocumentFilename): self { $this->otherDocumentFilename = $otherDocumentFilename; return $this; }
 
-    public function getFamily(): ?Family { return $this->Family; }
-    public function setFamily(?Family $Family): self { $this->Family = $Family; return $this; }
+    public function getFamily(): ?family { return $this->family; }
+    public function setFamily(?family $family): self { $this->family = $family; return $this; }
 
     public function getQuittanceLoyer(): ?string
     {
