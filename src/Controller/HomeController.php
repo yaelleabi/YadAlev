@@ -23,43 +23,49 @@ class HomeController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         AuthenticationUtils $authenticationUtils
     ): Response {
+        
         // 🔹 Gestion du login
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // 🔹 Gestion de l’inscription
-        $user = new User();
+        // --------------------------------------------------
+        // 🔹 INSCRIPTION
+        // --------------------------------------------------
+
+        // On récupère le rôle choisi (si le formulaire est soumis)
+        $requestData = $request->request->all()['register'] ?? null;
+        $roleSelected = $requestData['roles'] ?? null;
+
+        // On crée l'entité AVANT la création du formulaire
+        if ($roleSelected === 'ROLE_FAMILY') {
+            $user = new Family();
+        } elseif ($roleSelected === 'ROLE_VOLUNTEER') {
+            $user = new Volunteer();
+        } else {
+            // Par défaut, avant toute sélection
+            $user = new User();
+        }
+
+        // Formulaire d'inscription
         $form = $this->createForm(RegisterType::class, $user);
         $form->handleRequest($request);
 
+        // Si le formulaire est soumis
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // ✅ Déterminer le rôle choisi (ex: depuis le formulaire)
+            // Rôle final (le transformer renvoie une chaîne → on la remet dans un tableau)
             $roles = $form->get('roles')->getData();
             $role = $roles[0] ?? 'ROLE_USER';
-
-            // ✅ Créer l'entité correspondante selon le rôle
-            if ($role === 'ROLE_FAMILY') {
-                $user = new Family();
-            } elseif ($role === 'ROLE_VOLUNTEER') {
-                $user = new Volunteer();
-            } else {
-                $user = new User();
-            }
-
-            // ✅ Renseigner les champs communs
-            $user->setEmail($form->get('email')->getData());
-            $user->setName($form->get('name')->getData());
-            $user->setPhoneNumber($form->get('phoneNumber')->getData());
             $user->setRoles([$role]);
 
-            // ✅ Hash du mot de passe
+            // Hash du mot de passe
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $form->get('plainPassword')->getData()
             );
             $user->setPassword($hashedPassword);
 
+            // Sauvegarde
             $em->persist($user);
             $em->flush();
 

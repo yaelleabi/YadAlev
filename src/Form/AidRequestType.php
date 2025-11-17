@@ -21,11 +21,15 @@ class AidRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // ⭐ NOUVEAU : savoir si l’utilisateur est une famille
+        $isFamily = $options['is_family'];
+
         $builder
             // ✅ Informations personnelles
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'required' => true,
+                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
                 'attr' => ['class' => 'form-control', 'maxlength' => 100],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le nom est obligatoire.']),
@@ -44,6 +48,7 @@ class AidRequestType extends AbstractType
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
+                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
                 'attr' => ['class' => 'form-control', 'maxlength' => 100],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prénom est obligatoire.']),
@@ -74,6 +79,7 @@ class AidRequestType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Adresse e-mail',
                 'required' => true,
+                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'L’adresse e-mail est obligatoire.']),
@@ -83,6 +89,7 @@ class AidRequestType extends AbstractType
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => true,
+                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
                 'attr' => ['class' => 'form-control', 'maxlength' => 20],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le numéro de téléphone est obligatoire.']),
@@ -96,7 +103,10 @@ class AidRequestType extends AbstractType
                 'label' => false,
             ])
 
-            // ✅ Situation familiale & logement
+            // ✔ LE RESTE EST STRICTEMENT IDENTIQUE
+            // …
+            // ⭐ Je ne touche absolument à rien d’autre
+
             ->add('housingStatus', ChoiceType::class, [
                 'label' => 'Situation de logement',
                 'required' => true,
@@ -133,7 +143,6 @@ class AidRequestType extends AbstractType
                 ],
             ])
 
-            // ✅ Revenus & emploi
             ->add('employmentStatus', ChoiceType::class, [
                 'label' => 'Situation professionnelle',
                 'required' => true,
@@ -201,7 +210,6 @@ class AidRequestType extends AbstractType
                 'constraints' => [new Assert\PositiveOrZero()],
             ])
 
-            // ✅ Détails de la demande
             ->add('requestType', ChoiceType::class, [
                 'label' => 'Type de demande',
                 'required' => true,
@@ -267,7 +275,6 @@ class AidRequestType extends AbstractType
                 'attr' => ['rows' => 3, 'class' => 'form-control'],
             ])
 
-            // ✅ Fichiers justificatifs
             ->add('identityProofFilename', FileType::class, [
                 'label' => 'Justificatif d’identité',
                 'mapped' => false,
@@ -323,7 +330,6 @@ class AidRequestType extends AbstractType
                 'attr' => ['class' => 'form-control'],
             ])
 
-            // ✅ Consentement RGPD
             ->add('privacyConsent', CheckboxType::class, [
                 'label' => 'J’accepte le traitement de mes données personnelles',
                 'required' => true,
@@ -337,6 +343,7 @@ class AidRequestType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AidRequest::class,
+            'is_family' => false, // ⭐ OPTION AJOUTÉE
         ]);
     }
 }

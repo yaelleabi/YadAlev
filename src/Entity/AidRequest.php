@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\FoodAssistanceRequestRepository;
+use App\Repository\AidRequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Enum\AidRequestStatus;
 
-#[ORM\Entity(repositoryClass: FoodAssistanceRequestRepository::class)]
+
+#[ORM\Entity(repositoryClass: AidRequestRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class AidRequest
 {
@@ -54,7 +55,7 @@ class AidRequest
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Assert\PositiveOrZero]
-    private ?int $dependantsCount = null;
+    private ?int $dependantsCount = 0;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]

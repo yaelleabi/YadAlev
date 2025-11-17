@@ -3,6 +3,11 @@
 
 {% block body %}
 <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-page">
+  <!-- Flèche retour -->
+  <a href="{{ path('app_family') }}" class="back-arrow" onclick="return confirmBack(event);">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+
   
   <!-- Logo et en-tête -->
   <div class="text-center mb-4">
@@ -144,6 +149,13 @@
 </div>
 
 <style>
+input:disabled {
+  background-color: #f1f3f5 !important;
+  color: #6c757d !important;
+  cursor: not-allowed;
+}
+
+
 .bg-page {
   background: linear-gradient(135deg, #f8f9fc, #eef2f7);
   overflow-x: hidden;
@@ -197,28 +209,61 @@
 .btn:hover {
   transform: translateY(-1px);
 }
+.back-arrow {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    font-size: 1.6rem;
+    color: #0d6efd;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: 0.25s ease;
+    z-index: 2000;
+    text-decoration: none;
+}
+
+.back-arrow:hover {
+    transform: translateX(-4px);
+    color: #084298;
+}
+
 </style>
 
 
 
 <script>
+// ⚠️ Confirme avant de quitter le formulaire en cours
+function confirmBack(event) {
+    const answer = confirm("⚠️ Attention : vos informations non enregistrées seront perdues.\n\nVoulez-vous vraiment revenir à la page Famille ?");
+    if (!answer) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
+}
 // ⭐ Ajoute automatiquement une étoile rouge sur les labels des champs obligatoires
-document.addEventListener('DOMContentLoaded', () => {
+function addRequiredStars() {
   document.querySelectorAll('label[for]').forEach(label => {
     const fieldId = label.getAttribute('for');
     const field = document.getElementById(fieldId);
 
-    // Détection robuste du caractère obligatoire :
     const isRequired =
-      (field && (field.required || field.getAttribute('aria-required') === 'true')) || // Cas standard
-      label.closest('.form-group, .col-md-6, .col-12')?.querySelector('.required');   // Cas ChoiceType/Checkbox
+      (field && (field.required || field.getAttribute('aria-required') === 'true')) ||
+      label.closest('.form-group, .col-md-6, .col-12')?.querySelector('.required');
 
-    // Si c'est un champ requis et qu'aucune étoile n'est déjà présente
     if (isRequired && !label.querySelector('.text-danger')) {
       label.innerHTML = label.innerHTML + ' <span class="text-danger">*</span>';
     }
   });
-});
+}
+
+// Pour le premier chargement classique
+document.addEventListener('DOMContentLoaded', addRequiredStars);
+
+// Pour les chargements Turbo
+document.addEventListener('turbo:load', addRequiredStars);
 
 (function() {
   const tabs = [
@@ -237,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-next]').forEach(b => b.addEventListener('click', () => step(1)));
   document.querySelectorAll('[data-prev]').forEach(b => b.addEventListener('click', () => step(-1)));
 
-  // ⛔ Empêche la soumission si le consentement ou les validations échouent
   formEl.addEventListener('submit', (e) => {
     if (!validateStep(current)) {
       e.preventDefault();
@@ -279,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ✅ Validation renforcée
   function validateStep(stepIndex) {
     const pane = tabs[stepIndex].pane;
     const inputs = pane.querySelectorAll('input, select, textarea');
@@ -362,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ) {
         const value = input.value.trim();
         if (value && !/^\d+([.,]\d{1,2})?$/.test(value)) {
-          showError(input, container, 'Uniquement des chiffres sont autorisés (vous pouvez utiliser une virgule ou un point pour les décimales).');
+          showError(input, container, 'Uniquement des chiffres sont autorisés.');
           valid = false;
         }
       }
@@ -384,28 +427,19 @@ document.addEventListener('DOMContentLoaded', () => {
         today.setHours(0, 0, 0, 0);
 
         if (isNaN(inputDate.getTime())) {
-          showError(input, container, 'Date de naissance invalide.');
+          showError(input, container, 'Date invalide.');
           valid = false;
         } else if (inputDate >= today) {
-          showError(input, container, 'La date de naissance doit être antérieure à aujourd’hui.');
+          showError(input, container, 'La date doit être antérieure à aujourd’hui.');
           valid = false;
         } else if (inputDate.getFullYear() < 1900) {
-          showError(input, container, 'La date de naissance semble invalide.');
+          showError(input, container, 'Date invalide.');
           valid = false;
-        } else {
-          const ageDiffMs = today - inputDate;
-          const ageDate = new Date(ageDiffMs);
-          const age = Math.abs(ageDate.getUTCFullYear() - 1970);
-          if (age < 18) {
-            showError(input, container, 'Vous devez avoir au moins 18 ans pour soumettre une demande.');
-            valid = false;
-          }
         }
       }
-    }); // ← FIN du forEach
+    });
 
-    // ✅ Vérification du consentement à la politique de confidentialité
-    if (stepIndex === 4) { // Étape 5 (index 4)
+    if (stepIndex === 4) {
       const privacyCheckbox = document.querySelector('input[id$="_privacyConsent"]');
       if (privacyCheckbox && !privacyCheckbox.checked) {
         const container = privacyCheckbox.closest('.form-check') 
@@ -437,5 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 })();
 </script>
+
+
 
 {% endblock %}
