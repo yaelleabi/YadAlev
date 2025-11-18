@@ -20,7 +20,7 @@
             Redirection automatique dans <span id="countdown" class="fw-semibold text-primary">5</span> secondes...
         </p>
 
-        <a href="{{ path('app_family') }}" class="btn btn-success mt-3 px-4 rounded-pill">
+        <a href="{{ path('app_family') }}" class="btn btn_success mt-3 px-4 rounded-pill">
             <i class="bi bi-house-door me-1"></i>Retourner à votre espace
         </a>
     </div>
@@ -42,21 +42,33 @@ body {
   box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
 }
 </style>
+{% endblock %}
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  let countdown = 5;
-  const countdownEl = document.getElementById('countdown');
-  const redirectUrl = "{{ path('app_family') }}";
+{% block javascripts %}
+    {{ parent() }}
 
-  const timer = setInterval(() => {
-    countdown--;
-    countdownEl.textContent = countdown;
-    if (countdown <= 0) {
-      clearInterval(timer);
-      window.location.href = redirectUrl;
-    }
-  }, 1000);
-});
-</script>
+    <script>
+        function initCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            if (!countdownEl) return;
+
+            let countdown = parseInt(countdownEl.textContent || '5', 10);
+            const redirectUrl = "{{ path('app_family') }}";
+
+            const timer = setInterval(() => {
+                countdown--;
+                countdownEl.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    window.location.href = redirectUrl;
+                }
+            }, 1000);
+        }
+
+        // Cas normal (rechargement direct)
+        document.addEventListener("DOMContentLoaded", initCountdown);
+
+        // Cas navigation Turbo (après redirection, sans reload complet)
+        document.addEventListener("turbo:load", initCountdown);
+    </script>
 {% endblock %}

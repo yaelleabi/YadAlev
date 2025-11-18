@@ -53,9 +53,9 @@ class AidRequest
     #[Assert\NotBlank]
     private ?string $maritalStatus = null;
 
-    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Assert\PositiveOrZero]
-    private ?int $dependantsCount = 0;
+    private ?int $dependantsCount = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
@@ -85,7 +85,7 @@ class AidRequest
     private ?string $rentAmountNetAide = null;
 
     #[ORM\Column(enumType: AidRequestStatus::class)]
-    private AidRequestStatus $status;
+    private AidRequestStatus $status = AidRequestStatus::PENDING;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]

@@ -1,13 +1,224 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit AidRequest{% endblock %}
+{% block title %}Modifier une demande - Admin{% endblock %}
 
 {% block body %}
-    <h1>Edit AidRequest</h1>
 
-    {{ include('aid_request/_form.html.twig', {'button_label': 'Update'}) }}
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
 
-    <a href="{{ path('app_aid_request_index') }}">back to list</a>
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            <span class="fw-bold text-primary fs-5">Modifier la demande</span>
+        </div>
 
-    {{ include('aid_request/_delete_form.html.twig') }}
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ path('app_admin_aidrequest_list') }}" class="nav-icon" title="Retour à la liste">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- PAGE -->
+<div class="main-container bg-page">
+<div class="content-wrapper container">
+
+    <div class="text-center mb-5 fade-in">
+        <h2 class="text-primary fw-bold">Modifier la demande d’aide</h2>
+        <p class="text-muted" style="animation-delay:.2s">
+            Mettez à jour les informations puis enregistrez.
+        </p>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <div class="info-card shadow-sm fade-in p-4">
+
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'adminEditForm'}}) }}
+
+        {% if form_errors(form) %}
+            <div class="alert alert-danger mt-3 fade-in">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                Des erreurs sont présentes dans le formulaire.
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+
+        <div class="accordion" id="adminEditAccordion">
+
+            <!-- IDENTITÉ -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#id1">
+                        1. Identité
+                    </button>
+                </h2>
+                <div id="id1" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        {{ form_row(form.lastName) }}
+                        {{ form_row(form.firstName) }}
+                        {{ form_row(form.dateOfBirth) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.phoneNumber) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAMILLE -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#id2">
+                        2. Famille & logement
+                    </button>
+                </h2>
+                <div id="id2" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{ form_row(form.maritalStatus) }}
+                        {{ form_row(form.dependantsCount) }}
+                        {{ form_row(form.housingStatus) }}
+
+                        <h5 class="mt-3">Adresse</h5>
+                        {{ form_row(form.adress.streetNumber) }}
+                        {{ form_row(form.adress.street) }}
+                        {{ form_row(form.adress.postalCode) }}
+                        {{ form_row(form.adress.city) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINANCES -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#id3">
+                        3. Finances
+                    </button>
+                </h2>
+                <div id="id3" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{ form_row(form.employmentStatus) }}
+                        {{ form_row(form.monthlyIncome) }}
+                        {{ form_row(form.spouseEmploymentStatus) }}
+                        {{ form_row(form.spouseMonthlyIncome) }}
+                        {{ form_row(form.familyAllowanceAmount) }}
+                        {{ form_row(form.alimonyAmount) }}
+                        {{ form_row(form.rentAmountNetAide) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEMANDE -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#id4">
+                        4. Demande d’aide
+                    </button>
+                </h2>
+                <div id="id4" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{ form_row(form.requestType) }}
+                        {{ form_row(form.requestDuration) }}
+                        {{ form_row(form.otherRequestDuration) }}
+                        {{ form_row(form.requestReason) }}
+                        {{ form_row(form.otherNeed) }}
+                        {{ form_row(form.urgencyLevel) }}
+                        {{ form_row(form.urgencyExplanation) }}
+                        {{ form_row(form.otherComment) }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- DOCUMENTS -->
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#id5">
+                        5. Documents fournis
+                    </button>
+                </h2>
+                <div id="id5" class="accordion-collapse collapse">
+                    <div class="accordion-body">
+                        {{ form_row(form.identityProofFilename) }}
+                        {{ form_row(form.incomeProofFilename) }}
+                        {{ form_row(form.taxNoticeFilename) }}
+                        {{ form_row(form.quittanceLoyer) }}
+                        {{ form_row(form.avisCharge) }}
+                        {{ form_row(form.taxeFonciere) }}
+                        {{ form_row(form.fraisScolarite) }}
+                        {{ form_row(form.attestationCaf) }}
+                        {{ form_row(form.otherDocumentFilename) }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="d-flex justify-content-center mt-4 fade-in">
+            <div class="form-check">
+                {{ form_widget(form.privacyConsent) }}
+                {{ form_label(form.privacyConsent) }}
+                <div class="text-danger">
+                    {{ form_errors(form.privacyConsent) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 fade-in">
+            <button class="btn btn-primary btn-lg shadow-sm edit-btn">
+                💾 Enregistrer les modifications
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+
+        <div class="text-center mt-4 fade-in">
+            <a href="{{ path('app_admin_aidrequest_list') }}" class="btn btn-outline-primary btn-lg shadow-sm">
+                ⬅ Retour à la liste
+            </a>
+        </div>
+
+    </div>
+
+    <footer class="footer-custom text-center text-muted small py-4 mt-5">
+        <div class="footer-line mx-auto"></div>
+        <p class="m-0">© 2025 Yad Alev — Tous droits réservés.</p>
+    </footer>
+
+</div>
+</div>
+
+
+<style>
+.nav-logo { width: 48px; }
+.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
+.nav-icon:hover { color:#0d6efd; }
+
+.bg-page {
+    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+}
+
+.main-container { padding-top: 110px; min-height: 100vh; }
+.info-card {
+    background:#fff; border-radius:1rem;
+    border:1px solid #e2e8f0;
+}
+
+.accordion-button { font-weight:600; color:#0d6efd; }
+.accordion-button:not(.collapsed) { background:#e8f0ff; }
+
+.edit-btn { border-radius:10px; padding:10px 25px; }
+
+.fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
+@keyframes fadeSlide {
+    from { opacity:0; transform:translateY(25px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+.footer-line { width:85%; height:1px; background:#d0d7e0; }
+</style>
+
 {% endblock %}

@@ -2,7 +2,7 @@
 namespace App\Enum;
 
 enum AidRequestStatus: string {
-    case PENDING = 'pending';
-    case VALIDATED = 'validated';
-    case REFUSED = 'refused';
+    case PENDING = 'En attente';
+    case VALIDATED = 'Acceptée';
+    case REFUSED = 'Refusée';
 }

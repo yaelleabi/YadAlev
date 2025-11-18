@@ -1,192 +1,107 @@
 {% extends 'base.html.twig' %}
-{% block title %}Modifier mes informations - Yad Alev{% endblock %}
+{% block title %}Modifier ma demande d’aide - Yad Alev{% endblock %}
 
 {% block body %}
 
-<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
     <div class="container d-flex justify-content-between align-items-center">
-
-        <!-- Logo + titre -->
         <div class="d-flex align-items-center gap-3">
             <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            <span class="fw-bold text-primary fs-5">Modifier mes informations</span>
+            <span class="fw-bold text-primary fs-5">Modifier ma demande d’aide</span>
         </div>
-
-        <!-- Icônes -->
         <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_info') }}" class="nav-icon" title="Retour à mes informations">
-                <i class="fas fa-arrow-left"></i>
-            </a>
-            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
+            <a href="{{ path('app_family') }}" class="nav-icon" title="Retour espace famille"><i class="fas fa-home"></i></a>
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter"><i class="fas fa-sign-out-alt"></i></a>
         </div>
-
     </div>
 </nav>
 
-
-
-<!-- PAGE -->
 <div class="main-container bg-page">
-
     <div class="content-wrapper container">
 
-        <!-- TITRE -->
-        <div class="text-center mb-5">
-            <h2 class="text-primary fw-bold fade-in">Modifier mes informations</h2>
-            <p class="text-muted fade-in" style="animation-delay:.2s">
-                Mettez à jour vos informations personnelles si nécessaire.
+        <div class="text-center mb-5 fade-in">
+            <h2 class="text-primary fw-bold">Modifier ma demande d’aide</h2>
+            <p class="text-muted" style="animation-delay:.2s">
+                Mettez à jour les informations de votre demande si nécessaire.
             </p>
         </div>
 
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'editForm'}}) }}
 
-        <!-- FORMULAIRE -->
-        <div class="info-card shadow-sm p-4 fade-in">
+        {% if form_errors(form) %}
+            <div class="alert alert-danger mt-3 fade-in">
+                <i class="fas fa-exclamation-circle me-2"></i> Une erreur est survenue. Veuillez vérifier les champs en rouge ci-dessous.
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
 
-            {{ form_start(form, { attr: { enctype:'multipart/form-data' } }) }}
-
+        <div class="info-card shadow-sm fade-in p-4">
             <div class="accordion" id="editAccordion">
 
-                <!-- IDENTITÉ -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#id1">
                             1. Identité
                         </button>
                     </h2>
-
-                    <div id="collapseOne" class="accordion-collapse collapse show">
+                    <div id="id1" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Nom</label>
-                                    <input class="form-control bg-light" value="{{ aidRequest.lastName }}" disabled>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Prénom</label>
-                                    <input class="form-control bg-light" value="{{ aidRequest.firstName }}" disabled>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Email</label>
-                                    <input class="form-control bg-light" value="{{ aidRequest.email }}" disabled>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Téléphone</label>
-                                    <input class="form-control bg-light" value="{{ aidRequest.phoneNumber }}" disabled>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Date de naissance</label>
-                                <input class="form-control bg-light" value="{{ aidRequest.dateOfBirth|date('d/m/Y') }}" disabled>
-                            </div>
-
+                            {{ form_row(form.lastName) }}
+                            {{ form_row(form.firstName) }}
+                            {{ form_row(form.dateOfBirth) }}
+                            {{ form_row(form.email) }}
+                            {{ form_row(form.phoneNumber) }}
                         </div>
                     </div>
                 </div>
 
-
-                <!-- FAMILLE & LOGEMENT -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id2">
                             2. Famille & logement
                         </button>
                     </h2>
-
-                    <div id="collapseTwo" class="accordion-collapse collapse">
+                    <div id="id2" class="accordion-collapse collapse">
                         <div class="accordion-body">
-
                             {{ form_row(form.maritalStatus) }}
                             {{ form_row(form.dependantsCount) }}
                             {{ form_row(form.housingStatus) }}
-
-                            <h5 class="mt-3 fw-bold">Adresse</h5>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{ form_row(form.adress.streetNumber) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(form.adress.street) }}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    {{ form_row(form.adress.postalCode) }}
-                                </div>
-                                <div class="col-md-8">
-                                    {{ form_row(form.adress.city) }}
-                                </div>
-                            </div>
-
+                            <h5 class="mt-3">Adresse complète</h5>
+                            {{ form_row(form.adress.streetNumber) }}
+                            {{ form_row(form.adress.street) }}
+                            {{ form_row(form.adress.postalCode) }}
+                            {{ form_row(form.adress.city) }}
                         </div>
                     </div>
                 </div>
 
-
-                <!-- FINANCES -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id3">
                             3. Finances
                         </button>
                     </h2>
-
-                    <div id="collapseThree" class="accordion-collapse collapse">
+                    <div id="id3" class="accordion-collapse collapse">
                         <div class="accordion-body">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{ form_row(form.employmentStatus) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(form.monthlyIncome) }}
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {{ form_row(form.spouseEmploymentStatus) }}
-                                </div>
-                                <div class="col-md-6">
-                                    {{ form_row(form.spouseMonthlyIncome) }}
-                                </div>
-                            </div>
-
+                            {{ form_row(form.employmentStatus) }}
+                            {{ form_row(form.monthlyIncome) }}
+                            {{ form_row(form.spouseEmploymentStatus) }}
+                            {{ form_row(form.spouseMonthlyIncome) }}
                             {{ form_row(form.familyAllowanceAmount) }}
                             {{ form_row(form.alimonyAmount) }}
                             {{ form_row(form.rentAmountNetAide) }}
-
                         </div>
                     </div>
                 </div>
 
-
-                <!-- DEMANDE D’AIDE -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id4">
                             4. Demande d’aide
                         </button>
                     </h2>
-
-                    <div id="collapseFour" class="accordion-collapse collapse">
+                    <div id="id4" class="accordion-collapse collapse">
                         <div class="accordion-body">
-
                             {{ form_row(form.requestType) }}
                             {{ form_row(form.requestDuration) }}
                             {{ form_row(form.otherRequestDuration) }}
@@ -194,75 +109,61 @@
                             {{ form_row(form.otherNeed) }}
                             {{ form_row(form.urgencyLevel) }}
                             {{ form_row(form.urgencyExplanation) }}
-
+                            {{ form_row(form.otherComment) }}
                         </div>
                     </div>
                 </div>
 
-
-                <!-- DOCUMENTS -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseDocs">
-                            5. Documents fournis
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id5">
+                            5. Documents
                         </button>
                     </h2>
-
-                    <div id="collapseDocs" class="accordion-collapse collapse">
+                    <div id="id5" class="accordion-collapse collapse">
                         <div class="accordion-body">
-
-                            {% macro fileField(label, filename, field) %}
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">{{ label }}</label><br>
-
-                                    {% if filename %}
-                                        <a href="{{ asset('uploads/' ~ filename) }}" target="_blank" class="text-primary">
-                                            Voir le document actuel
-                                        </a><br><br>
-                                    {% endif %}
-
-                                    {{ form_row(field) }}
-                                </div>
-                            {% endmacro %}
-
-                            {{ _self.fileField('Justificatif d’identité', aidRequest.identityProofFilename, form.identityProofFilename) }}
-                            {{ _self.fileField('Justificatif de revenus', aidRequest.incomeProofFilename, form.incomeProofFilename) }}
-                            {{ _self.fileField('Avis d’imposition', aidRequest.taxNoticeFilename, form.taxNoticeFilename) }}
-                            {{ _self.fileField('Quittance de loyer', aidRequest.quittanceLoyer, form.quittanceLoyer) }}
-                            {{ _self.fileField('Avis de charges', aidRequest.avisCharge, form.avisCharge) }}
-                            {{ _self.fileField('Taxe foncière', aidRequest.taxeFonciere, form.taxeFonciere) }}
-                            {{ _self.fileField('Frais de scolarité', aidRequest.fraisScolarite, form.fraisScolarite) }}
-                            {{ _self.fileField('Attestation CAF', aidRequest.attestationCaf, form.attestationCaf) }}
-                            {{ _self.fileField('Autre document', aidRequest.otherDocumentFilename, form.otherDocumentFilename) }}
-
+                            {{ form_row(form.identityProofFilename) }}
+                            {{ form_row(form.incomeProofFilename) }}
+                            {{ form_row(form.taxNoticeFilename) }}
+                            {{ form_row(form.quittanceLoyer) }}
+                            {{ form_row(form.avisCharge) }}
+                            {{ form_row(form.taxeFonciere) }}
+                            {{ form_row(form.fraisScolarite) }}
+                            {{ form_row(form.attestationCaf) }}
+                            {{ form_row(form.otherDocumentFilename) }}
                         </div>
                     </div>
                 </div>
 
             </div>
-
-
-            <!-- CONDITIONS -->
-            <div class="mt-4">
-                {{ form_row(form.privacyConsent) }}
-            </div>
-
-
-            <!-- BOUTON -->
-            <div class="text-center mt-3">
-                <button class="btn btn-primary btn-lg shadow-sm edit-btn">
-                    💾 Enregistrer les modifications
-                </button>
-            </div>
-
-            {{ form_end(form, { render_rest: false }) }}
-
         </div>
+
+        <div class="d-flex justify-content-center mt-4 fade-in">
+            <div class="form-check">
+                {{ form_widget(form.privacyConsent) }}
+                {{ form_label(form.privacyConsent) }}
+                <div class="text-danger">
+                    {{ form_errors(form.privacyConsent) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4 fade-in">
+            <button type="submit" class="btn btn-primary btn-lg shadow-sm edit-btn">
+                💾 Enregistrer les modifications
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+
+        <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
+            <a href="{{ path('app_family') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
+                ⬅️ Retour à mon espace famille
+            </a>
+        </div>
+
     </div>
 
-
-    <!-- FOOTER -->
     <footer class="footer-custom text-center text-muted small py-4">
         <div class="footer-line mx-auto"></div>
         <div class="footer-content mt-3">
@@ -273,99 +174,64 @@
 
 </div>
 
-<!-- 🔔 TOAST DE SUCCÈS -->
-<div class="toast-container position-fixed top-0 end-0 p-3">
-    <div id="saveSuccessToast"
-         class="toast align-items-center text-bg-success border-0"
-         role="alert"
-         aria-live="assertive"
-         aria-atomic="true"
-         data-bs-delay="2500"
-         data-show-toast="{{ showToast|default(false) ? '1' : '0' }}">
-        <div class="d-flex">
-            <div class="toast-body">
-                ✅ Vos informations ont bien été mises à jour.
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const toastEl = document.getElementById('saveSuccessToast');
-    if (!toastEl) return;
-
-    const shouldShow = toastEl.dataset.showToast === '1';
-
-    if (shouldShow && typeof bootstrap !== 'undefined') {
-        const t = new bootstrap.Toast(toastEl);
-        t.show();
-
-        // ⏲ redirection après ~3 secondes vers "Mes informations"
-        setTimeout(function () {
-            window.location.href = "{{ path('app_family_info') }}";
-        }, 3000);
-    }
-});
-</script>
-
-
 <style>
-
-/* NAVBAR */
+/* Votre CSS existant (pas de changement nécessaire) */
 .navbar { border-bottom: 1px solid #e2e8f0; }
 .nav-logo { width: 48px; }
-.nav-icon { font-size: 1.3rem; color:#444; transition:.2s; }
+.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
 .nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
-
-/* BACKGROUND */
-.bg-page {
-    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
-}
-
-/* LAYOUT */
-.main-container {
-    min-height: 100vh;
-    padding-top: 110px;
-    display: flex;
-    flex-direction: column;
-}
-.info-card {
-    background: #fff;
-    border-radius: 1rem;
-    border: 1px solid #e2e8f0;
-}
-
-/* ACCORDION */
-.accordion-button {
-    font-weight: 600;
-    color: #0d6efd;
-}
-.accordion-button:not(.collapsed) {
-    background: #e8f0ff;
-    color: #0d6efd;
-}
-.accordion-item { border: none; }
-
-/* BUTTON */
-.edit-btn {
-    padding: 10px 25px;
-    border-radius: 10px;
-}
-
-/* ANIMATIONS */
+.bg-page { background: linear-gradient(135deg, #f8f9fc, #eef2f7); }
+.main-container { min-height: 100vh; padding-top: 110px; display: flex; flex-direction: column; }
+.info-card { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; }
+.accordion-button { font-weight: 600; color: #0d6efd; }
+.accordion-button:not(.collapsed) { background: #e8f0ff; color: #0d6efd; }
+.edit-btn { border-radius: 10px; padding: 10px 25px; }
 .fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
-@keyframes fadeSlide {
-    from { opacity:0; transform: translateY(25px); }
-    to   { opacity:1; transform:translateY(0); }
-}
-
-/* FOOTER */
+@keyframes fadeSlide { from { opacity:0; transform: translateY(25px); } to { opacity:1; transform:translateY(0); } }
 .footer-line { width: 85%; height: 1px; background:#d0d7e0; }
 .footer-logo { width: 60px; }
 
+/* Petit ajout pour mettre en rouge l'onglet qui contient une erreur */
+.accordion-button.has-error {
+    color: #dc3545 !important;
+    background-color: #ffe6e6 !important;
+    border-color: #dc3545;
+}
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // On cherche tous les éléments qui ont la classe d'erreur Bootstrap ou Symfony standard
+    // .is-invalid est ajouté automatiquement par Symfony si form_theme 'bootstrap_5' est actif
+    const errors = document.querySelectorAll('.is-invalid, .invalid-feedback, .text-danger ul li');
+
+    if (errors.length > 0) {
+        // Si on trouve des erreurs, on boucle dessus
+        errors.forEach(function(error) {
+            // On remonte au parent "accordion-collapse"
+            const collapseDiv = error.closest('.accordion-collapse');
+            
+            if (collapseDiv) {
+                // 1. On ouvre l'onglet
+                collapseDiv.classList.add('show');
+                
+                // 2. On cherche le bouton qui contrôle cet onglet pour le colorer en rouge
+                const divId = collapseDiv.id;
+                const btn = document.querySelector(`button[data-bs-target="#${divId}"]`);
+                if (btn) {
+                    btn.classList.remove('collapsed');
+                    btn.classList.add('has-error'); // Ajoute la classe CSS définie plus haut
+                }
+            }
+        });
+
+        // Petit scroll vers la première erreur pour l'utilisateur
+        const firstError = document.querySelector('.alert-danger, .is-invalid');
+        if(firstError){
+            firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }
+});
+</script>
 
 {% endblock %}

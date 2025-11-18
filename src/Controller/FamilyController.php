@@ -88,7 +88,7 @@ final class FamilyController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    #[Route('/family/info/edit', name: 'app_family_info_edit')]
+   #[Route('/family/info/edit', name: 'app_family_info_edit')]
     public function edit(
         AidRequestRepository $aidRequestRepository,
         Request $request,
@@ -144,19 +144,11 @@ final class FamilyController extends AbstractController
 
             $em->flush();
 
-            // 👉 On ré-affiche la page d’édition AVEC le toast
-            return $this->render('family/edit.html.twig', [
-                'form' => $form->createView(),
-                'aidRequest' => $aidRequest,
-                'showToast' => true,
-            ]);
+            return $this->redirectToRoute('app_aidrequest_success');
         }
 
-        // Affichage initial de la page (sans toast)
         return $this->render('family/edit.html.twig', [
             'form' => $form->createView(),
-            'aidRequest' => $aidRequest,
-            'showToast' => false,
         ]);
     }
 

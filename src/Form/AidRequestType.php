@@ -21,15 +21,13 @@ class AidRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // ⭐ NOUVEAU : savoir si l’utilisateur est une famille
         $isFamily = $options['is_family'];
 
         $builder
-            // ✅ Informations personnelles
             ->add('lastName', TextType::class, [
                 'label' => 'Nom',
                 'required' => true,
-                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
+                'disabled' => $isFamily,
                 'attr' => ['class' => 'form-control', 'maxlength' => 100],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le nom est obligatoire.']),
@@ -41,14 +39,13 @@ class AidRequestType extends AbstractType
                         'min' => 2,
                         'minMessage' => 'Le nom doit comporter au moins {{ limit }} caractères.',
                         'max' => 100,
-                        'maxMessage' => 'Le nom ne peut pas dépasser {{ limit }} caractères.',
                     ]),
                 ],
             ])
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
-                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
+                'disabled' => $isFamily,
                 'attr' => ['class' => 'form-control', 'maxlength' => 100],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prénom est obligatoire.']),
@@ -74,12 +71,16 @@ class AidRequestType extends AbstractType
                         'value' => 'today',
                         'message' => 'La date de naissance doit être antérieure à aujourd’hui.',
                     ]),
+                    new Assert\LessThan([
+                        'value' => (new \DateTime())->modify('-18 years'),
+                        'message' => 'Vous devez avoir au moins 18 ans.',
+                    ]),
                 ],
             ])
             ->add('email', EmailType::class, [
                 'label' => 'Adresse e-mail',
                 'required' => true,
-                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
+                'disabled' => $isFamily,
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'L’adresse e-mail est obligatoire.']),
@@ -89,7 +90,7 @@ class AidRequestType extends AbstractType
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Numéro de téléphone',
                 'required' => true,
-                'disabled' => $isFamily, // ⭐ Désactivation ajoutée
+                'disabled' => $isFamily,
                 'attr' => ['class' => 'form-control', 'maxlength' => 20],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le numéro de téléphone est obligatoire.']),
@@ -99,13 +100,10 @@ class AidRequestType extends AbstractType
                     ]),
                 ],
             ])
+
             ->add('adress', AdressType::class, [
                 'label' => false,
             ])
-
-            // ✔ LE RESTE EST STRICTEMENT IDENTIQUE
-            // …
-            // ⭐ Je ne touche absolument à rien d’autre
 
             ->add('housingStatus', ChoiceType::class, [
                 'label' => 'Situation de logement',
@@ -118,7 +116,9 @@ class AidRequestType extends AbstractType
                     'Autre' => 'Autre',
                 ],
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation de logement.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation de logement.'])
+                ],
             ])
             ->add('maritalStatus', ChoiceType::class, [
                 'label' => 'Situation familiale',
@@ -132,7 +132,9 @@ class AidRequestType extends AbstractType
                     'Séparé(e)' => 'Séparé(e)',
                 ],
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation familiale.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation familiale.'])
+                ],
             ])
             ->add('dependantsCount', NumberType::class, [
                 'label' => 'Nombre d’enfants à charge',
@@ -158,7 +160,9 @@ class AidRequestType extends AbstractType
                     'Autre' => 'Autre',
                 ],
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation professionnelle.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer votre situation professionnelle.'])
+                ],
             ])
             ->add('monthlyIncome', NumberType::class, [
                 'label' => 'Revenu mensuel (€)',
@@ -185,29 +189,37 @@ class AidRequestType extends AbstractType
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
-            ->add('spouseMonthlyIncome', NumberType::class, options: [
+            ->add('spouseMonthlyIncome', NumberType::class, [
                 'label' => 'Revenu mensuel du conjoint (€)',
                 'required' => true,
                 'attr' => ['class' => 'form-control', 'min' => 0],
-                'constraints' => [new Assert\PositiveOrZero()],
+                'constraints' => [
+                    new Assert\PositiveOrZero(),
+                ],
             ])
             ->add('familyAllowanceAmount', NumberType::class, [
                 'label' => 'Allocations familiales (€)',
                 'required' => true,
                 'attr' => ['class' => 'form-control', 'min' => 0],
-                'constraints' => [new Assert\PositiveOrZero()],
+                'constraints' => [
+                    new Assert\PositiveOrZero(),
+                ],
             ])
             ->add('alimonyAmount', NumberType::class, [
                 'label' => 'Pension alimentaire (€)',
                 'required' => true,
                 'attr' => ['class' => 'form-control', 'min' => 0],
-                'constraints' => [new Assert\PositiveOrZero()],
+                'constraints' => [
+                    new Assert\PositiveOrZero(),
+                ],
             ])
             ->add('rentAmountNetAide', NumberType::class, [
                 'label' => 'Montant du loyer (net des aides) (€) (si locataire)',
                 'required' => true,
                 'attr' => ['class' => 'form-control', 'min' => 0],
-                'constraints' => [new Assert\PositiveOrZero()],
+                'constraints' => [
+                    new Assert\PositiveOrZero(),
+                ],
             ])
 
             ->add('requestType', ChoiceType::class, [
@@ -220,7 +232,9 @@ class AidRequestType extends AbstractType
                     'Autre' => 'Autre',
                 ],
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez sélectionner un type de demande.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez sélectionner un type de demande.'])
+                ],
             ])
             ->add('requestDuration', ChoiceType::class, [
                 'label' => 'Durée de la demande',
@@ -233,7 +247,9 @@ class AidRequestType extends AbstractType
                 ],
                 'placeholder' => 'Sélectionnez une durée',
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez sélectionner une durée.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez sélectionner une durée.'])
+                ],
             ])
             ->add('otherRequestDuration', TextType::class, [
                 'label' => 'Autre durée (si "Autre")',
@@ -244,7 +260,9 @@ class AidRequestType extends AbstractType
                 'label' => 'Motif de la demande',
                 'required' => true,
                 'attr' => ['rows' => 3, 'class' => 'form-control'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer le motif de votre demande.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer le motif de votre demande.'])
+                ],
             ])
             ->add('otherNeed', TextareaType::class, [
                 'label' => 'Autre besoin éventuel',
@@ -261,14 +279,15 @@ class AidRequestType extends AbstractType
                     'Élevée' => 3,
                 ],
                 'attr' => ['class' => 'form-select'],
-                'constraints' => [new Assert\NotBlank(['message' => 'Veuillez indiquer le niveau d’urgence.'])],
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Veuillez indiquer le niveau d’urgence.'])
+                ],
             ])
             ->add('urgencyExplanation', TextareaType::class, [
                 'label' => 'Quelle est votre situation actuelle et en quoi est-elle urgente ?',
                 'required' => true,
                 'attr' => ['rows' => 3, 'class' => 'form-control'],
             ])
-
             ->add('otherComment', TextareaType::class, [
                 'label' => 'Autre commentaire',
                 'required' => false,
@@ -343,7 +362,7 @@ class AidRequestType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => AidRequest::class,
-            'is_family' => false, // ⭐ OPTION AJOUTÉE
+            'is_family' => false,
         ]);
     }
 }

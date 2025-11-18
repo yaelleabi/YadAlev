@@ -1,20 +1,182 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello AdminController!{% endblock %}
+{% block title %}Espace Administrateur - Yad Alev{% endblock %}
 
 {% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <!-- Logo + titre -->
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            <span class="fw-bold text-primary fs-5">Espace Administrateur</span>
+        </div>
+
+        <!-- Icônes -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- CONTENU -->
+<div class="main-container bg-page">
+
+    <div class="content-wrapper d-flex flex-column justify-content-start align-items-center">
+
+        <!-- Titre -->
+        <div class="text-center mb-5 fade-in">
+            <h2 class="text-primary fw-bold">Bienvenue sur l'espace administrateur</h2>
+            <p class="text-muted" style="animation-delay:.2s">
+                Choisissez une section ci-dessous pour gérer la plateforme.
+            </p>
+        </div>
+
+        <!-- Cartes -->
+        <div class="card-zone row g-4 justify-content-center px-3 w-100">
+
+            <!-- Carte 1 : Créer aide-projet -->
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
+                <a href="{{ path('app_admin_aidproject_new') }}"
+                   class="admin-card text-decoration-none card-anim">
+                    <img src="{{ asset('images/admin1.jpeg') }}" alt="">
+                    <div class="p-3">
+                        <h5 class="text-dark fw-semibold">Créer un projet Volontaire/Famille</h5>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Carte 2 : Gérer demandes -->
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
+                <a href="{{ path('app_admin_aidrequest_list') }}"
+                   class="admin-card text-decoration-none card-anim" style="animation-delay:.15s">
+                    <img src="{{ asset('images/admin2.jpeg') }}" alt="">
+                    <div class="p-3">
+                        <h5 class="text-dark fw-semibold">Gérer les demandes des familles</h5>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Carte 3 : Profil des familles -->
+            <div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
+                <a href="{{ path('app_admin_family_list') }}"
+                   class="admin-card text-decoration-none card-anim" style="animation-delay:.3s">
+                    <img src="{{ asset('images/admin3.jpeg') }}" alt="">
+                    <div class="p-3">
+                        <h5 class="text-dark fw-semibold">Profils des familles</h5>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+    <footer class="footer-custom text-center text-muted small py-4">
+        <div class="footer-line mx-auto"></div>
+
+        <div class="footer-content mt-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+            <p class="m-0">© 2025 Espace Administrateur Yad Alev — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</div>
+
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+
+/* NAVBAR */
+.navbar {
+    border-bottom: 1px solid #e2e8f0;
+}
+.nav-logo {
+    width: 48px;
+}
+.nav-icon {
+    font-size: 1.4rem;
+    color:#444;
+    transition:.2s;
+}
+.nav-icon:hover {
+    color:#0d6efd;
+    transform: translateY(-2px);
+}
+
+/* BACKGROUND */
+.bg-page {
+    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+}
+
+/* LAYOUT */
+.main-container {
+    min-height: 100vh;
+    padding-top: 110px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cards zone */
+.card-zone {
+    margin-top: 50px;
+}
+
+/* CARDS */
+.admin-card {
+    background: #fff;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: .25s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.10);
+    border: 1px solid #e2e8f0;
+    max-width: 330px;
+}
+.admin-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
+}
+.admin-card img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    transition: .3s;
+}
+.admin-card:hover img {
+    filter: brightness(0.9);
+}
+
+/* Animation */
+.fade-in, .card-anim {
+    opacity: 0;
+    animation: fadeSlide .7s ease forwards;
+}
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* FOOTER */
+.footer-line {
+    width: 85%;
+    height: 1px;
+    background:#d0d7e0;
+}
+.footer-logo {
+    width: 60px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .admin-card { max-width: 100%; }
+    .admin-card img { height: 150px; }
+}
+
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/PC/PROJETS/YadAlev/src/Controller/AdminController.php</code></li>
-        <li>Your template at <code>C:/Users/PC/PROJETS/YadAlev/templates/admin/index.html.twig</code></li>
-    </ul>
-</div>
 {% endblock %}
