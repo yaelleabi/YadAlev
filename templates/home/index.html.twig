@@ -72,7 +72,7 @@
             {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
 
                 <div class="mb-3">
-                    {{ form_label(form.name, 'Nom complet *') }}
+                    {{ form_label(form.name, 'Nom *') }}
                     {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Jean Dupont'}}) }}
                     {% for error in form.name.vars.errors %}
                         <div class="invalid-feedback d-block">{{ error.message }}</div>
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="mb-3">
-                    {{ form_label(form.phoneNumber, 'Téléphone') }}
+                    {{ form_label(form.phoneNumber, 'Téléphone *') }}
                     {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control' ~ (form.phoneNumber.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '+33 6 12 34 56 78'}}) }}
                     {% for error in form.phoneNumber.vars.errors %}
                         <div class="invalid-feedback d-block">{{ error.message }}</div>

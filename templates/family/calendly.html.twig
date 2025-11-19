@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+{% block title %}Prendre rendez-vous - Yad Alev{% endblock %}
+
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <!-- Logo + titre -->
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            <span class="fw-bold text-primary fs-5">Prendre rendez-vous</span>
+        </div>
+
+        <!-- Icônes -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ path('app_family') }}" class="nav-icon" title="Retour espace famille">
+                <i class="fas fa-home"></i>
+            </a>
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Déconnexion">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+
+<!-- PAGE -->
+<div class="main-container bg-page">
+
+    <div class="container d-flex flex-column justify-content-start align-items-center">
+
+        <!-- Titre -->
+        <div class="text-center mb-5 fade-in" style="margin-top:10px;">
+            <h2 class="text-primary fw-bold mt-3">Prendre rendez-vous</h2>
+            <p class="text-muted">Choisissez un créneau directement avec l’assistante sociale.</p>
+        </div>
+
+        <!-- Carte Calendly -->
+        <div class="card shadow-sm p-4 calendly-card fade-in" style="max-width: 900px; border-radius: 1rem;">
+
+            <!-- Calendly INLINE widget -->
+            <div class="calendly-inline-widget"
+                 data-url="https://calendly.com/yadalev/permanence-sociale-et-ecoutes-familiales-psy"
+                 style="min-width: 320px; height: 500px;">
+            </div>
+
+        </div>
+
+        <!-- Bouton retour -->
+        <div class="mt-4 fade-in">
+            <a href="{{ path('app_family') }}" class="btn btn-outline-primary px-4 py-2 rounded-pill">
+                ⬅️ Retour à mon espace famille
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-custom text-center text-muted small py-4 mt-auto">
+        <div class="footer-line mx-auto"></div>
+
+        <div class="footer-content mt-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+            <p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</div>
+
+
+<!-- Script Calendly -->
+<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+
+
+<style>
+
+/* NAVBAR — identique */
+.navbar { border-bottom: 1px solid #e2e8f0; z-index:2000; }
+.nav-logo { width:48px; }
+.nav-icon { font-size:1.4rem; color:#444; transition:.2s; }
+.nav-icon:hover { color:#0d6efd; transform:translateY(-2px); }
+
+/* BACKGROUND — identique */
+.bg-page {
+    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+}
+
+/* LAYOUT PRINCIPAL */
+.main-container {
+    min-height: 100vh;
+    padding-top: 110px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Carte Calendly */
+.calendly-card {
+    width: 100%;
+}
+
+/* Footer — identique */
+.footer-custom { margin-top:auto; }
+.footer-line { width:85%; height:1px; background:#d0d7e0; }
+.footer-logo { width:60px; opacity:.9; }
+
+/* Animation fade-in */
+.fade-in {
+    opacity:0;
+    animation: fadeSlide .6s ease forwards;
+}
+@keyframes fadeSlide {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+}
+
+/* Responsive */
+@media (max-width:768px) {
+    .nav-logo { width:40px; }
+    .calendly-card { padding:1rem; }
+}
+
+</style>
+
+{% endblock %}

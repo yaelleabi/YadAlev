@@ -151,5 +151,10 @@ final class FamilyController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/family/calendly', name: 'app_calendly')]
+    public function calendly(): Response
+    {
+        return $this->render('family/calendly.html.twig');
+    }
 
 }

@@ -41,7 +41,6 @@ class AidRequestController extends AbstractController
             // Préremplissage
             if ($user) {
                 if (method_exists($user, 'getName')) {
-                    $aidRequest->setFirstName($user->getName());
                     $aidRequest->setLastName($user->getName());
                 }
                 if (method_exists($user, 'getEmail')) {

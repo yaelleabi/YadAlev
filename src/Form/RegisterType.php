@@ -39,7 +39,7 @@ class RegisterType extends AbstractType
                         'max' => 50,
                     ]),
                 ],
-                'label' => 'Nom',
+                'label' => 'Nom de famille',
             ])
 
 

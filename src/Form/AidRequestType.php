@@ -45,10 +45,15 @@ class AidRequestType extends AbstractType
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
-                'disabled' => $isFamily,
-                'attr' => ['class' => 'form-control', 'maxlength' => 100],
+                'data' => null, // 🔥 vide toujours le champ, même si l'entité a une valeur
+                'attr' => [
+                    'class' => 'form-control',
+                    'maxlength' => 100,
+                ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Le prénom est obligatoire.']),
+                    new Assert\NotBlank([
+                        'message' => 'Le prénom est obligatoire.'
+                    ]),
                     new Assert\Regex([
                         'pattern' => '/^[A-Za-zÀ-ÿ\s\-]+$/u',
                         'message' => 'Le prénom ne doit contenir que des lettres et des espaces.',
