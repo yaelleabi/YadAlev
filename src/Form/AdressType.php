@@ -49,15 +49,18 @@ class AdressType extends AbstractType
             ])
             ->add('city', TextType::class, [
                 'label' => 'Ville',
-                'attr' => ['class' => 'form-control'],
+                'attr' => [
+                    'readonly' => true,
+                    'class' => 'form-control bg-light'
+                ],
+                'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Regex([
-                        'pattern' => '/^[A-Za-zÀ-ÿ\s\-]+$/u',
-                        'message' => 'La ville ne doit contenir que des lettres et des espaces.',
+                    new Assert\NotBlank([
+                        'message' => 'La ville est obligatoire.'
                     ]),
                 ],
             ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -47,9 +47,10 @@
           <h5 class="text-secondary mb-3">Étape 1 — Informations personnelles</h5>
           <div class="row g-3">
             <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+            <div class="col-md-6">{{ form_row(form.firstName) }}</div>
             <div class="col-md-6">{{ form_row(form.dateOfBirth) }}</div>
             <div class="col-md-6">{{ form_row(form.phoneNumber) }}</div>
-            <div class="col-md-6">{{ form_row(form.email) }}</div>
+            <div class="col-12">{{ form_row(form.email) }}</div>
           </div>
 
           {% if form.adress is defined %}
@@ -59,19 +60,9 @@
                 <div class="col-md-4">{{ form_row(form.adress.streetNumber) }}</div>
                 <div class="col-md-8">{{ form_row(form.adress.street) }}</div>
                 <div class="col-md-4">{{ form_row(form.adress.postalCode) }}</div>
-                <div class="col-md-8" id="city-container">
-                  {{ form_label(form.adress.city) }}
-                  
-                  <div id="city-wrapper">
-                      {{ form_widget(form.adress.city, {
-                          attr: {
-                              class: 'form-control disabled-style',
-                              readonly: true
-                          }
-                      }) }}
-                  </div>
-
-                  {{ form_errors(form.adress.city) }}
+                <div class="col-md-8"> {{ form_row(form.adress.city) }}
+                 <div id="city-wrapper"></div>
+                 
               </div>
             </div>
           </div>
@@ -490,71 +481,87 @@ document.addEventListener('turbo:load', addRequiredStars);
 document.addEventListener('DOMContentLoaded', function () {
 
     const cpField  = document.getElementById('{{ form.adress.postalCode.vars.id }}');
-    const cityInput = document.getElementById('{{ form.adress.city.vars.id }}');
+    const cityField = document.getElementById('{{ form.adress.city.vars.id }}');
     const cityWrapper = document.getElementById('city-wrapper');
 
-    if (!cpField || !cityWrapper || !cityInput) return;
-
-    function resetCityField() {
-        cityWrapper.innerHTML = '';
-        cityWrapper.appendChild(cityInput);
-        cityInput.value = "";
-        cityInput.readOnly = true;
-    }
+    if (!cpField || !cityField || !cityWrapper) return;
 
     cpField.addEventListener('input', function () {
         const cp = this.value.trim();
 
+        // ❌ Si pas 5 chiffres → on nettoie
         if (!/^\d{5}$/.test(cp)) {
-            resetCityField();
+            cityField.value = "";
+            cityField.dispatchEvent(new Event('input'));
+            removeSelect();
             return;
         }
 
+        // ⭐ Appel API
         fetch(`https://api-adresse.data.gouv.fr/search/?q=${cp}&type=municipality`)
-            .then(r => r.json())
+            .then(response => response.json())
             .then(data => {
-                const list = data.features;
 
-                // aucune ville trouvée
-                if (!list.length) {
-                    resetCityField();
+                const results = data.features;
+
+                // ❌ Aucun résultat
+                if (!results.length) {
+                    cityField.value = "";
+                    cityField.dispatchEvent(new Event('input'));
+                    removeSelect();
                     return;
                 }
 
-                // une seule ville
-                if (list.length === 1) {
-                    resetCityField();
-                    cityInput.value = list[0].properties.city;
+                // ✔ Une seule ville
+                if (results.length === 1) {
+                    removeSelect();
+                    cityField.value = results[0].properties.city;
+                    cityField.dispatchEvent(new Event('input')); // ⭐ Indispensable
                     return;
                 }
 
-                // plusieurs villes → select remplace l’input
-                let select = document.createElement('select');
-                select.classList.add('form-select');
+                // ⭐ Plusieurs villes → select
+                removeSelect(); // Supprime un ancien select
 
-                let opt0 = document.createElement('option');
-                opt0.value = "";
-                opt0.textContent = "Sélectionnez une ville";
-                select.appendChild(opt0);
+                const select = document.createElement('select');
+                select.classList.add('form-select', 'dynamic-city', 'mt-2');
 
-                list.forEach(item => {
-                    let opt = document.createElement('option');
-                    opt.value = item.properties.city;
-                    opt.textContent = item.properties.city;
+                const optDefault = document.createElement('option');
+                optDefault.textContent = "Sélectionnez une ville";
+                optDefault.value = "";
+                select.appendChild(optDefault);
+
+                results.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r.properties.city;
+                    opt.textContent = r.properties.city;
                     select.appendChild(opt);
                 });
 
-                // Remplacer proprement
-                cityWrapper.innerHTML = "";
                 cityWrapper.appendChild(select);
 
+                // ⭐ Quand la personne choisit une ville
                 select.addEventListener('change', function () {
-                    cityInput.value = this.value;
+                    cityField.value = this.value;              // Remplit le champ caché
+                    cityField.dispatchEvent(new Event('input')); // Indique à Symfony que ça a changé
                 });
             })
-            .catch(() => resetCityField());
+            .catch(err => {
+                console.error("Erreur API : ", err);
+                cityField.value = "";
+                cityField.dispatchEvent(new Event('input'));
+                removeSelect();
+            });
     });
+
+    // 🔧 Fonction pour supprimer le select si existant
+    function removeSelect() {
+        const oldSelect = cityWrapper.querySelector(".dynamic-city");
+        if (oldSelect) oldSelect.remove();
+    }
+
 });
+
 
 </script>
 

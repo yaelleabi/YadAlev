@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Bundle\SecurityBundle\Security;
+use App\Security\LoginFormAuthenticator;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+
 
 class HomeController extends AbstractController
 {
@@ -69,7 +73,8 @@ class HomeController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('success', 'Compte créé avec succès !');
+            $this->addFlash('success', 'COMPTE_OK|' . $user->getId());
+
             return $this->redirectToRoute('app_home');
         }
 
@@ -79,4 +84,20 @@ class HomeController extends AbstractController
             'error' => $error,
         ]);
     }
+    #[Route('/auto-login/{id}', name: 'app_auto_login')]
+    public function autoLogin(
+        User $user,
+        Request $request,
+        UserAuthenticatorInterface $userAuthenticator,
+        LoginFormAuthenticator $authenticator
+    ) {
+        // Login automatique
+        return $userAuthenticator->authenticateUser(
+            $user,
+            $authenticator,
+            $request
+        );
+    }
+
+
 }
