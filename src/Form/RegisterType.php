@@ -60,6 +60,7 @@ class RegisterType extends AbstractType
             'label' => 'Adresse mail'
         ])
            ->add('phoneNumber', null, [
+            'required' => true,
             'attr' => [
             'class' => 'form-control',
             'placeholder' => 'Entrez votre numéro de téléphone',

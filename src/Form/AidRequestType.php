@@ -25,7 +25,7 @@ class AidRequestType extends AbstractType
 
         $builder
             ->add('lastName', TextType::class, [
-                'label' => 'Nom',
+                'label' => 'Nom complet',
                 'required' => true,
                 'disabled' => $isFamily,
                 'attr' => ['class' => 'form-control', 'maxlength' => 100],
@@ -42,7 +42,7 @@ class AidRequestType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('firstName', TextType::class, [
+            /*->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
                 'disabled' => $isFamily,
@@ -59,7 +59,7 @@ class AidRequestType extends AbstractType
                         'max' => 100,
                     ]),
                 ],
-            ])
+            ])*/
             ->add('dateOfBirth', DateType::class, [
                 'label' => 'Date de naissance',
                 'required' => true,
