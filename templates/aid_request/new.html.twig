@@ -54,19 +54,31 @@
           </div>
 
           {% if form.adress is defined %}
-            <div class="border rounded p-3 mt-4">
-              <h6 class="text-primary mb-3">Adresse complète</h6>
-              <div class="row g-3">
-                <div class="col-md-4">{{ form_row(form.adress.streetNumber) }}</div>
-                <div class="col-md-8">{{ form_row(form.adress.street) }}</div>
-                <div class="col-md-4">{{ form_row(form.adress.postalCode) }}</div>
-                <div class="col-md-8"> {{ form_row(form.adress.city) }}
-                 <div id="city-wrapper"></div>
-                 
+          <div class="border rounded p-3 mt-4">
+            <h6 class="text-primary mb-3">Adresse complète</h6>
+            <div class="row g-3">
+
+              <div class="col-md-4">
+                {{ form_row(form.adress.streetNumber) }}
               </div>
+
+              <div class="col-md-8">
+                {{ form_row(form.adress.street) }}
+              </div>
+
+              <div class="col-md-4">
+                {{ form_row(form.adress.postalCode) }}
+              </div>
+
+              <div class="col-md-8">
+                {{ form_row(form.adress.city) }}
+                <div id="city-wrapper"></div>
+              </div>
+
             </div>
           </div>
-           {% endif %}
+          {% endif %}
+
           <div class="d-flex justify-content-end mt-4">
             <button type="button" class="btn btn-primary" data-next>Suivant</button>
           </div>
