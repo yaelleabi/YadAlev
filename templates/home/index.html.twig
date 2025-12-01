@@ -22,6 +22,12 @@
         </div>
 
         <!-- 🔹 FORMULAIRE DE CONNEXION -->
+        {% for message in app.flashes('login_error') %}
+            <div class="alert alert-danger mt-3 shadow-sm fade-in">
+                <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
+            </div>
+        {% endfor %}
+
         <form id="loginForm" method="post" action="{{ path('app_login') }}" class="auth-form">
             {% if error %}
                 <div class="alert alert-danger text-center py-2">Identifiants invalides</div>

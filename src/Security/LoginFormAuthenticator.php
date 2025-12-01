@@ -16,6 +16,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\SecurityRequestAttributes;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
@@ -67,6 +70,15 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         return new RedirectResponse($this->urlGenerator->generate($route));
     }
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+    {
+        // On stocke un message d'erreur dans la session
+        $request->getSession()->getFlashBag()->add('login_error', 'Identifiants incorrects. Vérifiez votre email et votre mot de passe.');
+
+        // On redirige vers la page de login (app_login)
+        return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
+    }
+
 
     protected function getLoginUrl(Request $request): string
     {
