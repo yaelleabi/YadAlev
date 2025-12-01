@@ -28,6 +28,20 @@ class HomeController extends AbstractController
         AuthenticationUtils $authenticationUtils
     ): Response {
         
+        if ($this->getUser()) {
+            $roles = $this->getUser()->getRoles();
+
+            if (in_array('ROLE_ADMIN', $roles)) {
+                return $this->redirectToRoute('app_admin');
+            }
+            if (in_array('ROLE_VOLUNTEER', $roles)) {
+                return $this->redirectToRoute('app_volunteer');
+            }
+            if (in_array('ROLE_FAMILY', $roles)) {
+                return $this->redirectToRoute('app_family');
+            }
+        }
+
         // 🔹 Gestion du login
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
