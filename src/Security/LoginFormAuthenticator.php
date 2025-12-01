@@ -60,7 +60,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         } elseif (in_array('ROLE_VOLUNTEER', $roles, true)) {
             $route = 'app_volunteer'; // Route pour les bénévoles
         } elseif (in_array('ROLE_FAMILY', $roles, true)) {
-            $route = 'app_family'; // Route pour les families        
+            $route = 'app_family_home'; // Route pour les families        
             }
 
         // Redirection vers la route appropriée

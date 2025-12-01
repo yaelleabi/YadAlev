@@ -127,7 +127,7 @@ final class FamilyAidRequestController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->render('aid_request/show.html.twig', [
+        return $this->render('family_aid_request/show.html.twig', [
             'aid_request' => $aidRequest,
         ]);
     }
@@ -149,9 +149,145 @@ final class FamilyAidRequestController extends AbstractController
             return $this->redirectToRoute('app_aidrequest_show', ['id' => $aidRequest->getId()]);
         }
 
-        return $this->render('aid_request/edit.html.twig', [
+        return $this->render('family_aid_request/edit.html.twig', [
             'form' => $form->createView(),
             'aid_request' => $aidRequest,
+        ]);
+    }
+    #[Route('/family/info', name: 'app_family_info')]
+    public function info(
+        AidRequestRepository $aidRequestRepository,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        // L’utilisateur connecté EST la famille
+        $family = $this->getUser();
+
+        if (!$family) {
+            throw $this->createAccessDeniedException("Vous devez être connecté.");
+        }
+
+        // On récupère SA demande d’aide
+        $aidRequest = $aidRequestRepository->findOneBy([
+            'family' => $family
+        ]);
+
+        if (!$aidRequest) {
+            return $this->redirectToRoute('app_family');
+        }
+
+        // Formulaire non-modifiable des infos (Affichage uniquement)
+        $form = $this->createForm(AidRequestType::class, $aidRequest, [
+            'is_family' => true, // identité désactivée
+        ]);
+
+        $form->handleRequest($request);
+
+        // Soumission depuis la page INFO (si jamais tu l’actives plus tard)
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Gestion des fichiers si ajout
+            $fileFields = [
+                'identityProofFilename',
+                'incomeProofFilename',
+                'taxNoticeFilename',
+                'quittanceLoyer',
+                'avisCharge',
+                'taxeFonciere',
+                'fraisScolarite',
+                'attestationCaf',
+                'otherDocumentFilename'
+            ];
+
+            foreach ($fileFields as $field) {
+                $uploadedFile = $form->get($field)->getData();
+
+                if ($uploadedFile) {
+                    $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
+                    $uploadedFile->move('uploads', $filename);
+
+                    $setter = 'set' . ucfirst($field);
+                    $aidRequest->$setter($filename);
+                }
+            }
+
+            $em->flush();
+
+            $this->addFlash('success', 'Vos informations ont été mises à jour.');
+
+            return $this->redirectToRoute('app_family_info');
+        }
+
+        return $this->render('family/info.html.twig', [
+            'family' => $family,
+            'aidRequest' => $aidRequest,
+            'form' => $form->createView(),
+        ]);
+    }
+    #[Route('/family/info/edit', name: 'app_family_info_edit')]
+    public function edit(
+        AidRequestRepository $aidRequestRepository,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $family = $this->getUser();
+
+        if (!$family) {
+            throw $this->createAccessDeniedException("Vous devez être connecté.");
+        }
+
+        $aidRequest = $aidRequestRepository->findOneBy([
+            'family' => $family
+        ]);
+
+        if (!$aidRequest) {
+            return $this->redirectToRoute('app_family');
+        }
+
+        // Formulaire édition — identité désactivée
+        $form = $this->createForm(AidRequestType::class, $aidRequest, [
+            'is_family' => true,
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // Gestion des fichiers
+            $fileFields = [
+                'identityProofFilename',
+                'incomeProofFilename',
+                'taxNoticeFilename',
+                'quittanceLoyer',
+                'avisCharge',
+                'taxeFonciere',
+                'fraisScolarite',
+                'attestationCaf',
+                'otherDocumentFilename'
+            ];
+
+            foreach ($fileFields as $field) {
+                $uploadedFile = $form->get($field)->getData();
+
+                if ($uploadedFile) {
+                    $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
+                    $uploadedFile->move('uploads', $filename);
+
+                    $setter = 'set' . ucfirst($field);
+                    $aidRequest->$setter($filename);
+                }
+            }
+             $aidRequest->setIsUpdated(true);  // ton champ bool
+            $aidRequest->setStatus(AidRequestStatus::PENDING);  // statut = En attente
+
+
+            $em->flush();
+
+            return $this->redirectToRoute('app_aidrequest_success');
+        }
+
+        return $this->render('family/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 }

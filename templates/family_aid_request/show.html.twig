@@ -15,7 +15,7 @@
 
         <!-- Icônes -->
         <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family') }}" class="nav-icon" title="Retour espace famille">
+            <a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
                 <i class="fas fa-home"></i>
             </a>
             <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
@@ -56,11 +56,11 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show">
                         <div class="accordion-body">
-                            <p><strong>Nom :</strong> {{ aidRequest.lastName }}</p>
-                            <p><strong>Prénom :</strong> {{ aidRequest.firstName }}</p>
-                            <p><strong>Email :</strong> {{ aidRequest.email }}</p>
-                            <p><strong>Téléphone :</strong> {{ aidRequest.phoneNumber }}</p>
-                            <p><strong>Date de naissance :</strong> {{ aidRequest.dateOfBirth|date('d/m/Y') }}</p>
+                            <p><strong>Nom :</strong> {{ aid_request.lastName }}</p>
+                            <p><strong>Prénom :</strong> {{ aid_request.firstName }}</p>
+                            <p><strong>Email :</strong> {{ aid_request.email }}</p>
+                            <p><strong>Téléphone :</strong> {{ aid_request.phoneNumber }}</p>
+                            <p><strong>Date de naissance :</strong> {{ aid_request.dateOfBirth|date('d/m/Y') }}</p>
                         </div>
                     </div>
                 </div>
@@ -75,13 +75,13 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <p><strong>Situation familiale :</strong> {{ aidRequest.maritalStatus }}</p>
-                            <p><strong>Enfants à charge :</strong> {{ aidRequest.dependantsCount }}</p>
-                            <p><strong>Logement :</strong> {{ aidRequest.housingStatus }}</p>
+                            <p><strong>Situation familiale :</strong> {{ aid_request.maritalStatus }}</p>
+                            <p><strong>Enfants à charge :</strong> {{ aid_request.dependantsCount }}</p>
+                            <p><strong>Logement :</strong> {{ aid_request.housingStatus }}</p>
 
                             <h5 class="mt-3">Adresse</h5>
-                            <p>{{ aidRequest.adress.streetNumber }} {{ aidRequest.adress.street }}</p>
-                            <p>{{ aidRequest.adress.postalCode }} {{ aidRequest.adress.city }}</p>
+                            <p>{{ aid_request.adress.streetNumber }} {{ aid_request.adress.street }}</p>
+                            <p>{{ aid_request.adress.postalCode }} {{ aid_request.adress.city }}</p>
                         </div>
                     </div>
                 </div>
@@ -96,13 +96,13 @@
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <p><strong>Situation professionnelle :</strong> {{ aidRequest.employmentStatus }}</p>
-                            <p><strong>Revenu mensuel :</strong> {{ aidRequest.monthlyIncome }} €</p>
-                            <p><strong>Situation conjoint :</strong> {{ aidRequest.spouseEmploymentStatus }}</p>
-                            <p><strong>Revenu conjoint :</strong> {{ aidRequest.spouseMonthlyIncome }} €</p>
-                            <p><strong>Allocations familiales :</strong> {{ aidRequest.familyAllowanceAmount }} €</p>
-                            <p><strong>Pension alimentaire :</strong> {{ aidRequest.alimonyAmount }} €</p>
-                            <p><strong>Loyer net :</strong> {{ aidRequest.rentAmountNetAide }} €</p>
+                            <p><strong>Situation professionnelle :</strong> {{ aid_request.employmentStatus }}</p>
+                            <p><strong>Revenu mensuel :</strong> {{ aid_request.monthlyIncome }} €</p>
+                            <p><strong>Situation conjoint :</strong> {{ aid_request.spouseEmploymentStatus }}</p>
+                            <p><strong>Revenu conjoint :</strong> {{ aid_request.spouseMonthlyIncome }} €</p>
+                            <p><strong>Allocations familiales :</strong> {{ aid_request.familyAllowanceAmount }} €</p>
+                            <p><strong>Pension alimentaire :</strong> {{ aid_request.alimonyAmount }} €</p>
+                            <p><strong>Loyer net :</strong> {{ aid_request.rentAmountNetAide }} €</p>
                         </div>
                     </div>
                 </div>
@@ -117,13 +117,13 @@
                     </h2>
                     <div id="collapseFour" class="accordion-collapse collapse">
                         <div class="accordion-body">
-                            <p><strong>Type de demande :</strong> {{ aidRequest.requestType }}</p>
-                            <p><strong>Durée :</strong> {{ aidRequest.requestDuration }}</p>
-                            <p><strong>Autre durée :</strong> {{ aidRequest.otherRequestDuration }}</p>
-                            <p><strong>Motif :</strong> {{ aidRequest.requestReason }}</p>
-                            <p><strong>Autre besoin :</strong> {{ aidRequest.otherNeed }}</p>
-                            <p><strong>Urgence :</strong> {{ aidRequest.urgencyLevel }}/10</p>
-                            <p><strong>Justification :</strong> {{ aidRequest.urgencyExplanation }}</p>
+                            <p><strong>Type de demande :</strong> {{ aid_request.requestType }}</p>
+                            <p><strong>Durée :</strong> {{ aid_request.requestDuration }}</p>
+                            <p><strong>Autre durée :</strong> {{ aid_request.otherRequestDuration }}</p>
+                            <p><strong>Motif :</strong> {{ aid_request.requestReason }}</p>
+                            <p><strong>Autre besoin :</strong> {{ aid_request.otherNeed }}</p>
+                            <p><strong>Urgence :</strong> {{ aid_request.urgencyLevel }}/10</p>
+                            <p><strong>Justification :</strong> {{ aid_request.urgencyExplanation }}</p>
                         </div>
                     </div>
                 </div>
@@ -140,15 +140,15 @@
                         <div class="accordion-body">
 
                             {% set docs = {
-                                'Justificatif d’identité': aidRequest.identityProofFilename,
-                                'Justificatif de revenus': aidRequest.incomeProofFilename,
-                                'Avis d’imposition': aidRequest.taxNoticeFilename,
-                                'Quittance de loyer': aidRequest.quittanceLoyer,
-                                'Avis de charges': aidRequest.avisCharge,
-                                'Taxe foncière': aidRequest.taxeFonciere,
-                                'Frais de scolarité': aidRequest.fraisScolarite,
-                                'Attestation CAF': aidRequest.attestationCaf,
-                                'Autre document': aidRequest.otherDocumentFilename
+                                'Justificatif d’identité': aid_request.identityProofFilename,
+                                'Justificatif de revenus': aid_request.incomeProofFilename,
+                                'Avis d’imposition': aid_request.taxNoticeFilename,
+                                'Quittance de loyer': aid_request.quittanceLoyer,
+                                'Avis de charges': aid_request.avisCharge,
+                                'Taxe foncière': aid_request.taxeFonciere,
+                                'Frais de scolarité': aid_request.fraisScolarite,
+                                'Attestation CAF': aid_request.attestationCaf,
+                                'Autre document': aid_request.otherDocumentFilename
                             } %}
 
                             {% for label, file in docs %}
@@ -175,12 +175,14 @@
 
         <!-- BOUTON -->
         <div class="text-center mt-4 fade-in" style="animation-delay:.4s">
-            <a href="{{ path('app_family_info_edit') }}" class="btn btn-primary btn-lg shadow-sm edit-btn">
+           <a href="{{ path('app_aidrequest_edit', {id: aid_request.id}) }}"
+            class="btn btn-primary btn-lg shadow-sm edit-btn">
                 ✏️ Modifier mes informations
             </a>
+
         </div>
         <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
-            <a href="{{ path('app_family') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
+            <a href="{{ path('app_family_home') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
                 ⬅️ Retour à mon espace famille
             </a>
         </div>
@@ -195,68 +197,69 @@
         <div class="footer-content mt-3">
             <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
             <p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
-        </div>
+  </div>
     </footer>
 
 </div>
 
-
-
 <style>
-
-/* NAVBAR */
+/* Votre CSS existant (pas de changement nécessaire) */
 .navbar { border-bottom: 1px solid #e2e8f0; }
 .nav-logo { width: 48px; }
 .nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
 .nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
-
-/* BACKGROUND */
-.bg-page {
-    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
-}
-
-/* LAYOUT */
-.main-container {
-    min-height: 100vh;
-    padding-top: 110px;
-    display: flex;
-    flex-direction: column;
-}
-.info-card {
-    background: #fff;
-    border-radius: 1rem;
-    padding: 20px;
-    border: 1px solid #e2e8f0;
-}
-
-/* ACCORDION */
-.accordion-button {
-    font-weight: 600;
-    color: #0d6efd;
-}
-.accordion-button:not(.collapsed) {
-    background: #e8f0ff;
-    color: #0d6efd;
-}
-.accordion-item { border: none; }
-
-/* BUTTON */
-.edit-btn {
-    border-radius: 10px;
-    padding: 10px 25px;
-}
-
-/* ANIMATIONS */
+.bg-page { background: linear-gradient(135deg, #f8f9fc, #eef2f7); }
+.main-container { min-height: 100vh; padding-top: 110px; display: flex; flex-direction: column; }
+.info-card { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; }
+.accordion-button { font-weight: 600; color: #0d6efd; }
+.accordion-button:not(.collapsed) { background: #e8f0ff; color: #0d6efd; }
+.edit-btn { border-radius: 10px; padding: 10px 25px; }
 .fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
-@keyframes fadeSlide {
-    from { opacity:0; transform: translateY(25px); }
-    to   { opacity:1; transform:translateY(0); }
-}
-
-/* FOOTER */
+@keyframes fadeSlide { from { opacity:0; transform: translateY(25px); } to { opacity:1; transform:translateY(0); } }
 .footer-line { width: 85%; height: 1px; background:#d0d7e0; }
 .footer-logo { width: 60px; }
 
+/* Petit ajout pour mettre en rouge l'onglet qui contient une erreur */
+.accordion-button.has-error {
+    color: #dc3545 !important;
+    background-color: #ffe6e6 !important;
+    border-color: #dc3545;
+}
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // On cherche tous les éléments qui ont la classe d'erreur Bootstrap ou Symfony standard
+    // .is-invalid est ajouté automatiquement par Symfony si form_theme 'bootstrap_5' est actif
+    const errors = document.querySelectorAll('.is-invalid, .invalid-feedback, .text-danger ul li');
+
+    if (errors.length > 0) {
+        // Si on trouve des erreurs, on boucle dessus
+        errors.forEach(function(error) {
+            // On remonte au parent "accordion-collapse"
+            const collapseDiv = error.closest('.accordion-collapse');
+            
+            if (collapseDiv) {
+                // 1. On ouvre l'onglet
+                collapseDiv.classList.add('show');
+                
+                // 2. On cherche le bouton qui contrôle cet onglet pour le colorer en rouge
+                const divId = collapseDiv.id;
+                const btn = document.querySelector(`button[data-bs-target="#${divId}"]`);
+                if (btn) {
+                    btn.classList.remove('collapsed');
+                    btn.classList.add('has-error'); // Ajoute la classe CSS définie plus haut
+                }
+            }
+        });
+
+        // Petit scroll vers la première erreur pour l'utilisateur
+        const firstError = document.querySelector('.alert-danger, .is-invalid');
+        if(firstError){
+            firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }
+});
+</script>
 
 {% endblock %}

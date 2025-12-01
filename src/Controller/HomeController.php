@@ -38,7 +38,7 @@ class HomeController extends AbstractController
                 return $this->redirectToRoute('app_volunteer');
             }
             if (in_array('ROLE_FAMILY', $roles)) {
-                return $this->redirectToRoute('app_family');
+                return $this->redirectToRoute('app_family_home');
             }
         }
 

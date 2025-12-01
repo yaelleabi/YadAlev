@@ -1,183 +1,43 @@
 {% extends 'base.html.twig' %}
-{% block title %}Espace Famille - Yad Alev{% endblock %}
+
+{% block title %}Family index{% endblock %}
 
 {% block body %}
+    <h1>Family index</h1>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>PhoneNumber</th>
+                <th>Roles</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for family in families %}
+            <tr>
+                <td>{{ family.id }}</td>
+                <td>{{ family.email }}</td>
+                <td>{{ family.password }}</td>
+                <td>{{ family.name }}</td>
+                <td>{{ family.phoneNumber }}</td>
+                <td>{{ family.roles ? family.roles|join(', ') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_family_show', {'id': family.id}) }}">show</a>
+                    <a href="{{ path('app_family_edit', {'id': family.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
-        <!-- Logo + titre -->
-        <div class="d-flex align-items-center gap-3">
-            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            <span class="fw-bold text-primary fs-5">Espace Famille</span>
-        </div>
-
-        <!-- Icônes à droite -->
-        <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_info') }}" class="nav-icon" title="Mes informations">
-                <i class="fas fa-user-circle"></i>
-            </a>
-            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
-
-    </div>
-</nav>
-
-
-<!-- CONTENU PRINCIPAL -->
-<div class="main-container bg-page">
-
-    <div class="content-wrapper d-flex flex-column justify-content-start align-items-center">
-
-        <!-- Titre (déjà bien placé) -->
-        <div class="text-center mb-5">
-            <h2 class="text-primary fw-bold mt-2 fade-in">Bienvenue sur votre espace famille</h2>
-            <p class="text-muted mb-0 fade-in" style="animation-delay:.2s">Choisissez une action ci-dessous.</p>
-        </div>
-
-        <!-- Cartes CENTRÉES PLUS BAS -->
-        <div class="card-zone row g-4 justify-content-center px-3 w-100">
-
-            <!-- Carte 1 -->
-            <div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
-                <a href="{{ path('app_aidrequest_new') }}" 
-                   class="family-card text-decoration-none card-anim">
-                    <img src="{{ asset('images/photomuriel2.jpeg') }}" alt="">
-                    <div class="p-3">
-                        <h5 class="text-dark fw-semibold">Faire une demande d'aide d'urgence</h5>
-                    </div>
-                </a>
-            </div>
-
-            <!-- Carte 2 -->
-            <div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
-                <a href="{{ path('app_calendly')}}"
-                   class="family-card text-decoration-none card-anim" style="animation-delay:.15s">
-                    <img src="{{ asset('images/photomuriel1.jpeg') }}" alt="">
-                    <div class="p-3">
-                        <h5 class="text-dark fw-semibold">Prendre rdv avec l'assistante sociale</h5>
-                    </div>
-                </a>
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <footer class="footer-custom text-center text-muted small py-4">
-        <div class="footer-line mx-auto"></div>
-
-        <div class="footer-content mt-3">
-            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
-            <p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
-        </div>
-    </footer>
-
-</div>
-
-
-<style>
-
-/* --- NAVBAR --- */
-.navbar {
-    border-bottom: 1px solid #e2e8f0;
-    z-index: 2000;
-}
-.nav-logo {
-    width: 48px;
-}
-.nav-icon {
-    font-size: 1.4rem;
-    color: #444;
-    transition: .2s;
-}
-.nav-icon:hover {
-    color: #0d6efd;
-    transform: translateY(-2px);
-}
-
-/* --- BACKGROUND --- */
-.bg-page {
-    background: linear-gradient(135deg, #f8f9fc, #eef2f7);
-}
-
-/* --- LAYOUT PRINCIPAL --- */
-.main-container {
-    min-height: 100vh;
-    padding-top: 110px;
-    display: flex;
-    flex-direction: column;
-}
-.content-wrapper {
-    flex: 1;
-    width: 100%;
-}
-
-/* 🌟 NOUVEAU → Zone des cartes descendue */
-.card-zone {
-    margin-top: 50px; /* <<< tu peux ajuster si tu veux encore plus bas */
-}
-
-/* --- CARTES --- */
-.family-card {
-    background: #fff;
-    border-radius: 1rem;
-    overflow: hidden;
-    transition: .25s;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.10);
-    border: 1px solid #e2e8f0;
-    max-width: 330px;
-}
-.family-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 18px 45px rgba(0,0,0,0.15);
-}
-.family-card img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    transition: .3s;
-}
-.family-card:hover img {
-    filter: brightness(0.9);
-}
-
-/* Animation */
-.fade-in, .card-anim {
-    opacity: 0;
-    animation: fadeSlide .7s ease forwards;
-}
-@keyframes fadeSlide {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-/* --- FOOTER --- */
-.footer-custom {
-    margin-top: auto;
-}
-.footer-line {
-    width: 85%;
-    height: 1px;
-    background: #d0d7e0;
-}
-.footer-logo {
-    width: 60px;
-    opacity: .9;
-}
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .nav-logo { width: 40px; }
-    .family-card { max-width: 100%; }
-    .family-card img { height: 150px; }
-    h2 { font-size: 1.5rem; }
-    .footer-logo { width: 50px; }
-}
-</style>
-
+    <a href="{{ path('app_family_new') }}">Create new</a>
 {% endblock %}

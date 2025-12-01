@@ -2,162 +2,118 @@
 
 namespace App\Controller\Family;
 
+use App\Entity\Family;
+use App\Form\FamilyType;
+use App\Repository\FamilyRepository;
+use App\Repository\AidRequestRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\AidRequestRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Form\AidRequestType;
-use App\Enum\AidRequestStatus;
+
+#[Route('/family')]
 final class FamilyController extends AbstractController
 {
-    #[Route('/family', name: 'app_family')]
-    public function index(): Response
+    /* ----------------------------
+        PAGE LISTE FAMILLES (admin)
+    -----------------------------*/
+    #[Route('', name: 'app_family_index', methods: ['GET'])]
+    public function index(FamilyRepository $familyRepository): Response
     {
-        return $this->render('family/index.html.twig');
+        return $this->render('family/index.html.twig', [
+            'families' => $familyRepository->findAll(),
+        ]);
     }
 
-    #[Route('/family/info', name: 'app_family_info')]
-    public function info(
-        AidRequestRepository $aidRequestRepository,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        // L’utilisateur connecté EST la famille
-        $family = $this->getUser();
+    /* ----------------------------
+        PAGE HOME POUR FAMILLE
+    -----------------------------*/
+    #[Route('/home', name: 'app_family_home')]
+    public function home(AidRequestRepository $repo): Response
+    {
+        $aidRequest = $repo->findOneBy(['family' => $this->getUser()]);
 
-        if (!$family) {
-            throw $this->createAccessDeniedException("Vous devez être connecté.");
-        }
-
-        // On récupère SA demande d’aide
-        $aidRequest = $aidRequestRepository->findOneBy([
-            'family' => $family
-        ]);
-
-        if (!$aidRequest) {
-            return $this->redirectToRoute('app_family');
-        }
-
-        // Formulaire non-modifiable des infos (Affichage uniquement)
-        $form = $this->createForm(AidRequestType::class, $aidRequest, [
-            'is_family' => true, // identité désactivée
-        ]);
-
-        $form->handleRequest($request);
-
-        // Soumission depuis la page INFO (si jamais tu l’actives plus tard)
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // Gestion des fichiers si ajout
-            $fileFields = [
-                'identityProofFilename',
-                'incomeProofFilename',
-                'taxNoticeFilename',
-                'quittanceLoyer',
-                'avisCharge',
-                'taxeFonciere',
-                'fraisScolarite',
-                'attestationCaf',
-                'otherDocumentFilename'
-            ];
-
-            foreach ($fileFields as $field) {
-                $uploadedFile = $form->get($field)->getData();
-
-                if ($uploadedFile) {
-                    $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
-                    $uploadedFile->move('uploads', $filename);
-
-                    $setter = 'set' . ucfirst($field);
-                    $aidRequest->$setter($filename);
-                }
-            }
-
-            $em->flush();
-
-            $this->addFlash('success', 'Vos informations ont été mises à jour.');
-
-            return $this->redirectToRoute('app_family_info');
-        }
-
-        return $this->render('family/info.html.twig', [
-            'family' => $family,
+        return $this->render('family/home.html.twig', [
             'aidRequest' => $aidRequest,
-            'form' => $form->createView(),
         ]);
     }
-   #[Route('/family/info/edit', name: 'app_family_info_edit')]
-    public function edit(
-        AidRequestRepository $aidRequestRepository,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
-        $family = $this->getUser();
 
-        if (!$family) {
-            throw $this->createAccessDeniedException("Vous devez être connecté.");
-        }
-
-        $aidRequest = $aidRequestRepository->findOneBy([
-            'family' => $family
-        ]);
-
-        if (!$aidRequest) {
-            return $this->redirectToRoute('app_family');
-        }
-
-        // Formulaire édition — identité désactivée
-        $form = $this->createForm(AidRequestType::class, $aidRequest, [
-            'is_family' => true,
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // Gestion des fichiers
-            $fileFields = [
-                'identityProofFilename',
-                'incomeProofFilename',
-                'taxNoticeFilename',
-                'quittanceLoyer',
-                'avisCharge',
-                'taxeFonciere',
-                'fraisScolarite',
-                'attestationCaf',
-                'otherDocumentFilename'
-            ];
-
-            foreach ($fileFields as $field) {
-                $uploadedFile = $form->get($field)->getData();
-
-                if ($uploadedFile) {
-                    $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
-                    $uploadedFile->move('uploads', $filename);
-
-                    $setter = 'set' . ucfirst($field);
-                    $aidRequest->$setter($filename);
-                }
-            }
-             $aidRequest->setIsUpdated(true);  // ton champ bool
-            $aidRequest->setStatus(AidRequestStatus::PENDING);  // statut = En attente
-
-
-            $em->flush();
-
-            return $this->redirectToRoute('app_aidrequest_success');
-        }
-
-        return $this->render('family/edit.html.twig', [
-            'form' => $form->createView(),
-        ]);
-    }
-    #[Route('/family/calendly', name: 'app_calendly')]
+    /* ----------------------------
+        CALENDLY
+    -----------------------------*/
+    #[Route('/calendly', name: 'app_calendly')]
     public function calendly(): Response
     {
         return $this->render('family/calendly.html.twig');
     }
 
+    /* ----------------------------
+        CRÉATION DE PROFIL FAMILLE
+    -----------------------------*/
+    #[Route('/new', name: 'app_family_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $family = new Family();
+        $form = $this->createForm(FamilyType::class, $family);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($family);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_family_index');
+        }
+
+        return $this->render('family/new.html.twig', [
+            'family' => $family,
+            'form' => $form,
+        ]);
+    }
+
+    /* ----------------------------
+        AFFICHAGE PROFIL FAMILLE
+    -----------------------------*/
+    #[Route('/{id}', name: 'app_family_show', methods: ['GET'])]
+    public function show(Family $family): Response
+    {
+        return $this->render('family/show.html.twig', [
+            'family' => $family,
+        ]);
+    }
+
+    /* ----------------------------
+        MODIFICATION PROFIL FAMILLE
+    -----------------------------*/
+    #[Route('/{id}/edit', name: 'app_family_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Family $family, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(FamilyType::class, $family);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_family_index');
+        }
+
+        return $this->render('family/edit.html.twig', [
+            'family' => $family,
+            'form' => $form,
+        ]);
+    }
+
+    /* ----------------------------
+        SUPPRESSION PROFIL FAMILLE
+    -----------------------------*/
+    #[Route('/{id}', name: 'app_family_delete', methods: ['POST'])]
+    public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$family->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($family);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_family_index');
+    }
 }
