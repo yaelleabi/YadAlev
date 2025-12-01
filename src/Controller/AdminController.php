@@ -43,8 +43,8 @@ class AdminController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('aid_request/index.html.twig', [
-            'aid_requests' => $repo->findAll()
+         return $this->render('aid_request/index.html.twig', [
+            'aid_requests' => $repo->findBy([], ['createdAt' => 'DESC'])
         ]);
     }
 

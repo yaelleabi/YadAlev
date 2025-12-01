@@ -74,6 +74,11 @@
                                 ">
                                     {{ aid_request.status.value }}
                                 </span>
+                                 {% if aid_request.isUpdated %}
+                                    <span class="badge bg-info text-dark ms-1">
+                                        Modifiée
+                                    </span>
+                                 {% endif %}
                             </td>
 
                             <td class="text-center">

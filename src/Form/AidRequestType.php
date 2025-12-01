@@ -45,7 +45,6 @@ class AidRequestType extends AbstractType
             ->add('firstName', TextType::class, [
                 'label' => 'Prénom',
                 'required' => true,
-                'data' => null, // 🔥 vide toujours le champ, même si l'entité a une valeur
                 'attr' => [
                     'class' => 'form-control',
                     'maxlength' => 100,

@@ -9,7 +9,7 @@ use App\Repository\AidRequestRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\AidRequestType;
-
+use App\Enum\AidRequestStatus;
 final class FamilyController extends AbstractController
 {
     #[Route('/family', name: 'app_family')]
@@ -141,6 +141,9 @@ final class FamilyController extends AbstractController
                     $aidRequest->$setter($filename);
                 }
             }
+             $aidRequest->setIsUpdated(true);  // ton champ bool
+            $aidRequest->setStatus(AidRequestStatus::PENDING);  // statut = En attente
+
 
             $em->flush();
 

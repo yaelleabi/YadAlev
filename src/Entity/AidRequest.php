@@ -157,6 +157,9 @@ class AidRequest
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $attestationCaf = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isUpdated = null;
+
     public function __construct()
     {
         $this->adress = new Adress();
@@ -330,6 +333,18 @@ class AidRequest
     public function setAttestationCaf(string $attestationCaf): static
     {
         $this->attestationCaf = $attestationCaf;
+
+        return $this;
+    }
+
+    public function isUpdated(): ?bool
+    {
+        return $this->isUpdated;
+    }
+
+    public function setIsUpdated(?bool $isUpdated): static
+    {
+        $this->isUpdated = $isUpdated;
 
         return $this;
     }

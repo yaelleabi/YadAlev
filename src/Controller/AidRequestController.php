@@ -177,6 +177,7 @@ class AidRequestController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm(AidRequestType::class, $aidRequest);
+        
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
