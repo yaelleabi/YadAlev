@@ -30,16 +30,7 @@ class AdminController extends AbstractController
         return $this->render('admin/aidproject_new.html.twig');
     }
 
-    #[Route('/admin/aidrequests', name: 'app_admin_aidrequest_list')]
-    public function listAidRequests(AidRequestRepository $repo): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        return $this->render('aid_request/index.html.twig', [
-            'aid_requests' => $repo->findBy([], ['createdAt' => 'DESC'])
-        ]);
-    }
-
+   
     #[Route('/admin/families', name: 'app_admin_family_list')]
     public function listFamilies(
         FamilyRepository $familyRepository,

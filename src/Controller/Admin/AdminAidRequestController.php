@@ -16,20 +16,33 @@ use App\Repository\AidRequestRepository;
 
 final class AdminAidRequestController extends AbstractController
 {
-    #[Route('/admin/aid/request', name: 'app_admin_aid_request')]
-    public function index(): Response
-    {
-        return $this->render('admin_aid_request/index.html.twig', [
-            'controller_name' => 'AdminAidRequestController',
-        ]);
-    }
+    #[Route('/admin/aidrequests', name: 'app_admin_aidrequest_list')]
+   public function listAidRequests(Request $request, AidRequestRepository $repo): Response
+{
+    $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+    // Récupération des paramètres de filtre
+    $year = $request->query->get('year');
+    $status = $request->query->get('status');
+
+    // Récupération des demandes filtrées
+    $aidRequests = $repo->findFiltered($year, $status);
+
+    // Récupération des années disponibles pour le filtre
+    $years = $repo->findAvailableYears();
+
+    return $this->render('admin_aid_request/index.html.twig', [
+        'aid_requests' => $aidRequests,
+        'years' => $years
+    ]);
+}
 
     #[Route('/admin/aidrequest/{id}', name: 'app_admin_aidrequest_show')]
     public function showAdmin(AidRequest $aidRequest): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('aid_request/show.html.twig', [
+        return $this->render('admin_aid_request/show.html.twig', [
             'aid_request' => $aidRequest,
         ]);
     }
@@ -49,7 +62,7 @@ final class AdminAidRequestController extends AbstractController
             return $this->redirectToRoute('app_admin_aidrequest_list');
         }
 
-        return $this->render('aid_request/edit.html.twig', [
+        return $this->render('admin_aid_request/edit.html.twig', [
             'form' => $form->createView(),
             'aid_request' => $aidRequest,
         ]);

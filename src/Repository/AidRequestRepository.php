@@ -28,17 +28,56 @@ class AidRequestRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-public function findValidatedByFamily(Family $family): array
-{
-    return $this->createQueryBuilder('a')
-        ->andWhere('a.family = :family')
-        ->andWhere('a.status = :status')
-        ->setParameter('family', $family)
-        ->setParameter('status', AidRequestStatus::VALIDATED)
-        ->orderBy('a.createdAt', 'DESC')   // si tu as un updatedAt
-        ->getQuery()
-        ->getResult();
-}
+    public function findValidatedByFamily(Family $family): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.family = :family')
+            ->andWhere('a.status = :status')
+            ->setParameter('family', $family)
+            ->setParameter('status', AidRequestStatus::VALIDATED)
+            ->orderBy('a.createdAt', 'DESC')   // si tu as un updatedAt
+            ->getQuery()
+            ->getResult();
+    }
+    public function findFiltered(?string $year, ?string $status)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        // Filtre année
+        if ($year) {
+            $start = new \DateTime("$year-01-01 00:00:00");
+            $end = new \DateTime("$year-12-31 23:59:59");
+
+            $qb->andWhere('a.createdAt BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end);
+        }
+
+        // Filtre statut (CORRIGÉ)
+        if ($status) {
+            $qb->andWhere('a.status = :status')
+            ->setParameter('status', $status);
+        }
+
+        return $qb->orderBy('a.createdAt', 'DESC')
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function findAvailableYears(): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = "SELECT DISTINCT SUBSTRING(created_at, 1, 4) AS year 
+                FROM aid_request
+                ORDER BY year DESC";
+
+        $result = $conn->executeQuery($sql)->fetchAllAssociative();
+
+        return array_column($result, 'year');
+    }
+
+
 
     //    /**
     //     * @return AidRequest[] Returns an array of AidRequest objects
