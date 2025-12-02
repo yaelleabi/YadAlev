@@ -175,6 +175,12 @@ class AidRequest
     // ---------------- Getters & Setters ---------------- //
 
     public function getId(): ?int { return $this->id; }
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
     public function setCreatedAt(\DateTimeImmutable $createdAt): self { $this->createdAt = $createdAt; return $this; }
@@ -282,7 +288,7 @@ class AidRequest
         return $this->quittanceLoyer;
     }
 
-    public function setQuittanceLoyer(string $quittanceLoyer): static
+    public function setQuittanceLoyer(?string $quittanceLoyer): static
     {
         $this->quittanceLoyer = $quittanceLoyer;
 
@@ -294,7 +300,7 @@ class AidRequest
         return $this->avisCharge;
     }
 
-    public function setAvisCharge(string $avisCharge): static
+    public function setAvisCharge(?string $avisCharge): static
     {
         $this->avisCharge = $avisCharge;
 
@@ -306,7 +312,7 @@ class AidRequest
         return $this->taxeFonciere;
     }
 
-    public function setTaxeFonciere(string $taxeFonciere): static
+    public function setTaxeFonciere(?string $taxeFonciere): static
     {
         $this->taxeFonciere = $taxeFonciere;
 
@@ -318,7 +324,7 @@ class AidRequest
         return $this->fraisScolarite;
     }
 
-    public function setFraisScolarite(string $fraisScolarite): static
+    public function setFraisScolarite(?string $fraisScolarite): static
     {
         $this->fraisScolarite = $fraisScolarite;
 
@@ -330,7 +336,7 @@ class AidRequest
         return $this->attestationCaf;
     }
 
-    public function setAttestationCaf(string $attestationCaf): static
+    public function setAttestationCaf(?string $attestationCaf): static
     {
         $this->attestationCaf = $attestationCaf;
 

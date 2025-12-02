@@ -12,7 +12,7 @@
         </div>
 
         <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_info') }}" class="nav-icon" title="Mes informations">
+            <a href="{{ path('app_aidrequest_show', {id: aid_request.id}) }}" class="nav-icon" title="Mes informations">
                 <i class="fas fa-user-circle"></i>
             </a>
             <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
@@ -50,16 +50,31 @@
                 </p>
                {% endif %}
 
+                {% if aid_request.status.value in ['Acceptée', 'Refusée'] %}
+
                 <p class="text-muted">
-                    Une demande d’aide a déjà été soumise. <br>
-                    Si vous souhaitez modifier ou compléter les informations :
+                    Votre demande précédente a été traitée. <br>
+                    Vous pouvez maintenant en soumettre une nouvelle si nécessaire.
                 </p>
-                
 
+                    <a href="{{ path('app_aidrequest_renew', {id: aid_request.id}) }}" 
+                       class="btn btn-primary mt-3 px-4">
+                        Renouveler ma demande
+                    </a>
 
-                <a href="{{ path('app_aidrequest_edit', {id: aid_request.id}) }}" class="btn btn-primary mt-3 px-4">
-                    Modifier ma demande
-                </a>
+                {% else %}
+
+                    <p class="text-muted">
+                        Une demande d’aide a déjà été soumise et est en cours de traitement. <br>
+                        Vous pouvez la modifier si nécessaire :
+                    </p>
+
+                    <a href="{{ path('app_aidrequest_edit', {id: aid_request.id}) }}" class="btn btn-primary mt-3 px-4">
+                        Modifier ma demande
+                    </a>
+
+                {% endif %}
+
             </div>
         </div>
 

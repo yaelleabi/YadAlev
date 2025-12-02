@@ -105,7 +105,7 @@
                                 ">
                                     {{ aid_request.status.value }}
                                 </span>
-                                 {% if aid_request.isUpdated %}
+                                 {% if aid_request.isUpdated and aid_request.status == constant('App\\Enum\\AidRequestStatus::PENDING') %}
                                     <span class="badge bg-info text-dark ms-1">
                                         Modifiée
                                     </span>
