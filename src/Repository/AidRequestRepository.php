@@ -35,7 +35,7 @@ class AidRequestRepository extends ServiceEntityRepository
             ->andWhere('a.status = :status')
             ->setParameter('family', $family)
             ->setParameter('status', AidRequestStatus::VALIDATED)
-            ->orderBy('a.createdAt', 'DESC')   // si tu as un updatedAt
+            ->orderBy('a.createdAt', 'DESC')   
             ->getQuery()
             ->getResult();
     }
