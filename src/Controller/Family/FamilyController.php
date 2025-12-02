@@ -12,23 +12,31 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 #[Route('/family')]
 final class FamilyController extends AbstractController
 {
-    /* ----------------------------
-        PAGE LISTE FAMILLES (admin)
-    -----------------------------*/
     #[Route('', name: 'app_family_index', methods: ['GET'])]
-    public function index(FamilyRepository $familyRepository): Response
-    {
+    public function index(
+        FamilyRepository $familyRepository,
+        AidRequestRepository $aidRequestRepository
+    ): Response {
+        $families = $familyRepository->findAll();
+
+        // tableau des demandes validées indexées par famille
+        $validatedRequests = [];
+
+        foreach ($families as $family) {
+            $validatedRequests[$family->getId()] = 
+                $aidRequestRepository->findValidatedByFamily($family);
+        }
+
         return $this->render('family/index.html.twig', [
-            'families' => $familyRepository->findAll(),
+            'families' => $families,
+            'validatedRequests' => $validatedRequests,
         ]);
     }
 
-    /* ----------------------------
-        PAGE HOME POUR FAMILLE
-    -----------------------------*/
     #[Route('/home', name: 'app_family_home')]
     public function home(AidRequestRepository $repo): Response
     {
@@ -39,18 +47,12 @@ final class FamilyController extends AbstractController
         ]);
     }
 
-    /* ----------------------------
-        CALENDLY
-    -----------------------------*/
     #[Route('/calendly', name: 'app_calendly')]
     public function calendly(): Response
     {
         return $this->render('family/calendly.html.twig');
     }
 
-    /* ----------------------------
-        CRÉATION DE PROFIL FAMILLE
-    -----------------------------*/
     #[Route('/new', name: 'app_family_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -71,9 +73,6 @@ final class FamilyController extends AbstractController
         ]);
     }
 
-    /* ----------------------------
-        AFFICHAGE PROFIL FAMILLE
-    -----------------------------*/
     #[Route('/{id}', name: 'app_family_show', methods: ['GET'])]
     public function show(Family $family): Response
     {
@@ -82,9 +81,6 @@ final class FamilyController extends AbstractController
         ]);
     }
 
-    /* ----------------------------
-        MODIFICATION PROFIL FAMILLE
-    -----------------------------*/
     #[Route('/{id}/edit', name: 'app_family_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Family $family, EntityManagerInterface $entityManager): Response
     {
@@ -103,9 +99,6 @@ final class FamilyController extends AbstractController
         ]);
     }
 
-    /* ----------------------------
-        SUPPRESSION PROFIL FAMILLE
-    -----------------------------*/
     #[Route('/{id}', name: 'app_family_delete', methods: ['POST'])]
     public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): Response
     {

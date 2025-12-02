@@ -6,6 +6,8 @@ use App\Entity\AidRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
+use App\Entity\Family;
+use App\Enum\AidRequestStatus;
 /**
  * @extends ServiceEntityRepository<AidRequest>
  */
@@ -26,6 +28,17 @@ class AidRequestRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+public function findValidatedByFamily(Family $family): array
+{
+    return $this->createQueryBuilder('a')
+        ->andWhere('a.family = :family')
+        ->andWhere('a.status = :status')
+        ->setParameter('family', $family)
+        ->setParameter('status', AidRequestStatus::VALIDATED)
+        ->orderBy('a.createdAt', 'DESC')   // si tu as un updatedAt
+        ->getQuery()
+        ->getResult();
+}
 
     //    /**
     //     * @return AidRequest[] Returns an array of AidRequest objects
