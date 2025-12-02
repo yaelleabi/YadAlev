@@ -19,7 +19,7 @@ final class FamilyAidRequestController extends AbstractController
     #[Route('/family/aid/request', name: 'app_family_aid_request')]
     public function index(): Response
     {
-        return $this->render('family_aid_request/index.html.twig', [
+        return $this->render('family/family_aid_request/index.html.twig', [
             'controller_name' => 'FamilyAidRequestController',
         ]);
     }
@@ -129,7 +129,7 @@ final class FamilyAidRequestController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        return $this->render('family_aid_request/show.html.twig', [
+        return $this->render('family/family_aid_request/show.html.twig', [
             'aid_request' => $aidRequest,
         ]);
     }
@@ -151,7 +151,7 @@ final class FamilyAidRequestController extends AbstractController
             return $this->redirectToRoute('app_aidrequest_show', ['id' => $aidRequest->getId()]);
         }
 
-        return $this->render('family_aid_request/edit.html.twig', [
+        return $this->render('family/family_aid_request/edit.html.twig', [
             'form' => $form->createView(),
             'aid_request' => $aidRequest,
         ]);

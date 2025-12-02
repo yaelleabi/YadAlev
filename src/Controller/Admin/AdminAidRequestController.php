@@ -31,7 +31,7 @@ final class AdminAidRequestController extends AbstractController
     // Récupération des années disponibles pour le filtre
     $years = $repo->findAvailableYears();
 
-    return $this->render('admin_aid_request/index.html.twig', [
+    return $this->render('admin/admin_aid_request/index.html.twig', [
         'aid_requests' => $aidRequests,
         'years' => $years
     ]);
@@ -42,7 +42,7 @@ final class AdminAidRequestController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('admin_aid_request/show.html.twig', [
+        return $this->render('admin/admin_aid_request/show.html.twig', [
             'aid_request' => $aidRequest,
         ]);
     }
@@ -62,7 +62,7 @@ final class AdminAidRequestController extends AbstractController
             return $this->redirectToRoute('app_admin_aidrequest_list');
         }
 
-        return $this->render('admin_aid_request/edit.html.twig', [
+        return $this->render('admin/admin_aid_request/edit.html.twig', [
             'form' => $form->createView(),
             'aid_request' => $aidRequest,
         ]);
