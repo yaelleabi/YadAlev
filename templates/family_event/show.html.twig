@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FamilyEvent{% endblock %}
+
+{% block body %}
+    <h1>FamilyEvent</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ family_event.id }}</td>
+            </tr>
+            <tr>
+                <th>StartDate</th>
+                <td>{{ family_event.startDate ? family_event.startDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>EndDate</th>
+                <td>{{ family_event.endDate ? family_event.endDate|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>IsVisible</th>
+                <td>{{ family_event.isVisible ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>AssignedFamilies</th>
+                <td>{{ family_event.assignedFamilies ? family_event.assignedFamilies|join(', ') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_family_event_index') }}">back to list</a>
+
+    <a href="{{ path('app_family_event_edit', {'id': family_event.id}) }}">edit</a>
+
+    {{ include('family_event/_delete_form.html.twig') }}
+{% endblock %}

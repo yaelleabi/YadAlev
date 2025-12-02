@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FamilyEvent index{% endblock %}
+
+{% block body %}
+    <h1>FamilyEvent index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>IsVisible</th>
+                <th>AssignedFamilies</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for family_event in family_events %}
+            <tr>
+                <td>{{ family_event.id }}</td>
+                <td>{{ family_event.startDate ? family_event.startDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ family_event.endDate ? family_event.endDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ family_event.isVisible ? 'Yes' : 'No' }}</td>
+                <td>{{ family_event.assignedFamilies ? family_event.assignedFamilies|join(', ') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_family_event_show', {'id': family_event.id}) }}">show</a>
+                    <a href="{{ path('app_family_event_edit', {'id': family_event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_family_event_new') }}">Create new</a>
+{% endblock %}
