@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/family/event')]
-final class FamilyEventController extends AbstractController
+final class FamilyPublicEventController extends AbstractController
 {
     #[Route(name: 'app_family_event_index', methods: ['GET'])]
     public function index(FamilyEventRepository $familyEventRepository): Response
