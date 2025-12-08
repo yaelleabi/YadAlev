@@ -102,19 +102,70 @@ final class FamilyAidRequestController extends AbstractController
         return $this->render('family/family_aid_request/show.html.twig',['aid_request'=>$aidRequest]);
     }
 
-    #[Route('/family/aidrequest/{id}/edit', name:'app_aidrequest_edit')]
-    public function editFamily(Request $request,AidRequest $aidRequest,EntityManagerInterface $em): Response
+   #[Route('/family/aidrequest/{id}/edit', name:'app_aidrequest_edit')]
+    public function editFamily(Request $request, AidRequest $aidRequest, EntityManagerInterface $em): Response
     {
-        if ($aidRequest->getFamily() !== $this->getUser()) throw $this->createAccessDeniedException();
+        if ($aidRequest->getFamily() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
 
-        $form=$this->createForm(AidRequestType::class,$aidRequest,['is_family'=>true]);
+        /** @var \App\Entity\Family $family */
+        $family = $this->getUser();
+
+        $form = $this->createForm(AidRequestType::class, $aidRequest, ['is_family' => true]);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-            $em->flush();
-            return $this->redirectToRoute('app_aidrequest_show',['id'=>$aidRequest->getId()]);
-        }
-        return $this->render('family/family_aid_request/edit.html.twig',['form'=>$form->createView()]);
+
+        // 🔁 Mettre à jour Family à partir de AidRequest
+        $family->setName($aidRequest->getLastName());
+        $family->setFirstName($aidRequest->getFirstName());
+        $family->setDateOfBirth($aidRequest->getDateOfBirth());
+        $family->setEmail($aidRequest->getEmail());
+        $family->setPhoneNumber($aidRequest->getPhoneNumber());
+        if ($aidRequest->getAdress()) { $family->setAdress(clone $aidRequest->getAdress()); }
+        $family->setHousingStatus($aidRequest->getHousingStatus());
+        $family->setMaritalStatus($aidRequest->getMaritalStatus());
+        $family->setDependantsCount($aidRequest->getDependantsCount());
+        $family->setEmploymentStatus($aidRequest->getEmploymentStatus());
+        $family->setMonthlyIncome($aidRequest->getMonthlyIncome());
+        $family->setSpouseEmploymentStatus($aidRequest->getSpouseEmploymentStatus());
+        $family->setSpouseMonthlyIncome($aidRequest->getSpouseMonthlyIncome());
+        $family->setFamilyAllowanceAmount($aidRequest->getFamilyAllowanceAmount());
+        $family->setAlimonyAmount($aidRequest->getAlimonyAmount());
+        $family->setRentAmountNetAide($aidRequest->getRentAmountNetAide());
+        $family->setOtherNeed($aidRequest->getOtherNeed());
+        $family->setOtherComment($aidRequest->getOtherComment());
+
+        // 🔁 Mettre à jour AidRequest avec les mêmes données si tu veux qu'elles s'affichent dans SHOW
+        // (sinon, il gardera les anciennes valeurs affichées)
+        $aidRequest->setLastName($family->getName());
+        $aidRequest->setFirstName($family->getFirstName());
+        $aidRequest->setDateOfBirth($family->getDateOfBirth());
+        $aidRequest->setEmail($family->getEmail());
+        $aidRequest->setPhoneNumber($family->getPhoneNumber());
+        if ($family->getAdress()) { $aidRequest->setAdress(clone $family->getAdress()); }
+        $aidRequest->setHousingStatus($family->getHousingStatus());
+        $aidRequest->setMaritalStatus($family->getMaritalStatus());
+        $aidRequest->setDependantsCount($family->getDependantsCount());
+        $aidRequest->setEmploymentStatus($family->getEmploymentStatus());
+        $aidRequest->setMonthlyIncome($family->getMonthlyIncome());
+        $aidRequest->setSpouseEmploymentStatus($family->getSpouseEmploymentStatus());
+        $aidRequest->setSpouseMonthlyIncome($family->getSpouseMonthlyIncome());
+        $aidRequest->setFamilyAllowanceAmount($family->getFamilyAllowanceAmount());
+        $aidRequest->setAlimonyAmount($family->getAlimonyAmount());
+        $aidRequest->setRentAmountNetAide($family->getRentAmountNetAide());
+        $aidRequest->setOtherNeed($family->getOtherNeed());
+        $aidRequest->setOtherComment($family->getOtherComment());
+
+        $em->flush();
+        return $this->redirectToRoute('app_aidrequest_show',['id'=>$aidRequest->getId()]);
+    }
+
+
+        return $this->render('family/family_aid_request/edit.html.twig',[
+            'form'=>$form->createView()
+        ]);
     }
 
 
