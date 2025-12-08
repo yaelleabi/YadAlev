@@ -209,10 +209,63 @@ body {
   animation: fadeLogo 1.2s ease-out forwards;
   filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
 }
+
 @keyframes fadeLogo {
   0% { opacity: 0; transform: scale(0.98) translateY(-8px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
+/* ===== Correction responsive réelle ===== */
+
+@media (max-width: 480px) {
+
+    body {
+        padding-top: 30px !important;
+        padding-bottom: 50px !important;
+    }
+
+    .min-vh-100 {
+        min-height: unset !important;
+        height: auto !important;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+
+    .card {
+        width: 95% !important;
+        max-width: 360px;
+        margin-top: 10px;
+    }
+
+    .logo {
+        width: 85px;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+    }
+
+    .btn-group button {
+        font-size: 0.85rem;
+        padding: 10px;
+    }
+    
+    .form-control,
+    button {
+        font-size: 0.9rem !important;
+    }
+
+    /* Alignement vertical des radios = meilleur rendu mobile */
+    .role-options {
+        flex-direction: column !important;
+        gap: 8px;
+    }
+}
+
 </style>
 
 <script>
