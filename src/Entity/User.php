@@ -41,7 +41,10 @@ class User implements UserInterface , PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::ARRAY)]
     protected array $roles = [];
 
-    
+    public function __construct()
+    {
+    }
+
     
 
     /**

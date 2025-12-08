@@ -13,234 +13,155 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Enum\AidRequestStatus;
 use App\Repository\AidRequestRepository;
+use App\Entity\Family;
 
 final class FamilyAidRequestController extends AbstractController
 {
     #[Route('/family/aid/request', name: 'app_family_aid_request')]
     public function index(): Response
     {
-        return $this->render('family/family_aid_request/index.html.twig', [
-            'controller_name' => 'FamilyAidRequestController',
-        ]);
+        return $this->render('family/family_aid_request/index.html.twig');
     }
-      #[Route('/family/aidrequest/new', name: 'app_aidrequest_new')]
-     public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
-        {
-             $user = $this->getUser();
 
-            // Vérifier si une demande existe déjà
-            $existing = $em->getRepository(AidRequest::class)->findOneBy([
-                'family' => $user
-            ]);
 
-            if ($existing) {
-                return $this->redirectToRoute('app_aidrequest_existing');
-            }
+    /* ========================== NEW AID REQUEST ========================== */
 
-            // --- Création de la nouvelle demande ---
-            $aidRequest = new AidRequest();
-            $aidRequest->setFamily($user);
-            $aidRequest->setStatus(AidRequestStatus::PENDING);
+    #[Route('/family/aidrequest/new', name: 'app_aidrequest_new')]
+    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    {
+        $user = $this->getUser();
 
-            // Préremplissage
-            if ($user) {
-                if (method_exists($user, 'getName')) {
-                    $aidRequest->setLastName($user->getName());
-                }
-                if (method_exists($user, 'getEmail')) {
-                    $aidRequest->setEmail($user->getEmail());
-                }
-                if (method_exists($user, 'getPhoneNumber')) {
-                    $aidRequest->setPhoneNumber($user->getPhoneNumber());
-                }
-            }
-
-            $form = $this->createForm(AidRequestType::class, $aidRequest, [
-                'is_family' => true,
-            ]);
-
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-
-                // Uploads
-                $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-                $fileFields = [
-                    'identityProofFilename', 'incomeProofFilename', 'taxNoticeFilename',
-                    'quittanceLoyer', 'avisCharge', 'taxeFonciere', 'fraisScolarite',
-                    'attestationCaf', 'otherDocumentFilename'
-                ];
-
-                foreach ($fileFields as $field) {
-                    $file = $form->get($field)->getData();
-                    if ($file) {
-                        $newFilename = $slugger->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                            . '-' . uniqid() . '.' . $file->guessExtension();
-
-                        try {
-                            $file->move($uploadDir, $newFilename);
-                        } catch (FileException $e) {}
-
-                        $setter = 'set' . ucfirst($field);
-                        if (method_exists($aidRequest, $setter)) {
-                            $aidRequest->$setter($newFilename);
-                        }
-                    }
-                }
-
-                $em->persist($aidRequest);
-                $em->flush();
-
-                return $this->redirectToRoute('app_aidrequest_success');
-            }
-
-            return $this->render('aid_request/new.html.twig', [
-                'form' => $form->createView(),
-            ]);
+        if ($em->getRepository(AidRequest::class)->findOneBy(['family' => $user])) {
+            return $this->redirectToRoute('app_aidrequest_existing');
         }
+
+        $aidRequest = new AidRequest();
+        $aidRequest->setFamily($user);
+        $aidRequest->setStatus(AidRequestStatus::PENDING);
+
+        if ($user instanceof Family) {
+            $aidRequest->setLastName($user->getName());
+            $aidRequest->setEmail($user->getEmail());
+            $aidRequest->setPhoneNumber($user->getPhoneNumber());
+        }
+
+        $form = $this->createForm(AidRequestType::class, $aidRequest, ['is_family' => true]);
+        $form->handleRequest($request);
+        
+
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $uploadDir = $this->getParameter('kernel.project_dir').'/public/uploads';
+            $files = ['identityProofFilename','incomeProofFilename','taxNoticeFilename','quittanceLoyer','avisCharge',
+                      'taxeFonciere','fraisScolarite','attestationCaf','otherDocumentFilename'];
+
+            foreach ($files as $field) {
+                $file = $form->get($field)->getData();
+                if ($file) {
+                    $name = $slugger->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
+                            .'-'.uniqid().'.'.$file->guessExtension();
+                    $file->move($uploadDir,$name);
+                    $setter = 'set'.ucfirst($field);
+                    $aidRequest->$setter($name);
+                }
+            }
+
+            $em->persist($aidRequest);
+            $em->flush();
+
+            return $this->redirectToRoute('app_aidrequest_success');
+        }
+
+        return $this->render('aid_request/new.html.twig', ['form'=>$form->createView()]);
+    }
+
+
     #[Route('/family/aidrequest/success', name: 'app_aidrequest_success')]
     public function success(): Response
     {
         return $this->render('aid_request/success.html.twig');
     }
+
     #[Route('/family/aidrequest/existing', name: 'app_aidrequest_existing')]
     public function existing(AidRequestRepository $repo): Response
     {
-        $aidRequest = $repo->findOneBy(
-    ['family' => $this->getUser()],
-    ['createdAt' => 'DESC']);
-
-        if (!$aidRequest) {
-            return $this->redirectToRoute('app_aidrequest_new');
-        }
-
-        return $this->render('aid_request/existing.html.twig', [
-            'aid_request' => $aidRequest,
-        ]);
+        $aidRequest = $repo->findOneBy(['family'=>$this->getUser()],['createdAt'=>'DESC']);
+        return $aidRequest
+            ? $this->render('aid_request/existing.html.twig',['aid_request'=>$aidRequest])
+            : $this->redirectToRoute('app_aidrequest_new');
     }
 
-    /* ============================================================
-        FAMILLE – AFFICHAGE DÉTAILLÉ
-    ============================================================ */
-    #[Route('/family/aidrequest/{id}', name: 'app_aidrequest_show')]
+
+    /* ============================== EDIT ============================== */
+
+    #[Route('/family/aidrequest/{id}', name:'app_aidrequest_show')]
     public function showFamily(AidRequest $aidRequest): Response
     {
-        if ($aidRequest->getFamily() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        return $this->render('family/family_aid_request/show.html.twig', [
-            'aid_request' => $aidRequest,
-        ]);
+        if ($aidRequest->getFamily() !== $this->getUser()) throw $this->createAccessDeniedException();
+        return $this->render('family/family_aid_request/show.html.twig',['aid_request'=>$aidRequest]);
     }
-     #[Route('/family/aidrequest/{id}/edit', name: 'app_aidrequest_edit')]
-    public function editFamily(Request $request, AidRequest $aidRequest, EntityManagerInterface $em): Response
-    {
-        if ($aidRequest->getFamily() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
 
-        $form = $this->createForm(AidRequestType::class, $aidRequest, [
-            'is_family' => true,
-        ]);
+    #[Route('/family/aidrequest/{id}/edit', name:'app_aidrequest_edit')]
+    public function editFamily(Request $request,AidRequest $aidRequest,EntityManagerInterface $em): Response
+    {
+        if ($aidRequest->getFamily() !== $this->getUser()) throw $this->createAccessDeniedException();
+
+        $form=$this->createForm(AidRequestType::class,$aidRequest,['is_family'=>true]);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid()){
             $em->flush();
-            $this->addFlash('success', 'Votre demande a bien été mise à jour.');
-            return $this->redirectToRoute('app_aidrequest_show', ['id' => $aidRequest->getId()]);
+            return $this->redirectToRoute('app_aidrequest_show',['id'=>$aidRequest->getId()]);
         }
-
-        return $this->render('family/family_aid_request/edit.html.twig', [
-            'form' => $form->createView(),
-            'aid_request' => $aidRequest,
-        ]);
+        return $this->render('family/family_aid_request/edit.html.twig',['form'=>$form->createView()]);
     }
+
+
+    /* ============================== RENEW ============================== */
+
     #[Route('/family/aidrequest/{id}/renew', name: 'app_aidrequest_renew')]
-    public function renew(
-        AidRequest $oldRequest,
-        EntityManagerInterface $em
-    ): Response {
-
-        if ($oldRequest->getFamily() !== $this->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
-
-        // Nouvelle demande pré-remplie
-        $new = new AidRequest();
-        $new->setFamily($this->getUser());
-        $new->setCreatedAt(new \DateTimeImmutable());
-        $new->setStatus(AidRequestStatus::PENDING);
-        $new->setIsUpdated(false);
-
-        // Copie des données (exactement comme dans renewSubmit)
-        $new->setLastName($oldRequest->getLastName());
-        $new->setFirstName($oldRequest->getFirstName());
-        $new->setDateOfBirth($oldRequest->getDateOfBirth());
-        $new->setEmail($oldRequest->getEmail());
-        $new->setPhoneNumber($oldRequest->getPhoneNumber());
-        $new->setAdress(clone $oldRequest->getAdress());
-
-        $new->setHousingStatus($oldRequest->getHousingStatus());
-        $new->setMaritalStatus($oldRequest->getMaritalStatus());
-        $new->setDependantsCount($oldRequest->getDependantsCount());
-        $new->setEmploymentStatus($oldRequest->getEmploymentStatus());
-        $new->setMonthlyIncome($oldRequest->getMonthlyIncome());
-        $new->setSpouseEmploymentStatus($oldRequest->getSpouseEmploymentStatus());
-        $new->setSpouseMonthlyIncome($oldRequest->getSpouseMonthlyIncome());
-        $new->setFamilyAllowanceAmount($oldRequest->getFamilyAllowanceAmount());
-        $new->setAlimonyAmount($oldRequest->getAlimonyAmount());
-        $new->setRentAmountNetAide($oldRequest->getRentAmountNetAide());
-
-        $new->setRequestType($oldRequest->getRequestType());
-        $new->setRequestDuration($oldRequest->getRequestDuration());
-        $new->setOtherRequestDuration($oldRequest->getOtherRequestDuration());
-        $new->setRequestReason($oldRequest->getRequestReason());
-        $new->setUrgencyExplanation($oldRequest->getUrgencyExplanation());
-        $new->setUrgencyLevel($oldRequest->getUrgencyLevel());
-        $new->setOtherNeed($oldRequest->getOtherNeed());
-        $new->setOtherComment($oldRequest->getOtherComment());
-
-        $new->setPrivacyConsent($oldRequest->getPrivacyConsent());
-
-        // Préremplir les noms des fichiers
-        $new->setIdentityProofFilename($oldRequest->getIdentityProofFilename());
-        $new->setIncomeProofFilename($oldRequest->getIncomeProofFilename());
-        $new->setTaxNoticeFilename($oldRequest->getTaxNoticeFilename());
-        $new->setOtherDocumentFilename($oldRequest->getOtherDocumentFilename());
-        $new->setQuittanceLoyer($oldRequest->getQuittanceLoyer());
-        $new->setAvisCharge($oldRequest->getAvisCharge());
-        $new->setTaxeFonciere($oldRequest->getTaxeFonciere());
-        $new->setFraisScolarite($oldRequest->getFraisScolarite());
-        $new->setAttestationCaf($oldRequest->getAttestationCaf());
-
-        // Formulaire
-        $form = $this->createForm(AidRequestType::class, $new, [
-            'is_family' => true,
-            'action' => $this->generateUrl('app_aidrequest_renew_submit', ['id' => $oldRequest->getId()]),
-            'method' => 'POST'
-        ]);
-
-        return $this->render('aid_request/renew.html.twig', [
-            'form' => $form->createView(),
-            'oldRequest' => $oldRequest,
-        ]);
-    }
-
-    #[Route('/family/aidrequest/{id}/renew/form', name: 'app_aidrequest_renew_form')]
-    public function renewForm(AidRequest $oldRequest): Response
+    public function renew(AidRequest $oldRequest): Response
     {
         if ($oldRequest->getFamily() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        // On crée un objet temporaire NON persisté
-        $draft = clone $oldRequest;
-        $draft->setStatus(AidRequestStatus::PENDING);
+        /** @var \App\Entity\Family $family */
+        $family = $this->getUser();
 
-        // Formulaire
-        $form = $this->createForm(AidRequestType::class, $draft, [
-            'is_family' => true,
+        // Nouvelle demande NE PREND QUE FAMILY !!!
+        $new = new AidRequest();
+        $new->setFamily($family);
+        $new->setStatus(AidRequestStatus::PENDING);
+        $new->setCreatedAt(new \DateTimeImmutable());
+        $new->setIsUpdated(false);
+
+        // ⚡ On remplit 100% du formulaire avec FAMILY
+        $new->setLastName($family->getName());
+        $new->setFirstName($family->getFirstName());
+        $new->setDateOfBirth($family->getDateOfBirth());
+        $new->setEmail($family->getEmail());
+        $new->setPhoneNumber($family->getPhoneNumber());
+        $new->setAdress(clone $family->getAdress());
+
+        // Champs financiers & situ — uniquement depuis Family
+        $new->setHousingStatus($family->getHousingStatus());
+        $new->setMaritalStatus($family->getMaritalStatus());
+        $new->setDependantsCount($family->getDependantsCount());
+        $new->setEmploymentStatus($family->getEmploymentStatus());
+        $new->setMonthlyIncome($family->getMonthlyIncome());
+        $new->setSpouseEmploymentStatus($family->getSpouseEmploymentStatus());
+        $new->setSpouseMonthlyIncome($family->getSpouseMonthlyIncome());
+        $new->setFamilyAllowanceAmount($family->getFamilyAllowanceAmount());
+        $new->setAlimonyAmount($family->getAlimonyAmount());
+        $new->setRentAmountNetAide($family->getRentAmountNetAide());
+        $new->setOtherNeed($family->getOtherNeed());
+        $new->setOtherComment($family->getOtherComment());
+
+        // Formulaire affiché → basé UNIQUEMENT sur Family
+        $form = $this->createForm(AidRequestType::class, $new, [
+            'is_family' => true
         ]);
 
         return $this->render('aid_request/renew.html.twig', [
@@ -248,62 +169,55 @@ final class FamilyAidRequestController extends AbstractController
             'oldRequest' => $oldRequest
         ]);
     }
-    #[Route('/family/aidrequest/{id}/renew/submit', name: 'app_aidrequest_renew_submit')]
-    public function renewSubmit(
-        Request $request,
-        AidRequest $oldRequest,
-        EntityManagerInterface $em,
-        SluggerInterface $slugger
-    ): Response {
 
-        // Vérification de la famille
+
+    #[Route('/family/aidrequest/{id}/renew-submit', name: 'app_aidrequest_renew_submit')]
+    public function renewSubmit(Request $request, AidRequest $oldRequest, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    { 
+       
+     
+        // 1. Sécurité
         if ($oldRequest->getFamily() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        // Nouvelle demande (vide au départ)
+        /** @var \App\Entity\Family $family */
+        $family = $this->getUser();
+
+        // 2. Création de l'objet vide
         $new = new AidRequest();
-        $new->setFamily($this->getUser());
+        $new->setFamily($family);
         $new->setCreatedAt(new \DateTimeImmutable());
         $new->setStatus(AidRequestStatus::PENDING);
         $new->setIsUpdated(false);
 
-        // ⚠️ On préremplit AVANT création du formulaire
-        // Identité
-        $new->setLastName($oldRequest->getLastName());
-        $new->setFirstName($oldRequest->getFirstName());
-        $new->setDateOfBirth($oldRequest->getDateOfBirth());
-        $new->setEmail($oldRequest->getEmail());
-        $new->setPhoneNumber($oldRequest->getPhoneNumber());
+        // 3. PRÉ-REMPLISSAGE (Identique à ta logique)
+        $new->setLastName($family->getName() ?? $oldRequest->getLastName());
+        $new->setFirstName($family->getFirstName() ?? $oldRequest->getFirstName());
+        $new->setDateOfBirth($family->getDateOfBirth() ?? $oldRequest->getDateOfBirth());
+        $new->setEmail($family->getEmail() ?? $oldRequest->getEmail());
+        $new->setPhoneNumber($family->getPhoneNumber() ?? $oldRequest->getPhoneNumber());
+        
+        if ($family->getAdress()) {
+             $new->setAdress(clone $family->getAdress());
+        } elseif ($oldRequest->getAdress()) {
+             $new->setAdress(clone $oldRequest->getAdress());
+        }
 
-        // Adresse
-        $newAdress = clone $oldRequest->getAdress();
-        $new->setAdress($newAdress);
+        $new->setHousingStatus($family->getHousingStatus() ?? $oldRequest->getHousingStatus());
+        $new->setMaritalStatus($family->getMaritalStatus() ?? $oldRequest->getMaritalStatus());
+        $new->setDependantsCount($family->getDependantsCount() ?? $oldRequest->getDependantsCount());
+        $new->setEmploymentStatus($family->getEmploymentStatus() ?? $oldRequest->getEmploymentStatus());
+        $new->setMonthlyIncome($family->getMonthlyIncome() ?? $oldRequest->getMonthlyIncome());
+        $new->setSpouseEmploymentStatus($family->getSpouseEmploymentStatus() ?? $oldRequest->getSpouseEmploymentStatus());
+        $new->setSpouseMonthlyIncome($family->getSpouseMonthlyIncome() ?? $oldRequest->getSpouseMonthlyIncome());
+        $new->setFamilyAllowanceAmount($family->getFamilyAllowanceAmount() ?? $oldRequest->getFamilyAllowanceAmount());
+        $new->setAlimonyAmount($family->getAlimonyAmount() ?? $oldRequest->getAlimonyAmount());
+        $new->setRentAmountNetAide($family->getRentAmountNetAide() ?? $oldRequest->getRentAmountNetAide());
+        $new->setOtherNeed($family->getOtherNeed() ?? $oldRequest->getOtherNeed());
+        $new->setOtherComment($family->getOtherComment() ?? $oldRequest->getOtherComment());
 
-        // Infos socio-financières
-        $new->setHousingStatus($oldRequest->getHousingStatus());
-        $new->setMaritalStatus($oldRequest->getMaritalStatus());
-        $new->setDependantsCount($oldRequest->getDependantsCount());
-        $new->setEmploymentStatus($oldRequest->getEmploymentStatus());
-        $new->setMonthlyIncome($oldRequest->getMonthlyIncome());
-        $new->setSpouseEmploymentStatus($oldRequest->getSpouseEmploymentStatus());
-        $new->setSpouseMonthlyIncome($oldRequest->getSpouseMonthlyIncome());
-        $new->setFamilyAllowanceAmount($oldRequest->getFamilyAllowanceAmount());
-        $new->setAlimonyAmount($oldRequest->getAlimonyAmount());
-        $new->setRentAmountNetAide($oldRequest->getRentAmountNetAide());
-
-        // Demande
-        $new->setRequestType($oldRequest->getRequestType());
-        $new->setRequestDuration($oldRequest->getRequestDuration());
-        $new->setOtherRequestDuration($oldRequest->getOtherRequestDuration());
-        $new->setRequestReason($oldRequest->getRequestReason());
-        $new->setUrgencyExplanation($oldRequest->getUrgencyExplanation());
-        $new->setUrgencyLevel($oldRequest->getUrgencyLevel());
-        $new->setOtherNeed($oldRequest->getOtherNeed());
-        $new->setOtherComment($oldRequest->getOtherComment());
-        $new->setPrivacyConsent($oldRequest->getPrivacyConsent());
-
-        // Documents (uniquement les noms → re-upload possible)
+        // Pré-remplissage des noms de fichiers (crucial pour éviter les erreurs de validation si le champ est "required" dans l'entité mais pas dans le form)
         $new->setIdentityProofFilename($oldRequest->getIdentityProofFilename());
         $new->setIncomeProofFilename($oldRequest->getIncomeProofFilename());
         $new->setTaxNoticeFilename($oldRequest->getTaxNoticeFilename());
@@ -314,201 +228,58 @@ final class FamilyAidRequestController extends AbstractController
         $new->setFraisScolarite($oldRequest->getFraisScolarite());
         $new->setAttestationCaf($oldRequest->getAttestationCaf());
 
-        // ---------------------
-        // FORMULAIRE
-        // ---------------------
-        $form = $this->createForm(AidRequestType::class, $new, [
-            'is_family' => true,
-        ]);
-
+        // 4. Création du formulaire et fusion avec les données POST
+        $form = $this->createForm(AidRequestType::class, $new, ['is_family' => true]);
         $form->handleRequest($request);
 
+        // 5. Validation et Persistance
         if ($form->isSubmitted() && $form->isValid()) {
 
-            // ----------------------------
-            //  UPLOAD DES NOUVEAUX FICHIERS
-            // ----------------------------
-            $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads';
-
+            $uploadDir = $this->getParameter('kernel.project_dir').'/public/uploads';
             $fileFields = [
-                'identityProofFilename', 'incomeProofFilename', 'taxNoticeFilename',
-                'quittanceLoyer', 'avisCharge', 'taxeFonciere',
-                'fraisScolarite', 'attestationCaf', 'otherDocumentFilename'
+                'identityProofFilename','incomeProofFilename','taxNoticeFilename',
+                'quittanceLoyer','avisCharge','taxeFonciere',
+                'fraisScolarite','attestationCaf','otherDocumentFilename'
             ];
 
             foreach ($fileFields as $field) {
                 $file = $form->get($field)->getData();
-
+                
                 if ($file) {
+                    // Nouveau fichier uploadé -> on traite
                     $newFilename = $slugger->slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))
-                        . '-' . uniqid() . '.' . $file->guessExtension();
-
+                                    . '-' . uniqid() . '.' . $file->guessExtension();
                     try {
                         $file->move($uploadDir, $newFilename);
-                    } catch (FileException $e) {}
-
-                    $setter = 'set' . ucfirst($field);
-                    if (method_exists($new, $setter)) {
-                        $new->$setter($newFilename);
+                        $setter = 'set'.ucfirst($field);
+                        if (method_exists($new, $setter)) {
+                            $new->$setter($newFilename);
+                        }
+                    } catch (FileException $e) {
+                        // Log l'erreur si besoin
                     }
-                }
+                } 
+                // Si pas de fichier ($file est null), $new a déjà la valeur de l'ancien fichier 
+                // grâce à ton étape 3 (Pré-remplissage). C'est parfait.
             }
 
-            // -------------------
-            // SAUVEGARDE
-            // -------------------
             $em->persist($new);
             $em->flush();
 
+            $this->addFlash('success', 'Votre demande de renouvellement a bien été enregistrée.');
             return $this->redirectToRoute('app_aidrequest_success');
         }
 
-        // -------------------
-        // RÉAFFICHAGE DU FORMULAIRE
-        // -------------------
+        // Si on arrive ici, c'est qu'il y a des erreurs. 
+        // Le dump ci-dessous apparaîtra UNIQUEMENT s'il y a un problème.
+        if ($form->isSubmitted() && !$form->isValid()) {
+             // Tu peux décommenter ceci temporairement pour voir les erreurs précises
+             // dd($form->getErrors(true)); 
+        }
+
         return $this->render('aid_request/renew.html.twig', [
             'form' => $form->createView(),
             'oldRequest' => $oldRequest,
         ]);
     }
-
-
-   
 }
-
-    // #[Route('/family/info', name: 'app_family_info')]
-    // public function info(
-    //     AidRequestRepository $aidRequestRepository,
-    //     Request $request,
-    //     EntityManagerInterface $em
-    // ): Response {
-    //     // L’utilisateur connecté EST la famille
-    //     $family = $this->getUser();
-
-    //     if (!$family) {
-    //         throw $this->createAccessDeniedException("Vous devez être connecté.");
-    //     }
-
-    //     // On récupère SA demande d’aide
-    //     $aidRequest = $aidRequestRepository->findOneBy([
-    //         'family' => $family
-    //     ]);
-
-    //     if (!$aidRequest) {
-    //         return $this->redirectToRoute('app_family');
-    //     }
-
-    //     // Formulaire non-modifiable des infos (Affichage uniquement)
-    //     $form = $this->createForm(AidRequestType::class, $aidRequest, [
-    //         'is_family' => true, // identité désactivée
-    //     ]);
-
-    //     $form->handleRequest($request);
-
-    //     // Soumission depuis la page INFO (si jamais tu l’actives plus tard)
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         // Gestion des fichiers si ajout
-    //         $fileFields = [
-    //             'identityProofFilename',
-    //             'incomeProofFilename',
-    //             'taxNoticeFilename',
-    //             'quittanceLoyer',
-    //             'avisCharge',
-    //             'taxeFonciere',
-    //             'fraisScolarite',
-    //             'attestationCaf',
-    //             'otherDocumentFilename'
-    //         ];
-
-    //         foreach ($fileFields as $field) {
-    //             $uploadedFile = $form->get($field)->getData();
-
-    //             if ($uploadedFile) {
-    //                 $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
-    //                 $uploadedFile->move('uploads', $filename);
-
-    //                 $setter = 'set' . ucfirst($field);
-    //                 $aidRequest->$setter($filename);
-    //             }
-    //         }
-
-    //         $em->flush();
-
-    //         $this->addFlash('success', 'Vos informations ont été mises à jour.');
-
-    //         return $this->redirectToRoute('app_family_info');
-    //     }
-
-    //     return $this->render('family/info.html.twig', [
-    //         'family' => $family,
-    //         'aidRequest' => $aidRequest,
-    //         'form' => $form->createView(),
-    //     ]);
-    // }
-    // #[Route('/family/info/edit', name: 'app_family_info_edit')]
-    // public function edit(
-    //     AidRequestRepository $aidRequestRepository,
-    //     Request $request,
-    //     EntityManagerInterface $em
-    // ): Response {
-    //     $family = $this->getUser();
-
-    //     if (!$family) {
-    //         throw $this->createAccessDeniedException("Vous devez être connecté.");
-    //     }
-
-    //     $aidRequest = $aidRequestRepository->findOneBy([
-    //         'family' => $family
-    //     ]);
-
-    //     if (!$aidRequest) {
-    //         return $this->redirectToRoute('app_family');
-    //     }
-
-    //     // Formulaire édition — identité désactivée
-    //     $form = $this->createForm(AidRequestType::class, $aidRequest, [
-    //         'is_family' => true,
-    //     ]);
-
-    //     $form->handleRequest($request);
-
-    //     if ($form->isSubmitted() && $form->isValid()) {
-
-    //         // Gestion des fichiers
-    //         $fileFields = [
-    //             'identityProofFilename',
-    //             'incomeProofFilename',
-    //             'taxNoticeFilename',
-    //             'quittanceLoyer',
-    //             'avisCharge',
-    //             'taxeFonciere',
-    //             'fraisScolarite',
-    //             'attestationCaf',
-    //             'otherDocumentFilename'
-    //         ];
-
-    //         foreach ($fileFields as $field) {
-    //             $uploadedFile = $form->get($field)->getData();
-
-    //             if ($uploadedFile) {
-    //                 $filename = uniqid() . '-' . $uploadedFile->getClientOriginalName();
-    //                 $uploadedFile->move('uploads', $filename);
-
-    //                 $setter = 'set' . ucfirst($field);
-    //                 $aidRequest->$setter($filename);
-    //             }
-    //         }
-    //          $aidRequest->setIsUpdated(true);  // ton champ booL
-
-    //         $em->flush();
-
-    //         return $this->redirectToRoute('app_aidrequest_success');
-    //     }
-
-    //     return $this->render('family/edit.html.twig', [
-    //         'form' => $form->createView(),
-    //     ]);
-    // }
-
-
