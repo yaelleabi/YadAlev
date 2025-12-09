@@ -9,16 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 class Adress
 {
    
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $postalCode = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $street = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255 , nullable: true)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $streetNumber = null;
 
    

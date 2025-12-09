@@ -73,7 +73,7 @@ final class FamilyAidRequestController extends AbstractController
             return $this->redirectToRoute('app_aidrequest_success');
         }
 
-        return $this->render('aid_request/new.html.twig', ['form'=>$form->createView()]);
+        return $this->render('aid_request/new.html.twig', parameters: ['form'=>$form->createView()]);
     }
 
 
@@ -87,8 +87,9 @@ final class FamilyAidRequestController extends AbstractController
     public function existing(AidRequestRepository $repo): Response
     {
         $aidRequest = $repo->findOneBy(['family'=>$this->getUser()],['createdAt'=>'DESC']);
+        $family = $this->getUser();
         return $aidRequest
-            ? $this->render('aid_request/existing.html.twig',['aid_request'=>$aidRequest])
+            ? $this->render('family/family_aid_request/existing.html.twig',['aid_request'=>$aidRequest ,'family'=>$family])
             : $this->redirectToRoute('app_aidrequest_new');
     }
 
