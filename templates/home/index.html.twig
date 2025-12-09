@@ -78,7 +78,7 @@
             {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
 
                 <div class="mb-3">
-                    {{ form_label(form.name, 'Nom *') }}
+                    {{ form_label(form.name, 'Nom  de famille*') }}
                     {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Jean Dupont'}}) }}
                     {% for error in form.name.vars.errors %}
                         <div class="invalid-feedback d-block">{{ error.message }}</div>
