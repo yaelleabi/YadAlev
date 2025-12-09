@@ -76,12 +76,20 @@ final class FamilyController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_family_show', methods: ['GET'])]
-    public function show(Family $family): Response
-    {
+    public function show(
+        Family $family,
+        AidRequestRepository $aidRequestRepository
+    ): Response {
+        
+        // Récupérer toutes les demandes validées de cette famille
+        $validatedRequests = $aidRequestRepository->findValidatedByFamily($family);
+
         return $this->render('family/show.html.twig', [
             'family' => $family,
+            'validatedRequests' => $validatedRequests
         ]);
     }
+
 
     #[Route('/family/info/edit', name: 'app_family_edit', methods:['GET','POST'])]
     public function edit(Request $request, EntityManagerInterface $em): Response

@@ -180,7 +180,7 @@
                 </div>
 
                 <!-- AID LIST -->
-                <div class="accordion-item">
+                {# <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button"
                                 data-bs-toggle="collapse" data-bs-target="#aidList">
@@ -205,10 +205,64 @@
                             {% endif %}
                         </div>
                     </div>
-                </div>
+                </div> #}
+                <!-- AIDES ATTRIBUÉES & AUTRES AIDES -->
+        <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#aidesAttribuees">
+                6. Mes aides attribuées
+            </button>
+        </h2>
+
+        <div id="aidesAttribuees" class="accordion-collapse collapse">
+            <div class="accordion-body">
+
+                {# 🔵 AIDES ATTRIBUÉES FILTRÉES EN TWIG #}
+                {% set attribuees = family.aidRequests|filter(a => a.status.value == 'accepted') %}
+
+                <h5 class="fw-bold">Aides validées</h5>
+
+
+                {% if validatedRequests is empty %}
+                    <p class="text-muted">Aucune aide validée n’a encore été attribuée.</p>
+                {% else %}
+                    <ul class="ps-3">
+                        {% for aide in validatedRequests %}
+                            <li>
+                                <strong>{{ aide.requestType }}</strong>
+                                — {{ aide.createdAt|date('d/m/Y') }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+
+                <!-- 🟣 AID LIST (ManyToMany) -->
+                <h5 class="fw-bold">Aides enregistrées pour votre foyer</h5>
+
+                {% if family.aidList is empty %}
+                    <p class="text-muted">Aucune aide enregistrée.</p>
+                {% else %}
+                    <ul class="ps-3">
+                        {% for aide in family.aidList %}
+                            <li>
+                                <strong>{{ aide.name }}</strong>
+                                {% if aid.description %}
+                                    — {{ aid.description }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
             </div>
         </div>
+    </div>
+
+
+    </div>
+</div>
 
         <!-- BOUTONS -->
         <div class="text-center mt-4 fade-in" style="animation-delay:.4s">
