@@ -1,48 +1,62 @@
 <?php
+
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Form\RegisterType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegisterController extends AbstractController
 {
+    // 👇 Cette méthode ne sert qu'à afficher une page d'erreur si besoin.
+    // On a retiré toute la logique de création de compte car elle est dans HomeController.
     #[Route('/register', name: 'app_register')]
-    public function register(
-        Request $request,
-        EntityManagerInterface $em,
-        UserPasswordHasherInterface $passwordHasher
+    public function register(): Response 
+    {
+         return $this->render('register/index.html.twig');
+    }
+
+    // 👇 C'est LA méthode importante de ce fichier : Elle valide le clic dans l'email.
+    #[Route('/verify/email', name: 'app_verify_email')]
+    public function verifyUserEmail(
+        Request $request, 
+        VerifyEmailHelperInterface $verifyEmailHelper, 
+        UserRepository $userRepository, 
+        EntityManagerInterface $entityManager
     ): Response {
-        $user = new User();
-        $form = $this->createForm(RegisterType::class, $user);
-        $form->handleRequest($request);
+        
+        $id = $request->get('id');
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Hasher le mot de passe
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
-            $user->setPassword($hashedPassword);
-
-            // Sauvegarder
-            $em->persist($user);
-            $em->flush();
-
-            $this->addFlash('success', 'Compte créé avec succès !');
-
-            //return $this->redirectToRoute('app_login');
-            return $this->redirectToRoute('app_home', ['registered' => 1]);
-
+        if (null === $id) {
+            return $this->redirectToRoute('app_home');
         }
 
-        return $this->render('registration/register.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        $user = $userRepository->find($id);
+
+        if (null === $user) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        try {
+            $verifyEmailHelper->validateEmailConfirmation(
+                $request->getUri(),
+                $user->getId(),
+                $user->getEmail()
+            );
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('verify_email_error', $e->getReason());
+            return $this->redirectToRoute('app_home'); // Ou app_register si tu veux afficher l'erreur
+        }
+
+        $user->setIsVerified(true);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre email a été vérifié ! Vous pouvez maintenant vous connecter.');
+        return $this->redirectToRoute('app_home'); 
     }
 }

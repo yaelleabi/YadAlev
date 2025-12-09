@@ -41,6 +41,9 @@ class User implements UserInterface , PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::ARRAY)]
     protected array $roles = [];
 
+    #[ORM\Column]
+    private ?bool $isVerified = false;
+
     public function __construct()
     {
     }
@@ -141,5 +144,17 @@ class User implements UserInterface , PasswordAuthenticatedUserInterface
 
         return $this;
         
+    }
+
+    public function isVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

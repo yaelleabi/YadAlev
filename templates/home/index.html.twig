@@ -28,6 +28,20 @@
             </div>
         {% endfor %}
 
+        {# 🔸 NOUVEAU BLOC : compte non vérifié + renvoi de mail #}
+        {% for message in app.flashes('verify_email') %}
+            <div class="alert alert-warning mt-3 shadow-sm fade-in">
+                <i class="fas fa-info-circle me-2"></i> {{ message }}
+
+                <form method="post" action="{{ path('app_resend_verification') }}" class="mt-2">
+                    <input type="hidden" name="email" value="{{ last_username ?? '' }}">
+                    <button type="submit" class="btn btn-link p-0">
+                        Renvoyer l’email de vérification
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+
         <form id="loginForm" method="post" action="{{ path('app_login') }}" class="auth-form">
             {% if error %}
                 <div class="alert alert-danger text-center py-2">Identifiants invalides</div>

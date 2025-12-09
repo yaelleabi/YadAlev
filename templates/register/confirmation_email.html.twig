@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation d'inscription</title>
+</head>
+
+<body style="margin:0; padding:0; background:#f5f5f5; font-family: Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5; padding: 30px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:8px; overflow:hidden;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="background:#4A90E2; padding:20px; text-align:center; color:#ffffff;">
+                            <h1 style="margin:0; font-size:24px;">Bienvenue chez Yad Alev 💙</h1>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 30px; color:#333333; font-size:16px; line-height:1.6;">
+                            <p>Bonjour,</p>
+
+                            <p>
+                                Merci pour votre inscription !  
+                                Avant d’accéder à votre espace, vous devez confirmer votre adresse e-mail.
+                            </p>
+
+                            <p style="text-align:center; margin:30px 0;">
+                                <a href="{{ signedUrl }}"
+                                   style="
+                                       background:#4A90E2;
+                                       color:white;
+                                       padding:12px 25px;
+                                       text-decoration:none;
+                                       border-radius:5px;
+                                       font-size:16px;
+                                   ">
+                                    Confirmer mon e-mail
+                                </a>
+                            </p>
+
+                            <p>Ce lien expirera :  
+                                <strong>{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}</strong>
+                            </p>
+
+                            <p>Si vous n’êtes pas à l’origine de cette demande, ignorez cet e-mail.</p>
+
+                            <p>À très bientôt,<br>
+                                L’équipe Yad Alev ❤️
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background:#f0f0f0; padding:15px; text-align:center; color:#777777; font-size:12px;">
+                            © {{ "now"|date("Y") }} Yad Alev — Tous droits réservés.
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
