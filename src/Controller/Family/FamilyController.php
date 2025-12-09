@@ -45,6 +45,7 @@ final class FamilyController extends AbstractController
 
         return $this->render('family/home.html.twig', [
             'aidRequest' => $aidRequest,
+            'family' => $this->getUser()
         ]);
     }
 

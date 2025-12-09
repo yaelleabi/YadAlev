@@ -15,11 +15,13 @@
 
         <!-- Icônes à droite -->
         <div class="d-flex align-items-center gap-4">
-            {% if aidRequest %}
-                <a href="{{ path('app_aidrequest_show', { id: aidRequest.id }) }}" class="nav-icon" title="Mes informations">
+            {% if family %}
+                <a href="{{ path('app_family_show', { id: family.id }) }}" class="nav-icon" title="Mes informations">
                     <i class="fas fa-user-circle"></i>
                 </a>
             {% endif %}
+        </div>
+
 
             <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
                 <i class="fas fa-sign-out-alt"></i>

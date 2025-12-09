@@ -211,6 +211,30 @@ class Family extends User
         }
         return $this;
     }
+    /**
+ * @return Collection<int, AidList>
+ */
+    public function getAidList(): Collection
+    {
+        return $this->aidList;
+    }
+
+    public function addAidList(AidList $aid): self
+    {
+        if (!$this->aidList->contains($aid)) {
+            $this->aidList->add($aid);
+        }
+
+        return $this;
+    }
+
+    public function removeAidList(AidList $aid): self
+    {
+        $this->aidList->removeElement($aid);
+
+        return $this;
+    }
+
 
 
 }

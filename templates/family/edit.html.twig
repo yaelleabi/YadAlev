@@ -114,28 +114,14 @@
                     </div>
                 </div>
 
-                <!-- AUTRES INFORMATIONS -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#id4">
-                            4. Informations supplémentaires
-                        </button>
-                    </h2>
-                    <div id="id4" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            {{ form_row(form.otherNeed) }}
-                            {{ form_row(form.otherComment) }}
-                        </div>
-                    </div>
-                </div>
+                
 
                 <!-- DOCUMENTS -->
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#id5">
-                            5. Documents & justificatifs
+                            4. Documents & justificatifs
                         </button>
                     </h2>
                     <div id="id5" class="accordion-collapse collapse">
@@ -162,7 +148,7 @@
             </button>
         </div>
 
-        {{ form_end(form) }}
+        {{ form_end(form, { render_rest: false }) }}
 
         <!-- RETOUR -->
         <div class="text-center mt-4 fade-in">
