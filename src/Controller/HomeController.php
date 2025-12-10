@@ -16,14 +16,10 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\SecurityBundle\Security;
 use App\Security\LoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
-
-// 👇 Pour l'email de confirmation
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
-
-// 👇 Pour retrouver l'utilisateur par email
 use App\Repository\UserRepository;
 
 class HomeController extends AbstractController
@@ -95,7 +91,7 @@ class HomeController extends AbstractController
             );
 
             $email = (new TemplatedEmail())
-                ->from(new Address('yaelle.azoulay1311@gmail.com', 'Ton Site Bot')) // à adapter
+                ->from(new Address('contact@yadalev.fr', 'Yad Alev')) // à adapter
                 ->to($user->getEmail())
                 ->subject('Confirmez votre inscription')
                 ->htmlTemplate('register/confirmation_email.html.twig')
@@ -107,7 +103,7 @@ class HomeController extends AbstractController
 
             $mailer->send($email);
 
-            $this->addFlash('success', 'Compte créé ! Vérifiez vos emails pour activer votre compte.');
+            $this->addFlash('success', 'Votre compte a bien été créé. Consultez vos e-mails et cliquez sur le lien de confirmation pour activer votre compte et vous connecter.');
 
             return $this->redirectToRoute('app_home');
         }

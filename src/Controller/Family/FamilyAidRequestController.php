@@ -73,7 +73,7 @@ final class FamilyAidRequestController extends AbstractController
             return $this->redirectToRoute('app_aidrequest_success');
         }
 
-        return $this->render('aid_request/new.html.twig', parameters: ['form'=>$form->createView()]);
+        return $this->render('family_aid_request/new.html.twig', parameters: ['form'=>$form->createView()]);
     }
 
 
@@ -94,7 +94,6 @@ final class FamilyAidRequestController extends AbstractController
     }
 
 
-    /* ============================== EDIT ============================== */
 
     #[Route('/family/aidrequest/{id}', name:'app_aidrequest_show')]
     public function showFamily(AidRequest $aidRequest): Response
@@ -216,7 +215,7 @@ final class FamilyAidRequestController extends AbstractController
             'is_family' => true
         ]);
 
-        return $this->render('aid_request/renew.html.twig', [
+        return $this->render('family_aid_request/renew.html.twig', [
             'form' => $form->createView(),
             'oldRequest' => $oldRequest
         ]);

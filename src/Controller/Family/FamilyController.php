@@ -136,7 +136,7 @@ final class FamilyController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
             $this->addFlash("success", "Vos informations ont bien été mises à jour.");
-            return $this->redirectToRoute('app_family_home');
+            return $this->redirectToRoute('app_family_edit');
         }
 
         return $this->render('family/edit.html.twig', [

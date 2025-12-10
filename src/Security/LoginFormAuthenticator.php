@@ -50,11 +50,15 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
                     );
                 }
 
+                // 🔽🔽🔽 TEMPORAIREMENT DÉSACTIVÉ : blocage si l'email n'est pas vérifié 🔽🔽🔽
+                /*
                 if (!$user->isVerified()) {
                     throw new CustomUserMessageAuthenticationException(
                         'Veuillez vérifier votre adresse e-mail avant de vous connecter.'
                     );
                 }
+                */
+                // 🔼🔼🔼 FIN DU BLOC COMMENTÉ 🔼🔼🔼
 
                 return $user;
             }),
@@ -95,6 +99,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     {
         $message = $exception->getMessageKey();
 
+        // Tu peux laisser ce bloc, il ne sera plus utilisé tant que le check isVerified() est commenté
         if ($message === 'Veuillez vérifier votre adresse e-mail avant de vous connecter.') {
             $request->getSession()->getFlashBag()->add('verify_email', $message);
         } else {

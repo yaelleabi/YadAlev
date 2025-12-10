@@ -71,22 +71,6 @@
         <!-- 🔹 FORMULAIRE D’INSCRIPTION -->
         <div id="signupForm" class="auth-form d-none">
 
-           {% for message in app.flashes('success') %}
-
-                {% if message starts with 'COMPTE_OK|' %}
-                    
-                    {% set id = message|split('|')[1] %}
-
-                    <div class="alert alert-success text-center mb-3">
-                        Compte créé avec succès !<br>
-                        <a href="{{ path('app_auto_login', { id: id }) }}"
-                          class="text-decoration-none fw-semibold text-success">
-                            Cliquez ici pour vous connecter
-                        </a>
-                    </div>
-
-                {% endif %}
-            {% endfor %}
 
 
             {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}

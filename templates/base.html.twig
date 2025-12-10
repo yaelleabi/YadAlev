@@ -14,9 +14,9 @@
 
          {% block stylesheets %}{% endblock %}
 
-    <!-- 🔥 META RESPONSIVE À AJOUTER -->
+    
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <!-- 🔥 CSS GLOBAL ICI -->
     <style>
         /* Fixe la navbar (évite le décalage) */
@@ -56,6 +56,29 @@
                 height: 38px;
             }
         }
+        /* ... tes autres styles ... */
+
+        /* Conteneur pour les messages flash flottants */
+        .flash-container {
+            position: fixed;
+            top: 90px; /* Juste en dessous de ta navbar (80px + 10px marge) */
+            right: 20px;
+            z-index: 9999; /* Pour être sûr qu'il passe au-dessus de tout */
+            width: auto;
+            min-width: 300px;
+            max-width: 450px;
+        }
+
+        /* Petit effet d'ombre pour bien détacher l'alerte */
+        .flash-container .alert {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
     </style>
 
 
@@ -63,7 +86,29 @@
 
     <body>
 
+        
+        <body>
+
         {% block body %}{% endblock %}
+
+        {# 🔥 MESSAGES FLASH FLOTTANTS #}
+        <div class="flash-container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    {# Ajout de 'alert-dismissible' pour pouvoir fermer la croix #}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : 'info') }} alert-dismissible fade show" role="alert">
+                        
+                        {# Petite icône selon le type (optionnel mais sympa) #}
+                        {% if label == 'success' %} <i class="fas fa-check-circle me-2"></i> {% endif %}
+                        {% if label == 'error' %} <i class="fas fa-exclamation-circle me-2"></i> {% endif %}
+
+                        {{ message }}
+                        
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
 
         <!-- Bootstrap JS (obligatoire avant les scripts enfants) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

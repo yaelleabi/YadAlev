@@ -211,16 +211,14 @@
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button"
                     data-bs-toggle="collapse" data-bs-target="#aidesAttribuees">
-                6. Mes aides attribuées
+                5. Mes aides attribuées
             </button>
         </h2>
 
         <div id="aidesAttribuees" class="accordion-collapse collapse">
             <div class="accordion-body">
 
-                {# 🔵 AIDES ATTRIBUÉES FILTRÉES EN TWIG #}
-                {% set attribuees = family.aidRequests|filter(a => a.status.value == 'accepted') %}
-
+                
                 <h5 class="fw-bold">Aides validées</h5>
 
 
