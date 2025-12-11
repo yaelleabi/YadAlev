@@ -264,10 +264,28 @@
 
         <!-- BOUTONS -->
         <div class="text-center mt-4 fade-in" style="animation-delay:.4s">
-            <a href="{{ path('app_family_edit', {id: family.id}) }}"
-               class="btn btn-primary btn-lg shadow-sm edit-btn">
-                ✏️ Modifier mes informations
-            </a>
+
+            {% if lastRequest %}
+                {# ✔️ Une demande existe → on affiche le bouton modifier #}
+                <a href="{{ path('app_family_edit', {id: family.id}) }}"
+                class="btn btn-primary btn-lg shadow-sm edit-btn">
+                    ✏️ Modifier mes informations
+                </a>
+
+            {% else %}
+                {# ❌ Aucune demande → message explicatif + bouton créer demande #}
+                <div class="alert alert-warning mt-3" style="max-width: 650px; margin: auto; font-size:1.05rem;">
+                    Pour compléter vos informations, veuillez d’abord créer une 
+                    <strong>demande d’aide</strong>.  
+                    Vous pourrez ensuite modifier vos informations dans cet espace.
+                </div>
+
+                <a href="{{ path('app_aidrequest_new') }}"
+                class="btn btn-success btn-lg shadow-sm edit-btn mt-3">
+                    ➕ Créer ma première demande d’aide
+                </a>
+            {% endif %}
+
         </div>
 
         <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
@@ -275,6 +293,7 @@
                 ⬅️ Retour à mon espace famille
             </a>
         </div>
+
 
     </div>
 
