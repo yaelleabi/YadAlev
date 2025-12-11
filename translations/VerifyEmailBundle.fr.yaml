@@ -1,0 +1,7 @@
+verify_email:
+  email:
+    subject: "Confirmez votre adresse e-mail"
+  link_is_expired: "Le lien pour vérifier votre e-mail a expiré."
+  invalid_signature: "Le lien pour vérifier votre e-mail est invalide."
+  already_verified: "Ce compte est déjà vérifié."
+  expire_at_message: "dans %count% heure.|dans %count% heures."

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle demande urgente</title>
+</head>
+<body style="font-family: Arial, sans-serif; color:#333; line-height:1.5; padding:20px;">
+    
+    <h2 style="color:#B71C1C; font-size:22px; margin-bottom:20px;">
+        Nouvelle demande urgente reçue
+    </h2>
+
+    <p>
+        Une nouvelle demande urgente a été soumise par&nbsp;:
+        <strong>{{ aidRequest.firstName }}</strong>
+    </p>
+
+    {# 
+    <p>
+        <strong>Type : </strong> {{ aidRequest.type }} <br>
+        <strong>Description : </strong><br>
+        {{ aidRequest.description }}
+    </p>
+    #}
+
+    <p style="margin-top:20px;">
+        Vous pouvez la consulter directement depuis votre espace administrateur :
+    </p>
+
+    <p>
+        <a href="https://yadalev.fr/admin/demandes"
+           style="display:inline-block; padding:10px 16px; background:#B71C1C; color:#fff; text-decoration:none; border-radius:4px;">
+            Voir les demandes
+        </a>
+    </p>
+
+    <p style="margin-top:30px; font-size:14px; color:#555;">
+        — L’équipe Yad Alev
+    </p>
+</body>
+</html>

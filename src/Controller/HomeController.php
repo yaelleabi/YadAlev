@@ -21,9 +21,20 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mime\Address;
 use App\Repository\UserRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\LocaleAwareInterface;
+
 
 class HomeController extends AbstractController
-{
+{ 
+    private LocaleAwareInterface $translator;
+
+    public function __construct(LocaleAwareInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+
     #[Route('/', name: 'app_home')]
     public function index(
         Request $request,
@@ -34,7 +45,7 @@ class HomeController extends AbstractController
         MailerInterface $mailer
     ): Response {
         
-        // Redirection si déjà connecté
+        // 🔹 Redirection si déjà connecté
         if ($this->getUser()) {
             $roles = $this->getUser()->getRoles();
             if (in_array('ROLE_ADMIN', $roles)) return $this->redirectToRoute('app_admin');
@@ -47,9 +58,8 @@ class HomeController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
 
         // --------------------------------------------------
-        // 🔹 INSCRIPTION
+        // 🔹 Détection du rôle choisi dans le formulaire
         // --------------------------------------------------
-
         $requestData = $request->request->all()['register'] ?? null;
         $roleSelected = $requestData['roles'] ?? null;
 
@@ -64,37 +74,46 @@ class HomeController extends AbstractController
         $form = $this->createForm(RegisterType::class, $user);
         $form->handleRequest($request);
 
+        // --------------------------------------------------
+        // 🔹 Validation du formulaire d'inscription
+        // --------------------------------------------------
         if ($form->isSubmitted() && $form->isValid()) {
 
+            // Définir le rôle choisi
             $roles = $form->get('roles')->getData();
             $role = $roles[0] ?? 'ROLE_USER';
             $user->setRoles([$role]);
 
+            // Hash du mot de passe
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $form->get('plainPassword')->getData()
             );
             $user->setPassword($hashedPassword);
 
-            // Important : Par défaut isVerified doit être false dans ton entité User
+            // Sauvegarde
             $em->persist($user);
             $em->flush();
 
             // --------------------------------------------------
-            // 📧 ENVOI DE L'EMAIL DE CONFIRMATION (INSCRIPTION)
+            // 📧 Envoi de l'email de confirmation
             // --------------------------------------------------
+
+            // Important : forcer les traductions en FR
+            $this->translator->setLocale('fr');
+
             $signatureComponents = $verifyEmailHelper->generateSignature(
-                'app_verify_email', // route de vérification
+                'app_verify_email',
                 $user->getId(),
                 $user->getEmail(),
                 ['id' => $user->getId()]
             );
 
             $email = (new TemplatedEmail())
-                ->from(new Address('contact@yadalev.fr', 'Yad Alev')) // à adapter
+                ->from(new Address('contact@yadalev.fr', 'Yad Alev'))
                 ->to($user->getEmail())
                 ->subject('Confirmez votre inscription')
-                ->htmlTemplate('register/confirmation_email.html.twig')
+                ->htmlTemplate('email/confirmation_email.html.twig')
                 ->context([
                     'signedUrl' => $signatureComponents->getSignedUrl(),
                     'expiresAtMessageKey' => $signatureComponents->getExpirationMessageKey(),
@@ -103,7 +122,9 @@ class HomeController extends AbstractController
 
             $mailer->send($email);
 
-            $this->addFlash('success', 'Votre compte a bien été créé. Consultez vos e-mails et cliquez sur le lien de confirmation pour activer votre compte et vous connecter.');
+            $this->addFlash('success', 
+                'Votre compte a bien été créé. Consultez vos e-mails et cliquez sur le lien de confirmation pour l’activer.'
+            );
 
             return $this->redirectToRoute('app_home');
         }
@@ -115,7 +136,9 @@ class HomeController extends AbstractController
         ]);
     }
 
-    // 🔹🔹 NOUVELLE ROUTE : Renvoyer l’email de vérification 🔹🔹
+    // --------------------------------------------------
+    // 🔹 Renvoyer un email de vérification
+    // --------------------------------------------------
     #[Route('/resend-verification', name: 'app_resend_verification', methods: ['POST'])]
     public function resendVerification(
         Request $request,
@@ -123,6 +146,10 @@ class HomeController extends AbstractController
         VerifyEmailHelperInterface $verifyEmailHelper,
         MailerInterface $mailer
     ): Response {
+
+        // Toujours forcer FR ici aussi
+        $this->translator->setLocale('fr');
+
         $email = $request->request->get('email');
 
         if (!$email) {
@@ -132,7 +159,7 @@ class HomeController extends AbstractController
 
         $user = $userRepository->findOneBy(['email' => $email]);
 
-        // On reste vague pour ne pas divulguer si l'email existe
+        // Ne pas divulguer si un mail existe
         if (!$user) {
             $this->addFlash('success', 'Si un compte existe avec cet email, un lien de vérification vous a été renvoyé.');
             return $this->redirectToRoute('app_home');
@@ -143,7 +170,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        // Générer une nouvelle signature
+        // Génération d'une nouvelle signature
         $signatureComponents = $verifyEmailHelper->generateSignature(
             'app_verify_email',
             $user->getId(),
@@ -152,7 +179,7 @@ class HomeController extends AbstractController
         );
 
         $emailMessage = (new TemplatedEmail())
-            ->from(new Address('yaelle.azoulay1311@gmail.com', 'Ton Site Bot')) // même from que l'inscription
+            ->from(new Address('contact@yadalev.fr', 'Yad Alev'))
             ->to($user->getEmail())
             ->subject('Nouveau lien de confirmation')
             ->htmlTemplate('register/confirmation_email.html.twig')
@@ -168,6 +195,9 @@ class HomeController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
+    // --------------------------------------------------
+    // 🔹 Auto-login (après vérification email)
+    // --------------------------------------------------
     #[Route('/auto-login/{id}', name: 'app_auto_login')]
     public function autoLogin(
         User $user,

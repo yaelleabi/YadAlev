@@ -14,6 +14,10 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Enum\AidRequestStatus;
 use App\Repository\AidRequestRepository;
 use App\Entity\Family;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+
 
 final class FamilyAidRequestController extends AbstractController
 {
@@ -27,7 +31,7 @@ final class FamilyAidRequestController extends AbstractController
     /* ========================== NEW AID REQUEST ========================== */
 
     #[Route('/family/aidrequest/new', name: 'app_aidrequest_new')]
-    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $em, SluggerInterface $slugger,MailerInterface $mailer): Response
     {
         $user = $this->getUser();
 
@@ -69,11 +73,22 @@ final class FamilyAidRequestController extends AbstractController
 
             $em->persist($aidRequest);
             $em->flush();
+            $emailAdmin = (new TemplatedEmail())
+            ->from(new Address('contact@yadalev.fr', 'Yad Alev'))
+            ->to('yaelle.azoulay1311@gmail.com')  // À remplacer par l'email admin réel
+            ->subject('Nouvelle demande urgente reçue')
+            ->htmlTemplate('email/admin_notification.html.twig')
+            ->context([
+                'aidRequest' => $aidRequest,
+            ]);
+
+            $mailer->send($emailAdmin);
+
 
             return $this->redirectToRoute('app_aidrequest_success');
         }
 
-        return $this->render('family_aid_request/new.html.twig', parameters: ['form'=>$form->createView()]);
+        return $this->render('family/family_aid_request/new.html.twig', parameters: ['form'=>$form->createView()]);
     }
 
 
@@ -215,7 +230,7 @@ final class FamilyAidRequestController extends AbstractController
             'is_family' => true
         ]);
 
-        return $this->render('family_aid_request/renew.html.twig', [
+        return $this->render('family/family_aid_request/renew.html.twig', [
             'form' => $form->createView(),
             'oldRequest' => $oldRequest
         ]);
