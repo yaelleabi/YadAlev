@@ -194,21 +194,4 @@ class HomeController extends AbstractController
         $this->addFlash('success', 'Un email de vérification vous a été renvoyé.');
         return $this->redirectToRoute('app_home');
     }
-
-    // --------------------------------------------------
-    // 🔹 Auto-login (après vérification email)
-    // --------------------------------------------------
-    #[Route('/auto-login/{id}', name: 'app_auto_login')]
-    public function autoLogin(
-        User $user,
-        Request $request,
-        UserAuthenticatorInterface $userAuthenticator,
-        LoginFormAuthenticator $authenticator
-    ) {
-        return $userAuthenticator->authenticateUser(
-            $user,
-            $authenticator,
-            $request
-        );
-    }
 }

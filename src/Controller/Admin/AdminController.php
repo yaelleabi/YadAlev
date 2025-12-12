@@ -29,7 +29,7 @@ class AdminController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        return $this->render('admin/aidproject_new.html.twig');
+        return $this->render('admin/admin_event/index.html.twig');
     }
 
    

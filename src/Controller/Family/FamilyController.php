@@ -18,27 +18,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/family')]
 final class FamilyController extends AbstractController
 {
-    #[Route('', name: 'app_family_index', methods: ['GET'])]
-    public function index(
-        FamilyRepository $familyRepository,
-        AidRequestRepository $aidRequestRepository
-    ): Response {
-        $families = $familyRepository->findAll();
-
-        // tableau des demandes validées indexées par famille
-        $validatedRequests = [];
-
-        foreach ($families as $family) {
-            $validatedRequests[$family->getId()] = 
-                $aidRequestRepository->findValidatedByFamily($family);
-        }
-
-        return $this->render('family/index.html.twig', [
-            'families' => $families,
-            'validatedRequests' => $validatedRequests,
-        ]);
-    }
-
     #[Route('/home', name: 'app_family_home')]
     public function home(AidRequestRepository $repo): Response
     {
