@@ -13,7 +13,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Enum\AidRequestStatus;
 use App\Repository\AidRequestRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_ADMIN')]
 final class AdminAidRequestController extends AbstractController
 {
     #[Route('/admin/aidrequests', name: 'app_admin_aidrequest_list')]

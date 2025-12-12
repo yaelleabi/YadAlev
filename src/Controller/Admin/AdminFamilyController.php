@@ -12,27 +12,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Entity\Family;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Form\FamilyType;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
 
-#[IsGranted('ROLE_ADMIN')]
-class AdminController extends AbstractController
+#[IsGranted(attribute: 'ROLE_ADMIN')]
+final class AdminFamilyController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
-    public function index(): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        return $this->render('admin/index.html.twig');
-    }
-
-    #[Route('/admin/aidproject/new', name: 'app_admin_aidproject_new')]
-    public function createAidProject(): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
-        return $this->render('admin/aidproject_new.html.twig');
-    }
-
-   
     #[Route('/admin/families', name: 'app_admin_family_list')]
     public function listFamilies(
         FamilyRepository $familyRepository,
@@ -48,7 +34,7 @@ class AdminController extends AbstractController
                 $aidRequestRepository->findValidatedByFamily($family);
         }
 
-        return $this->render('admin/famadmin/index.html.twig', [
+        return $this->render('admin/admin_family/index.html.twig', [
             'families' => $families,
             'validatedRequests' => $validatedRequests
         ]);
@@ -118,9 +104,35 @@ class AdminController extends AbstractController
     ): Response {
         $validatedRequests = $aidRequestRepository->findValidatedByFamily($family);
 
-        return $this->render('admin/family/show.html.twig', [
+        return $this->render('admin/admin_family/show.html.twig', [
             'family' => $family,
             'validatedRequests' => $validatedRequests
+        ]);
+    }
+
+    #[Route('/admin/family/{id}/edit', name: 'admin_family_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Family $family,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+
+        $form = $this->createForm(FamilyType::class, $family);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            $this->addFlash('success', 'Les informations de la famille ont été mises à jour.');
+
+            return $this->redirectToRoute('admin_family_show', [
+                'id' => $family->getId()
+            ]);
+        }
+
+        return $this->render('admin/admin_family/edit.html.twig', [
+            'family' => $family,
+            'form' => $form,
         ]);
     }
 

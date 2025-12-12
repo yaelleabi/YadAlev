@@ -1,0 +1,250 @@
+{% extends 'base.html.twig' %}
+{% block title %}Dossier famille - Yad Alev{% endblock %}
+
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <!-- Logo + titre -->
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            <span class="fw-bold text-primary fs-5">
+                Dossier famille
+            </span>
+        </div>
+
+        <!-- Icônes -->
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ path('app_admin_family_list') }}" class="nav-icon" title="Retour liste familles">
+                <i class="fas fa-users"></i>
+            </a>
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+
+    </div>
+</nav>
+
+<!-- PAGE -->
+<div class="main-container">
+
+    <div class="content-wrapper container">
+
+        <!-- TITRE -->
+        <div class="text-center mb-5">
+            <h2 class="text-primary fw-bold fade-in">
+                Informations de {{ family.firstName }} {{ family.name }}
+            </h2>
+            <p class="text-muted fade-in" style="animation-delay:.2s">
+                Dossier complet de la famille.
+            </p>
+        </div>
+
+        <!-- ACCORDION WRAPPER -->
+        <div class="info-card shadow-sm fade-in">
+
+            <div class="accordion" id="infoAccordion">
+
+                {% set lastRequest = family.aidRequests|last %}
+
+                <!-- IDENTITÉ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#identity" aria-expanded="true">
+                            1. Identité
+                        </button>
+                    </h2>
+                    <div id="identity" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <p><strong>Nom :</strong> {{ family.name }}</p>
+                            <p><strong>Prénom :</strong> {{ family.firstName }}</p>
+                            <p><strong>Email :</strong> {{ family.email }}</p>
+                            <p><strong>Téléphone :</strong> {{ family.phoneNumber }}</p>
+                            <p><strong>Date de naissance :</strong>
+                                {{ family.dateOfBirth ? family.dateOfBirth|date('d/m/Y') : '—' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAMILLE & LOGEMENT -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#familyHousing">
+                            2. Famille & logement
+                        </button>
+                    </h2>
+                    <div id="familyHousing" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>Situation familiale :</strong> {{ family.maritalStatus }}</p>
+                            <p><strong>Enfants à charge :</strong> {{ family.dependantsCount }}</p>
+                            <p><strong>Logement :</strong> {{ family.housingStatus }}</p>
+
+                            <h5 class="mt-3">Adresse</h5>
+                            <p>{{ family.adress.streetNumber }} {{ family.adress.street }}</p>
+                            <p>{{ family.adress.postalCode }} {{ family.adress.city }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FINANCES -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#finances">
+                            3. Finances
+                        </button>
+                    </h2>
+                    <div id="finances" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>Situation professionnelle :</strong> {{ family.employmentStatus }}</p>
+                            <p><strong>Revenu mensuel :</strong> {{ family.monthlyIncome }} €</p>
+                            <p><strong>Situation conjoint :</strong> {{ family.spouseEmploymentStatus }}</p>
+                            <p><strong>Revenu conjoint :</strong> {{ family.spouseMonthlyIncome }} €</p>
+                            <p><strong>Allocations familiales :</strong> {{ family.familyAllowanceAmount }} €</p>
+                            <p><strong>Pension alimentaire :</strong> {{ family.alimonyAmount }} €</p>
+                            <p><strong>Loyer net :</strong> {{ family.rentAmountNetAide }} €</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOCUMENTS -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#documents">
+                            4. Documents fournis
+                        </button>
+                    </h2>
+                    <div id="documents" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+
+                            {% set docs = {
+                                'Justificatif d’identité': family.identityProofFilename,
+                                'Justificatif de revenus': family.incomeProofFilename,
+                                'Avis d’imposition': family.taxNoticeFilename,
+                                'Quittance de loyer': family.quittanceLoyer,
+                                'Avis de charges': family.avisCharge,
+                                'Taxe foncière': family.taxeFonciere,
+                                'Frais de scolarité': family.fraisScolarite,
+                                'Attestation CAF': family.attestationCaf,
+                                'Autre document': family.otherDocumentFilename
+                            } %}
+
+                            {% if docs|filter(d => d)|length > 0 %}
+                                {% for label, file in docs %}
+                                    {% if file %}
+                                        <p>
+                                            <strong>{{ label }} :</strong>
+                                            <a href="{{ asset('uploads/' ~ file) }}" target="_blank"
+                                               class="text-primary">
+                                                Voir le document
+                                            </a>
+                                        </p>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">Aucun document fourni.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AIDES -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#aidesAttribuees">
+                            5. Aides attribuées
+                        </button>
+                    </h2>
+
+                    <div id="aidesAttribuees" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+
+                            <h5 class="fw-bold">Aides validées</h5>
+
+                            {% if validatedRequests is empty %}
+                                <p class="text-muted">Aucune aide validée.</p>
+                            {% else %}
+                                <ul class="ps-3">
+                                    {% for aide in validatedRequests %}
+                                        <li>
+                                            <strong>{{ aide.requestType }}</strong>
+                                            — {{ aide.createdAt|date('d/m/Y') }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                            <h5 class="fw-bold mt-3">Aides enregistrées</h5>
+
+                            {% if family.aidList is empty %}
+                                <p class="text-muted">Aucune aide enregistrée.</p>
+                            {% else %}
+                                <ul class="ps-3">
+                                    {% for aide in family.aidList %}
+                                        <li>
+                                            <strong>{{ aide.name }}</strong>
+                                            {% if aide.description %}
+                                                — {{ aide.description }}
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BOUTONS ADMIN -->
+        <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
+            <a href="{{ path('app_admin_family_list') }}"
+               class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
+                ⬅️ Retour à la liste des familles
+            </a>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer-custom text-center text-muted small py-4">
+        <div class="footer-line mx-auto"></div>
+        <div class="footer-content mt-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+            <p class="m-0">© 2025 Administration Yad Alev — Tous droits réservés.</p>
+        </div>
+    </footer>
+
+</div>
+
+<style>
+/* CSS conservé identique */
+.navbar { border-bottom: 1px solid #e2e8f0; }
+.nav-logo { width: 48px; }
+.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
+.nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
+.main-container { min-height: 100vh; display: flex; flex-direction: column; }
+.info-card { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; }
+.accordion-button { font-weight: 600; color: #0d6efd; }
+.accordion-button:not(.collapsed) { background: #e8f0ff; color: #0d6efd; }
+.edit-btn { border-radius: 10px; padding: 10px 25px; }
+.fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
+@keyframes fadeSlide {
+    from { opacity:0; transform: translateY(25px); }
+    to { opacity:1; transform:translateY(0); }
+}
+.footer-line { width: 85%; height: 1px; background:#d0d7e0; }
+.footer-logo { width: 60px; }
+</style>
+
+{% endblock %}
