@@ -15,7 +15,9 @@ use App\Repository\AidRequestRepository;
 use App\Entity\Family;
 use App\Service\AidRequestMailer;
 use App\Service\FamilySyncService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted(attribute: 'ROLE_FAMILY')]
 final class FamilyAidRequestController extends AbstractController
 {
     #[Route('/family/aid/request', name: 'app_family_aid_request')]

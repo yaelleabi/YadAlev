@@ -12,8 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\AidRequest;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-
+#[IsGranted(attribute: 'ROLE_FAMILY')]
 #[Route('/family')]
 final class FamilyController extends AbstractController
 {
