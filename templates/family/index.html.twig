@@ -72,13 +72,13 @@
                                 {% endif %}
                             </td>
 
-                            <!-- 🔵 AUTRES AIDES (AidList) -->
+                            <!-- 🔵 AUTRES AIDES (familyEvents) -->
                             <td>
-                                {% if family.aidList is empty %}
+                                {% if family.familyEvents is empty %}
                                     <span class="text-muted">Aucune</span>
                                 {% else %}
                                     <ul class="ps-3 m-0">
-                                        {% for aide in family.aidList %}
+                                        {% for aide in family.familyEvents %}
                                             <li>{{ aide.name }}</li>
                                         {% endfor %}
                                     </ul>

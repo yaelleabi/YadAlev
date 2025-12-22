@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\EventRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -25,6 +26,12 @@ class Event
 
     #[ORM\Column]
     private ?bool $isVisible = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $Title = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $Description = null;
 
     public function getId(): ?int
     {
@@ -63,6 +70,30 @@ class Event
     public function setIsVisible(bool $isVisible): static
     {
         $this->isVisible = $isVisible;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->Title;
+    }
+
+    public function setTitle(string $Title): static
+    {
+        $this->Title = $Title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->Description;
+    }
+
+    public function setDescription(string $Description): static
+    {
+        $this->Description = $Description;
 
         return $this;
     }

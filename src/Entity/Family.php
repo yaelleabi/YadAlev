@@ -7,7 +7,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Entity\AidList;
 use App\Entity\AidRequest;
 use App\Entity\User;
 use App\Entity\Adress;
@@ -95,18 +94,26 @@ class Family extends User
 
     /* ======================= RELATIONS ======================= */
 
-    #[ORM\ManyToMany(targetEntity: AidList::class, inversedBy: 'families')]
-    private Collection $aidList;
+    /**
+     * @var Collection<int, AidRequest>
+     */
 
     #[ORM\OneToMany(targetEntity: AidRequest::class, mappedBy: 'family')]
     private Collection $aidRequests;
 
+    /**
+     * @var Collection<int, FamilyEvent>
+     */
+    #[ORM\ManyToMany(targetEntity: FamilyEvent::class, mappedBy: 'assignedFamilies')]
+    private Collection $familyEvents;
+
     public function __construct()
     {
         parent::__construct();
-        $this->aidList = new ArrayCollection();
+       
         $this->aidRequests = new ArrayCollection();
         $this->adress = new Adress();
+        $this->familyEvents = new ArrayCollection();
     }
 
     /* ======================= GETTERS / SETTERS ======================= */
@@ -211,26 +218,31 @@ class Family extends User
         }
         return $this;
     }
+    
+
     /**
- * @return Collection<int, AidList>
- */
-    public function getAidList(): Collection
+     * @return Collection<int, FamilyEvent>
+     */
+    public function getFamilyEvents(): Collection
     {
-        return $this->aidList;
+        return $this->familyEvents;
     }
 
-    public function addAidList(AidList $aid): self
+    public function addFamilyEvent(FamilyEvent $familyEvent): static
     {
-        if (!$this->aidList->contains($aid)) {
-            $this->aidList->add($aid);
+        if (!$this->familyEvents->contains($familyEvent)) {
+            $this->familyEvents->add($familyEvent);
+            $familyEvent->addAssignedFamily($this);
         }
 
         return $this;
     }
 
-    public function removeAidList(AidList $aid): self
+    public function removeFamilyEvent(FamilyEvent $familyEvent): static
     {
-        $this->aidList->removeElement($aid);
+        if ($this->familyEvents->removeElement($familyEvent)) {
+            $familyEvent->removeAssignedFamily($this);
+        }
 
         return $this;
     }

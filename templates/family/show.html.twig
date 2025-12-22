@@ -179,34 +179,6 @@
                     </div>
                 </div>
 
-                <!-- AID LIST -->
-                {# <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#aidList">
-                            5. Aides dont vous bénéficiez
-                        </button>
-                    </h2>
-                    <div id="aidList" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            {% if family.aidList|length > 0 %}
-                                <ul>
-                                    {% for aid in family.aidList %}
-                                        <li>
-                                            <strong>{{ aid.name }}</strong>
-                                            {% if aid.description %}
-                                                — {{ aid.description }}
-                                            {% endif %}
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            {% else %}
-                                <p class="text-muted">Aucune aide enregistrée.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div> #}
-                <!-- AIDES ATTRIBUÉES & AUTRES AIDES -->
         <div class="accordion-item">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button"
@@ -239,15 +211,15 @@
                 <!-- 🟣 AID LIST (ManyToMany) -->
                 <h5 class="fw-bold">Aides enregistrées pour votre foyer</h5>
 
-                {% if family.aidList is empty %}
+                {% if family.familyEvents is empty %}
                     <p class="text-muted">Aucune aide enregistrée.</p>
                 {% else %}
                     <ul class="ps-3">
-                        {% for aide in family.aidList %}
+                        {% for aide in family.familyEvents %}
                             <li>
                                 <strong>{{ aide.name }}</strong>
-                                {% if aid.description %}
-                                    — {{ aid.description }}
+                                {% if aide.description %}
+                                    — {{ aide.description }}
                                 {% endif %}
                             </li>
                         {% endfor %}

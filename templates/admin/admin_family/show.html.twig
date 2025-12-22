@@ -184,11 +184,11 @@
 
                             <h5 class="fw-bold mt-3">Aides enregistrées</h5>
 
-                            {% if family.aidList is empty %}
+                            {% if family.familyEvents is empty %}
                                 <p class="text-muted">Aucune aide enregistrée.</p>
                             {% else %}
                                 <ul class="ps-3">
-                                    {% for aide in family.aidList %}
+                                    {% for aide in family.familyEvents %}
                                         <li>
                                             <strong>{{ aide.name }}</strong>
                                             {% if aide.description %}

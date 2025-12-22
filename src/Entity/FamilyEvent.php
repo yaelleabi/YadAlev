@@ -3,23 +3,60 @@
 namespace App\Entity;
 
 use App\Repository\FamilyEventRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FamilyEventRepository::class)]
 class FamilyEvent extends Event
 {
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $assignedFamilies = null;
+    /**
+     * @var Collection<int, Family>
+     */
+    #[ORM\ManyToMany(targetEntity: Family::class, inversedBy: 'familyEvents')]
+    private Collection $assignedFamilies;
 
-    public function getAssignedFamilies(): ?array
+    #[ORM\Column]
+    private ?int $Quantity = null;
+
+    public function __construct()
+    {
+        $this->assignedFamilies = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection<int, Family>
+     */
+    public function getAssignedFamilies(): Collection
     {
         return $this->assignedFamilies;
     }
 
-    public function setAssignedFamilies(?array $assignedFamilies): static
+    public function addAssignedFamily(Family $assignedFamily): static
     {
-        $this->assignedFamilies = $assignedFamilies;
+        if (!$this->assignedFamilies->contains($assignedFamily)) {
+            $this->assignedFamilies->add($assignedFamily);
+        }
+
+        return $this;
+    }
+
+    public function removeAssignedFamily(Family $assignedFamily): static
+    {
+        $this->assignedFamilies->removeElement($assignedFamily);
+
+        return $this;
+    }
+
+    public function getQuantity(): ?int
+    {
+        return $this->Quantity;
+    }
+
+    public function setQuantity(int $Quantity): static
+    {
+        $this->Quantity = $Quantity;
 
         return $this;
     }
