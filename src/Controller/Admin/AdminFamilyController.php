@@ -172,5 +172,14 @@ final class AdminFamilyController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route('/admin/family/{id}', name: 'admin_family_delete', methods: ['POST'])]
+    public function delete(Request $request, Family $family, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$family->getId(), $request->request->get('_token'))) {
+            $em->remove($family);
+            $em->flush();
+        }
 
+        return $this->redirectToRoute('app_admin_family_list');
+    }
 }

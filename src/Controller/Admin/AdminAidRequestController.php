@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use App\Enum\AidRequestStatus;
 use App\Repository\AidRequestRepository;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Entity\Family;
+use App\Service\FamilySyncService;
 
 #[IsGranted('ROLE_ADMIN')]
 final class AdminAidRequestController extends AbstractController
@@ -108,6 +110,38 @@ final class AdminAidRequestController extends AbstractController
         $this->addFlash('danger', 'Demande rejetée.');
         return $this->redirectToRoute('app_admin_aidrequest_show', ['id' => $aidRequest->getId()]);
     }
-    
+    #[Route('/admin/family/{id}/aidrequest/new', name: 'admin_aidrequest_new_for_family', methods: ['GET', 'POST'])]
+    public function newForFamily(
+        Request $request,
+        Family $family,
+        EntityManagerInterface $em,
+        FamilySyncService $sync
+    ): Response {
+        $aidRequest = new AidRequest();
+        $aidRequest->setFamily($family);
+        $aidRequest->setStatus(AidRequestStatus::PENDING);
 
+        // ✅ pré-remplissage depuis Family
+        $sync->fillAidRequestFromFamily($family, $aidRequest);
+
+        // 🔥 IMPORTANT : côté admin, tu peux réutiliser AidRequestType
+        // ou faire un AdminAidRequestType plus léger si tu veux.
+        $form = $this->createForm(AidRequestType::class, $aidRequest, [
+            'is_family' => false, // si tu utilises cette option dans ton form
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($aidRequest);
+            $em->flush();
+
+            $this->addFlash('success', 'La demande a bien été créée pour cette famille.');
+            return $this->redirectToRoute('app_admin_family_list');
+        }
+
+        return $this->render('admin/admin_aid_request/new.html.twig', [
+            'form' => $form->createView(),
+            'family' => $family,
+        ]);
+    }
 }

@@ -2,20 +2,40 @@
 {% block title %}Nouvelle demande d’aide - Yad Alev{% endblock %}
 
 {% block body %}
-<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-page">
-  <!-- Flèche retour -->
-  <a href="{{ path('app_family_home') }}" class="back-arrow" onclick="return confirmBack(event);">
-    <i class="fas fa-arrow-left"></i>
-  </a>
 
-  
-  <!-- Logo et en-tête -->
-  <div class="text-center mb-4">
-    <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="logo">
-    <h2 class="text-primary fw-bold mt-2">Nouvelle demande d’aide</h2>
-    <p class="text-muted mb-0">Complétez chaque étape puis validez à la fin.</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+      <span class="fw-bold text-primary fs-5">Créer une demande</span>
+    </div>
+
+    <div class="d-flex align-items-center gap-4">
+      <a href="{{ path('app_admin_family_list') }}" class="nav-icon" title="Retour liste familles">
+        <i class="fas fa-list"></i>
+      </a>
+      <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </div>
   </div>
+</nav>
 
+<div class="main-container">
+  <div class="content-wrapper container" style="padding-top: 100px;">
+
+    <div class="text-center mb-5 fade-in">
+      <h2 class="text-primary fw-bold">
+        Nouvelle demande d’aide — {{ family.firstName }} {{ family.name }}
+      </h2>
+      <p class="text-muted" style="animation-delay:.2s">
+        Complétez chaque étape puis validez à la fin.
+      </p>
+    </div>
+
+    <p class="text-muted mb-3">
+      <span class="text-danger">*</span> Champs obligatoires
+    </p>
   <!-- Carte du formulaire -->
   <div class="card wizard-card shadow-sm p-4" style="max-width: 920px; width:100%;">
     
@@ -547,7 +567,9 @@ document.addEventListener('turbo:load', addRequiredStars);
     }
   }
 })();
-function initAddressApi() {
+
+    // On encapsule la logique dans une fonction nommée
+    function initAddressApi() {
         const cpField  = document.getElementById('{{ form.adress.postalCode.vars.id }}');
         const cityField = document.getElementById('{{ form.adress.city.vars.id }}');
         const cityWrapper = document.getElementById('city-wrapper');
@@ -555,6 +577,10 @@ function initAddressApi() {
         // Sécurité : si les champs ne sont pas sur la page, on arrête tout de suite
         if (!cpField || !cityField || !cityWrapper) return;
 
+        // Pour éviter d'ajouter l'événement "input" plusieurs fois si la fonction est appelée 2 fois
+        // On clone le noeud ou on vérifie un flag, mais le plus simple avec Turbo
+        // est de laisser faire car le DOM est remplacé à chaque navigation.
+        
         // On supprime les anciens écouteurs potentiels pour éviter les doublons (bonne pratique)
         const newCpField = cpField.cloneNode(true); 
         cpField.parentNode.replaceChild(newCpField, cpField);
@@ -636,6 +662,7 @@ function initAddressApi() {
     document.addEventListener('DOMContentLoaded', initAddressApi);
     // ET on le relance à chaque navigation Turbo
     document.addEventListener('turbo:load', initAddressApi);
+
 
 </script>
 
