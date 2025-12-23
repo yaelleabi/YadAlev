@@ -1,0 +1,113 @@
+{# templates/admin_volunteer/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau bénévole{% endblock %}
+
+{% block body %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            <span class="fw-bold text-primary fs-5">Créer un bénévole</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-4">
+            <a href="{{ path('app_admin_volunteer_index') }}" class="nav-icon" title="Retour liste">
+                <i class="fas fa-list"></i>
+            </a>
+            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="main-container">
+    <div class="content-wrapper container" style="padding-top: 100px;">
+
+        <div class="text-center mb-5 fade-in">
+            <h2 class="text-primary fw-bold">Créer un nouveau bénévole</h2>
+            <p class="text-muted" style="animation-delay:.2s">
+                Renseignez les informations du bénévole puis enregistrez.
+            </p>
+        </div>
+        <p class="text-muted mb-3">
+            <span class="text-danger">*</span> Champs obligatoires
+        </p>
+
+
+        {{ form_start(form) }}
+
+        {% if form_errors(form) %}
+            <div class="alert alert-danger mt-3">
+                {{ form_errors(form) }}
+            </div>
+        {% endif %}
+
+        <div class="info-card shadow-sm fade-in p-4">
+
+            <h5 class="text-primary fw-semibold mb-3">Identité</h5>
+            {{ form_row(form.name) }}
+            {{ form_row(form.firstName) }}
+            {{ form_row(form.phoneNumber) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.plainPassword) }}
+            {{ form_row(form.isVerified) }}
+
+        </div>
+
+        <div class="text-center mt-4 fade-in">
+            <button type="submit" class="btn btn-primary btn-lg shadow-sm edit-btn">
+                💾 Créer le bénévole
+            </button>
+        </div>
+        {{ form_row(form._token) }}
+
+        {{ form_end(form, { render_rest: false }) }}
+
+        <div class="text-center mt-4 fade-in">
+            <a href="{{ path('app_admin_volunteer_index') }}" class="btn btn-outline-secondary btn-lg shadow-sm">
+                ← Retour à la liste des bénévoles
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+label.required::after {
+    content: " *";
+    color: red;
+    font-weight: bold;
+}
+
+.navbar { border-bottom: 1px solid #e2e8f0; }
+.nav-logo { width: 48px; }
+.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
+.nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
+
+.main-container { min-height: 100vh; display:flex; flex-direction:column; }
+
+.info-card {
+    background:#fff;
+    border-radius:1rem;
+    border:1px solid #e2e8f0;
+}
+
+.edit-btn {
+    border-radius:10px;
+    padding:10px 25px;
+}
+
+.fade-in {
+    opacity:0;
+    animation:fadeSlide .7s ease forwards;
+}
+
+@keyframes fadeSlide {
+    from { opacity:0; transform:translateY(25px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+</style>
+
+{% endblock %}

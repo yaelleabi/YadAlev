@@ -6,14 +6,10 @@ use App\Repository\VolunteerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\DBAL\Types\Types;
 
 #[ORM\Entity(repositoryClass: VolunteerRepository::class)]
-class Volunteer Extends User
+class Volunteer extends User
 {
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?string $assignedProjects = null;
-
     /**
      * @var Collection<int, VolunteerEvent>
      */
@@ -24,18 +20,6 @@ class Volunteer Extends User
     {
         parent::__construct();
         $this->volunteerEvents = new ArrayCollection();
-    }
-
-    public function getAssignedProjects(): ?string
-    {
-        return $this->assignedProjects;
-    }
-
-    public function setAssignedProjects(string $assignedProjects): static
-    {
-        $this->assignedProjects = $assignedProjects;
-
-        return $this;
     }
 
     /**

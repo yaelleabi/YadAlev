@@ -77,11 +77,24 @@
 
                 <div class="mb-3">
                     {{ form_label(form.name, 'Nom  de famille*') }}
-                    {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Jean Dupont'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Dupont'}}) }}
                     {% for error in form.name.vars.errors %}
                         <div class="invalid-feedback d-block">{{ error.message }}</div>
                     {% endfor %}
                 </div>
+                <div class="mb-3">
+                    {{ form_label(form.firstName, 'Prénom *') }}
+                    {{ form_widget(form.firstName, {
+                        'attr': {
+                            'class': 'form-control' ~ (form.firstName.vars.errors|length ? ' is-invalid' : ''),
+                            'placeholder': 'Jean'
+                        }
+                    }) }}
+                    {% for error in form.firstName.vars.errors %}
+                        <div class="invalid-feedback d-block">{{ error.message }}</div>
+                    {% endfor %}
+                </div>
+
 
                 <div class="mb-3">
                     {{ form_label(form.email, 'Email *') }}
@@ -111,7 +124,7 @@
                         <div class="form-check d-flex align-items-center gap-2">
                             <input class="form-check-input" type="radio" id="role_volunteer" name="{{ form.roles.vars.full_name }}" value="ROLE_VOLUNTEER" {% if form.roles.vars.value == 'ROLE_VOLUNTEER' %}checked{% endif %}>
                             <label class="form-check-label" for="role_volunteer">
-                                <i class="bi bi-people-fill me-1 text-success"></i> Volontaire
+                                <i class="bi bi-people-fill me-1 text-success"></i> Bénévole
                             </label>
                         </div>
                     </div>

@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 
 class RegisterType extends AbstractType
@@ -41,6 +42,12 @@ class RegisterType extends AbstractType
                 ],
                 'label' => 'Nom de famille',
             ])
+            
+            ->add('firstName', TextType::class, [
+                'label' => 'Prénom',
+                'required' => true,
+            ])
+
 
 
             ->add('email', null, [
@@ -79,7 +86,7 @@ class RegisterType extends AbstractType
            ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'Famille' => 'ROLE_FAMILY',
-                    'Volontaire' => 'ROLE_VOLUNTEER',
+                    'Bénévole' => 'ROLE_VOLUNTEER',
                 ],
                 'expanded' => true, // Afficher sous forme de cases à cocher
                 'multiple' => false, // Une seule option sélectionnable

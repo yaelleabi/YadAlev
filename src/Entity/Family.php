@@ -18,8 +18,7 @@ class Family extends User
 
     #[ORM\Embedded(class: Adress::class, columnPrefix: 'adress_')]
     protected Adress $adress;
-        #[ORM\Column(length: 100, nullable: true)]
-    protected ?string $firstName = null;
+
 
     
     #[ORM\Column(type: "date", nullable: true)]
@@ -186,9 +185,6 @@ class Family extends User
     public function getAttestationCaf(): ?string { return $this->attestationCaf; }
     public function setAttestationCaf(?string $v): self { $this->attestationCaf = $v; return $this; }
     /* ===== NOM & PRÉNOM ===== */
-    public function getFirstName(): ?string { return $this->firstName; }
-    public function setFirstName(?string $fn): self { $this->firstName = $fn; return $this; }
-
 
     /* ===== DATE NAISSANCE ===== */
     public function getDateOfBirth(): ?\DateTimeInterface { return $this->dateOfBirth; }
