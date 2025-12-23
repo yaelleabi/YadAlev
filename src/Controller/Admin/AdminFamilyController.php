@@ -15,6 +15,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use App\Form\FamilyType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Form\AdminFamilyCreateType;
 
 #[IsGranted(attribute: 'ROLE_ADMIN')]
 final class AdminFamilyController extends AbstractController
@@ -37,6 +39,41 @@ final class AdminFamilyController extends AbstractController
         return $this->render('admin/admin_family/index.html.twig', [
             'families' => $families,
             'validatedRequests' => $validatedRequests
+        ]);
+    }
+     #[Route('/admin/family/new', name: 'admin_family_new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): Response {
+        $family = new Family();
+
+        $form = $this->createForm(AdminFamilyCreateType::class, $family);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            
+            $plainPassword = (string) $form->get('plainPassword')->getData();
+            $family->setPassword($hasher->hashPassword($family, $plainPassword));
+
+            $family->setRoles(['ROLE_FAMILY']);
+            $family->setIsVerified(true);
+
+
+           
+
+            $em->persist($family);
+            $em->flush();
+
+            $this->addFlash('success', 'La famille a bien été créée.');
+            return $this->redirectToRoute('app_admin_family_list');
+        }
+
+        return $this->render('admin/admin_family/new.html.twig', [
+            'form' => $form->createView(),
+            'family' => $family,
         ]);
     }
     #[Route('/admin/families/export/excel', name: 'app_family_export_excel')]

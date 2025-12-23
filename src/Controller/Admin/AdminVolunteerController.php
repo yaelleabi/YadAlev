@@ -28,6 +28,8 @@ final class AdminVolunteerController extends AbstractController
     {
         $volunteer = new Volunteer();
         $volunteer->setRoles(['ROLE_VOLUNTEER']);
+        $volunteer->setIsVerified(true);
+
 
         $form = $this->createForm(VolunteerType::class, $volunteer);
         $form->handleRequest($request);
@@ -48,6 +50,7 @@ final class AdminVolunteerController extends AbstractController
 
             return $this->redirectToRoute('app_admin_volunteer_index', [], Response::HTTP_SEE_OTHER);
         }
+        $this->addFlash('success', 'Le bénévole a bien été créé.');
 
         return $this->render('admin_volunteer/new.html.twig', [
             'volunteer' => $volunteer,

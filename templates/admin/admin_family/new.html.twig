@@ -1,7 +1,6 @@
-{# templates/admin_volunteer/new.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Nouveau bénévole{% endblock %}
+{% block title %}Nouvelle famille{% endblock %}
 
 {% block body %}
 
@@ -9,11 +8,11 @@
     <div class="container d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center gap-3">
             <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            <span class="fw-bold text-primary fs-5">Créer un bénévole</span>
+            <span class="fw-bold text-primary fs-5">Créer une famille</span>
         </div>
 
         <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_admin_volunteer_index') }}" class="nav-icon" title="Retour liste">
+            <a href="{{ path('app_admin_family_list') }}" class="nav-icon" title="Retour liste">
                 <i class="fas fa-list"></i>
             </a>
             <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
@@ -27,15 +26,15 @@
     <div class="content-wrapper container" style="padding-top: 100px;">
 
         <div class="text-center mb-5 fade-in">
-            <h2 class="text-primary fw-bold">Créer un nouveau bénévole</h2>
+            <h2 class="text-primary fw-bold">Créer une nouvelle famille</h2>
             <p class="text-muted" style="animation-delay:.2s">
-                Renseignez les informations du bénévole puis enregistrez.
+                Renseignez les informations du compte famille puis enregistrez.
             </p>
         </div>
+
         <p class="text-muted mb-3">
             <span class="text-danger">*</span> Champs obligatoires
         </p>
-
 
         {{ form_start(form) }}
 
@@ -48,25 +47,28 @@
         <div class="info-card shadow-sm fade-in p-4">
 
             <h5 class="text-primary fw-semibold mb-3">Identité</h5>
-            {{ form_row(form.name) }}
+
             {{ form_row(form.firstName) }}
+            {{ form_row(form.name) }}
             {{ form_row(form.phoneNumber) }}
             {{ form_row(form.email) }}
             {{ form_row(form.plainPassword) }}
+
         </div>
 
         <div class="text-center mt-4 fade-in">
             <button type="submit" class="btn btn-primary btn-lg shadow-sm edit-btn">
-                💾 Créer le bénévole
+                💾 Créer la famille
             </button>
         </div>
+
         {{ form_row(form._token) }}
 
         {{ form_end(form, { render_rest: false }) }}
 
         <div class="text-center mt-4 fade-in">
-            <a href="{{ path('app_admin_volunteer_index') }}" class="btn btn-outline-secondary btn-lg shadow-sm">
-                ← Retour à la liste des bénévoles
+            <a href="{{ path('app_admin_family_list') }}" class="btn btn-outline-secondary btn-lg shadow-sm">
+                ← Retour à la liste des familles
             </a>
         </div>
     </div>
