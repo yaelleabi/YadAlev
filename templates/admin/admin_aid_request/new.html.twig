@@ -12,7 +12,7 @@
 
     <div class="d-flex align-items-center gap-4">
       <a href="{{ path('app_admin_family_list') }}" class="nav-icon" title="Retour liste familles">
-        <i class="fas fa-list"></i>
+        <i class="fas fa-arrow-left"></i>
       </a>
       <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
         <i class="fas fa-sign-out-alt"></i>
@@ -241,6 +241,17 @@
 </div>
 
 <style>
+.nav-icon {
+    font-size: 1.4rem;
+    color: #444;
+    transition: .2s;
+}
+
+.nav-icon:hover {
+    color: #0d6efd;
+    transform: translateY(-2px);
+}
+
 input:disabled {
   background-color: #f1f3f5 !important;
   color: #6c757d !important;
