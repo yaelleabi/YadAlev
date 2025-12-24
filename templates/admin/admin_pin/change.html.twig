@@ -1,0 +1,309 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Code PIN{% endblock %}
+
+{% block body %}
+<div class="pin-container">
+    <div class="pin-card">
+        
+        {# --- CAS 1 : SUCCÈS --- #}
+        {% if success %}
+            <div class="text-center fade-in">
+                <div class="lock-icon bg-success bg-opacity-10 text-success mb-3">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h3 class="fw-bold text-success mb-2">Succès !</h3>
+                <p class="text-muted mb-4">{{ success }}</p>
+                
+                <a href="{{ path('app_admin') }}" class="btn btn-primary w-100 rounded-pill py-2">
+                    Retour au tableau de bord
+                </a>
+            </div>
+
+        {# --- CAS 2 : FORMULAIRE DE MODIFICATION --- #}
+        {% else %}
+            <div class="mb-4 text-center">
+                <div class="lock-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                
+                <h3 class="fw-bold mt-3" id="stepTitle">Ancien Code</h3>
+                <p class="text-muted small" id="stepSubtitle">Veuillez saisir votre code actuel</p>
+            </div>
+
+            {% if error %}
+                <div class="alert alert-danger text-center py-2 mb-3 small fade-in" id="phpError">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <div class="alert alert-danger text-center py-2 mb-3 small d-none" id="jsError"></div>
+
+            <div class="dots-container mb-4">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+
+            <form method="post" id="changePinForm">
+                <input type="hidden" name="old_pin" id="inputOldPin">
+                <input type="hidden" name="new_pin" id="inputNewPin">
+                <input type="hidden" name="confirm_pin" id="inputConfirmPin">
+            </form>
+
+            <div class="keypad">
+                <button type="button" class="key" onclick="addNumber(1)">1</button>
+                <button type="button" class="key" onclick="addNumber(2)">2</button>
+                <button type="button" class="key" onclick="addNumber(3)">3</button>
+                <button type="button" class="key" onclick="addNumber(4)">4</button>
+                <button type="button" class="key" onclick="addNumber(5)">5</button>
+                <button type="button" class="key" onclick="addNumber(6)">6</button>
+                <button type="button" class="key" onclick="addNumber(7)">7</button>
+                <button type="button" class="key" onclick="addNumber(8)">8</button>
+                <button type="button" class="key" onclick="addNumber(9)">9</button>
+                <button type="button" class="key empty"></button> 
+                <button type="button" class="key" onclick="addNumber(0)">0</button>
+                <button type="button" class="key delete-key" onclick="deleteNumber()">
+                    <i class="fas fa-backspace"></i>
+                </button>
+            </div>
+
+            {# --- NOUVEAU : BOUTON VALIDER --- #}
+            <div class="mt-4">
+                <button type="button" id="validateBtn" onclick="nextStep()" class="btn btn-primary w-100 rounded-pill py-2 fw-bold" disabled>
+                    Valider l'étape
+                </button>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="{{ path('app_admin_pin') }}" class="text-decoration-none text-muted small">
+                    <i class="fas fa-arrow-left me-1"></i> Annuler
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .pin-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f1f5f9;
+    }
+    .pin-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 2rem;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        width: 100%;
+        max-width: 380px;
+    }
+    .lock-icon {
+        width: 60px;
+        height: 60px;
+        background: #eff6ff;
+        color: #3b82f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto;
+    }
+    
+    .dots-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        height: 20px;
+    }
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #e2e8f0;
+        transition: 0.2s;
+    }
+    .dot.active {
+        background-color: #3b82f6;
+        transform: scale(1.2);
+    }
+    .shake { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        justify-items: center;
+    }
+    .key {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        border: none;
+        background-color: #f8fafc;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .key:not(.empty):hover { background-color: #e2e8f0; }
+    .key:active { background-color: #cbd5e1; transform: scale(0.95); }
+    .delete-key { color: #ef4444; background-color: transparent; }
+    .delete-key:hover { background-color: #fef2f2; }
+    .empty { background: transparent; cursor: default; }
+    .fade-in { animation: fadeIn 0.5s ease-in; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Style pour le bouton désactivé */
+    #validateBtn:disabled {
+        background-color: #cbd5e1;
+        border-color: #cbd5e1;
+        cursor: not-allowed;
+    }
+</style>
+
+<script>
+    let currentInput = "";
+    let step = 1;
+    const maxLen = 4;
+
+    let valOld = "";
+    let valNew = "";
+
+    function updateUI() {
+        // Mise à jour des points
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, index) => {
+            if (index < currentInput.length) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Gestion de l'état du bouton
+        const btn = document.getElementById('validateBtn');
+        if (currentInput.length === maxLen) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+    }
+
+    function showError(msg) {
+        const errDiv = document.getElementById('jsError');
+        errDiv.innerText = msg;
+        errDiv.classList.remove('d-none');
+        
+        const card = document.querySelector('.pin-card');
+        card.classList.add('shake');
+        setTimeout(() => card.classList.remove('shake'), 400);
+    }
+    
+    function hideError() {
+        document.getElementById('jsError').classList.add('d-none');
+        const phpError = document.getElementById('phpError');
+        if(phpError) phpError.style.display = 'none';
+    }
+
+    function addNumber(num) {
+        if (currentInput.length < maxLen) {
+            hideError();
+            currentInput += num;
+            updateUI(); // On met à jour l'UI (points + bouton)
+        }
+    }
+
+    function deleteNumber() {
+        if (currentInput.length > 0) {
+            currentInput = currentInput.slice(0, -1);
+            updateUI(); // On met à jour l'UI (points + bouton)
+        }
+    }
+
+    function nextStep() {
+        const title = document.getElementById('stepTitle');
+        const subtitle = document.getElementById('stepSubtitle');
+        const inputOld = document.getElementById('inputOldPin');
+        const inputNew = document.getElementById('inputNewPin');
+        const inputConfirm = document.getElementById('inputConfirmPin');
+        const btn = document.getElementById('validateBtn');
+
+        if (step === 1) {
+            // Vers étape 2
+            valOld = currentInput;
+            inputOld.value = valOld;
+            
+            // Reset
+            currentInput = "";
+            updateUI();
+            step = 2;
+            
+            title.innerText = "Nouveau Code";
+            subtitle.innerText = "Choisissez un nouveau code à 4 chiffres";
+            btn.innerText = "Valider le nouveau code";
+            
+        } else if (step === 2) {
+            // Vers étape 3
+            valNew = currentInput;
+            inputNew.value = valNew;
+            
+            // Reset
+            currentInput = "";
+            updateUI();
+            step = 3;
+            
+            title.innerText = "Confirmation";
+            subtitle.innerText = "Ressaisissez le nouveau code pour valider";
+            btn.innerText = "Confirmer le changement";
+            
+        } else if (step === 3) {
+            // Validation finale
+            if (currentInput === valNew) {
+                inputConfirm.value = currentInput;
+                document.getElementById('changePinForm').submit();
+            } else {
+                showError("Les codes ne correspondent pas. Recommencez.");
+                
+                // Retour étape 2
+                step = 2;
+                currentInput = "";
+                updateUI();
+                
+                title.innerText = "Nouveau Code";
+                subtitle.innerText = "Choisissez un nouveau code à 4 chiffres";
+                btn.innerText = "Valider le nouveau code";
+            }
+        }
+    }
+    
+    // Clavier physique
+    document.addEventListener('keydown', (e) => {
+        if (e.key >= '0' && e.key <= '9') {
+            addNumber(e.key);
+        } else if (e.key === 'Backspace') {
+            deleteNumber();
+        } else if (e.key === 'Enter') {
+            // Si on appuie sur Entrée et que le bouton est activé
+            const btn = document.getElementById('validateBtn');
+            if (!btn.disabled) {
+                nextStep();
+            }
+        }
+    });
+</script>
+{% endblock %}

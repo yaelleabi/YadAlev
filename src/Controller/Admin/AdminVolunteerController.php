@@ -54,7 +54,7 @@ final class AdminVolunteerController extends AbstractController
         }
         
 
-        return $this->render('admin_volunteer/new.html.twig', [
+        return $this->render('admin/admin_volunteer/new.html.twig', [
             'volunteer' => $volunteer,
             'form' => $form,
         ]);
@@ -63,7 +63,7 @@ final class AdminVolunteerController extends AbstractController
     #[Route('/{id}', name: 'app_admin_volunteer_show', methods: ['GET'])]
     public function show(Volunteer $volunteer): Response
     {
-        return $this->render('admin_volunteer/show.html.twig', [
+        return $this->render('admin/admin_volunteer/show.html.twig', [
             'volunteer' => $volunteer,
         ]);
     }
@@ -80,7 +80,7 @@ final class AdminVolunteerController extends AbstractController
             return $this->redirectToRoute('app_admin_volunteer_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin_volunteer/edit.html.twig', [
+        return $this->render('admin/admin_volunteer/edit.html.twig', [
             'volunteer' => $volunteer,
             'form' => $form,
         ]);

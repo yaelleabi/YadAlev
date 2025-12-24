@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification PIN{% endblock %}
+
+{% block body %}
+<div class="pin-container">
+    <div class="pin-card">
+        <div class="mb-4 text-center">
+            <div class="lock-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 class="fw-bold mt-3">Accès Sécurisé</h3>
+            <p class="text-muted small">Veuillez saisir votre code PIN administrateur</p>
+        </div>
+
+        {% if error %}
+            <div class="alert alert-danger text-center py-2 mb-3 small fade-in">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="dots-container mb-4">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <form method="post" id="pinForm">
+            <input type="hidden" name="pin" id="realPinInput">
+        </form>
+
+        <div class="keypad">
+            <button type="button" class="key" onclick="window.pinManager.add(1)">1</button>
+            <button type="button" class="key" onclick="window.pinManager.add(2)">2</button>
+            <button type="button" class="key" onclick="window.pinManager.add(3)">3</button>
+            <button type="button" class="key" onclick="window.pinManager.add(4)">4</button>
+            <button type="button" class="key" onclick="window.pinManager.add(5)">5</button>
+            <button type="button" class="key" onclick="window.pinManager.add(6)">6</button>
+            <button type="button" class="key" onclick="window.pinManager.add(7)">7</button>
+            <button type="button" class="key" onclick="window.pinManager.add(8)">8</button>
+            <button type="button" class="key" onclick="window.pinManager.add(9)">9</button>
+            <button type="button" class="key empty"></button> 
+            <button type="button" class="key" onclick="window.pinManager.add(0)">0</button>
+            <button type="button" class="key delete-key" onclick="window.pinManager.del()">
+                <i class="fas fa-backspace"></i>
+            </button>
+        </div>
+
+        <div class="mt-4">
+            <button type="button" id="validateBtn" onclick="window.pinManager.submit()" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm" disabled>
+                Valider
+            </button>
+        </div>
+        
+        <div class="text-center mt-4 d-flex flex-column align-items-center gap-3">
+            <a href="{{ path('app_admin_pin_change') }}" class="text-decoration-none text-primary fw-semibold small bg-light px-3 py-2 rounded-pill border">
+                <i class="fas fa-key me-1"></i> Modifier le code PIN
+            </a>
+
+            <a href="{{ path('app_admin') }}" class="text-decoration-none text-muted small">
+                <i class="fas fa-arrow-left me-1"></i> Retour au tableau de bord
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pin-container { min-height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #f1f5f9; }
+    .pin-card { background: white; padding: 2.5rem; border-radius: 2rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); width: 100%; max-width: 380px; }
+    .lock-icon { width: 60px; height: 60px; background: #eff6ff; color: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto; }
+    .dots-container { display: flex; justify-content: center; gap: 15px; height: 20px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; background-color: #e2e8f0; transition: 0.2s; }
+    .dot.active { background-color: #3b82f6; transform: scale(1.2); }
+    .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; justify-items: center; }
+    .key { width: 65px; height: 65px; border-radius: 50%; border: none; background-color: #f8fafc; font-size: 1.5rem; font-weight: 600; color: #334155; cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center; user-select: none; }
+    .key:not(.empty):active { background-color: #cbd5e1; transform: scale(0.90); }
+    .key:not(.empty):hover { background-color: #e2e8f0; }
+    .delete-key { color: #ef4444; background-color: transparent; }
+    .delete-key:hover { background-color: #fef2f2; }
+    .empty { background: transparent; cursor: default; }
+    #validateBtn:disabled { background-color: #cbd5e1; border-color: #cbd5e1; cursor: not-allowed; }
+</style>
+
+<script>
+    // On attache tout à l'objet window pour éviter les conflits de redéclaration avec Turbo
+    window.pinManager = {
+        currentPin: "",
+        maxLen: 4,
+
+        init: function() {
+            this.currentPin = "";
+            this.updateUI();
+        },
+
+        updateUI: function() {
+            // Points
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index < this.currentPin.length) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Bouton Valider
+            const btn = document.getElementById('validateBtn');
+            if (btn) {
+                btn.disabled = (this.currentPin.length !== this.maxLen);
+            }
+        },
+
+        add: function(num) {
+            if (this.currentPin.length < this.maxLen) {
+                this.currentPin += num.toString();
+                this.updateUI();
+            }
+        },
+
+        del: function() {
+            if (this.currentPin.length > 0) {
+                this.currentPin = this.currentPin.slice(0, -1);
+                this.updateUI();
+            }
+        },
+
+        submit: function() {
+            if (this.currentPin.length === this.maxLen) {
+                const input = document.getElementById('realPinInput');
+                const form = document.getElementById('pinForm');
+                if (input && form) {
+                    input.value = this.currentPin;
+                    form.submit();
+                }
+            }
+        }
+    };
+
+    // On force la réinitialisation à chaque chargement du script
+    window.pinManager.init();
+
+    // Gestion Clavier Physique (attaché proprement)
+    // On enlève l'ancien écouteur s'il existe pour éviter les doublons
+    if (window.handlePinKeydown) {
+        document.removeEventListener('keydown', window.handlePinKeydown);
+    }
+
+    window.handlePinKeydown = function(e) {
+        if (e.key >= '0' && e.key <= '9') {
+            window.pinManager.add(e.key);
+        } else if (e.key === 'Backspace') {
+            window.pinManager.del();
+        } else if (e.key === 'Enter') {
+            const btn = document.getElementById('validateBtn');
+            if (btn && !btn.disabled) {
+                window.pinManager.submit();
+            }
+        }
+    };
+
+    document.addEventListener('keydown', window.handlePinKeydown);
+
+</script>
+{% endblock %}
