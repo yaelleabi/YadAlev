@@ -48,7 +48,7 @@ class AdminController extends AbstractController
                 $aidRequestRepository->findValidatedByFamily($family);
         }
 
-        return $this->render('admin/famadmin/index.html.twig', [
+        return $this->render('admin/admin_family/index.html.twig', [
             'families' => $families,
             'validatedRequests' => $validatedRequests
         ]);

@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser le mot de passe{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4 p-md-5">
+
+                    <h1 class="h4 mb-3">Nouveau mot de passe</h1>
+
+                    <p class="text-muted mb-4">
+                        Choisis un nouveau mot de passe sécurisé pour ton compte.
+                    </p>
+
+                    {{ form_start(resetForm) }}
+
+                        {# --- Mot de passe (RepeatedType) + toggle visibilité --- #}
+                        {# --- Mot de passe (Nouveau) --- #}
+                        <div class="mb-3">
+                            {{ form_label(resetForm.plainPassword.first, 'Nouveau mot de passe') }}
+                            <div class="input-group">
+                                {# On laisse Symfony gérer l'ID automatiquement #}
+                                {{ form_widget(resetForm.plainPassword.first, {
+                                    attr: {
+                                        autocomplete: 'new-password'
+                                    }
+                                }) }}
+                                {# On récupère l'ID réel avec vars.id #}
+                                <button class="btn btn-outline-secondary toggle-password"
+                                        type="button"
+                                        data-target="{{ resetForm.plainPassword.first.vars.id }}"
+                                        title="Afficher/Masquer">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {{ form_errors(resetForm.plainPassword.first) }}
+                        </div>
+
+                        {# --- Confirmation --- #}
+                        <div class="mb-3">
+                            {{ form_label(resetForm.plainPassword.second, 'Confirmez le mot de passe') }}
+                            <div class="input-group">
+                                {{ form_widget(resetForm.plainPassword.second, {
+                                    attr: {
+                                        autocomplete: 'new-password'
+                                    }
+                                }) }}
+                                <button class="btn btn-outline-secondary toggle-password"
+                                        type="button"
+                                        data-target="{{ resetForm.plainPassword.second.vars.id }}"
+                                        title="Afficher/Masquer">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {{ form_errors(resetForm.plainPassword.second) }}
+                        </div>
+
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary">
+                                Réinitialiser le mot de passe
+                            </button>
+                        </div>
+
+                    {{ form_end(resetForm) }}
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = btn.querySelector('i');
+
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -52,7 +52,47 @@
             {{ form_row(form.name) }}
             {{ form_row(form.phoneNumber) }}
             {{ form_row(form.email) }}
-            {{ form_row(form.plainPassword) }}
+
+            {# --- Mot de passe (RepeatedType) + toggle visibilité --- #}
+            {# --- Mot de passe (Premier champ) --- #}
+            <div class="mb-3">
+                {{ form_label(form.plainPassword.first, 'Mot de passe') }}
+                <div class="position-relative">
+                    {{ form_widget(form.plainPassword.first, {
+                        'attr': {
+                            'class': 'form-control rounded-3 pe-5 py-2', 
+                            'placeholder': '••••••••',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                    <button type="button" 
+                            class="btn border-0 position-absolute top-50 end-0 translate-middle-y text-muted pe-3 toggle-password"
+                            data-target="{{ form.plainPassword.first.vars.id }}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                {{ form_errors(form.plainPassword.first) }}
+            </div>
+
+            {# --- Confirmation (Deuxième champ) --- #}
+            <div class="mb-3">
+                {{ form_label(form.plainPassword.second, 'Confirmez le mot de passe') }}
+                <div class="position-relative">
+                    {{ form_widget(form.plainPassword.second, {
+                        'attr': {
+                            'class': 'form-control rounded-3 pe-5 py-2',
+                            'placeholder': '••••••••',
+                            'autocomplete': 'new-password'
+                        }
+                    }) }}
+                    <button type="button" 
+                            class="btn border-0 position-absolute top-50 end-0 translate-middle-y text-muted pe-3 toggle-password"
+                            data-target="{{ form.plainPassword.second.vars.id }}">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                {{ form_errors(form.plainPassword.second) }}
+            </div>
 
         </div>
 
@@ -63,7 +103,6 @@
         </div>
 
         {{ form_row(form._token) }}
-
         {{ form_end(form, { render_rest: false }) }}
 
         <div class="text-center mt-4 fade-in">
@@ -109,5 +148,25 @@ label.required::after {
     to   { opacity:1; transform:translateY(0); }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetId = btn.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = btn.querySelector('i');
+
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        });
+    });
+});
+</script>
 
 {% endblock %}

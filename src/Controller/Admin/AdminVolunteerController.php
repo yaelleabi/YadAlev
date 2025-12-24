@@ -48,9 +48,11 @@ final class AdminVolunteerController extends AbstractController
             $entityManager->persist($volunteer);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le bénévole a bien été créé.');
+
             return $this->redirectToRoute('app_admin_volunteer_index', [], Response::HTTP_SEE_OTHER);
         }
-        $this->addFlash('success', 'Le bénévole a bien été créé.');
+        
 
         return $this->render('admin_volunteer/new.html.twig', [
             'volunteer' => $volunteer,
