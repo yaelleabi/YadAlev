@@ -18,7 +18,7 @@ final class AdminVolunteerController extends AbstractController
     #[Route(name: 'app_admin_volunteer_index', methods: ['GET'])]
     public function index(VolunteerRepository $volunteerRepository): Response
     {
-        return $this->render('admin_volunteer/index.html.twig', [
+        return $this->render('admin/admin_volunteer/index.html.twig', [
             'volunteers' => $volunteerRepository->findAll(),
         ]);
     }
