@@ -6,10 +6,12 @@
 {% block body %}
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="container d-flex justify-content-between        <!-- Logo + titre -->
         <div class="d-flex align-items-center gap-3">
-            <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            <span class="fw-bold text-primary fs-5">Créer un bénévole</span>
+            <a href="{{ path('app_admin') }}">
+                <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+            </a>
+            <span class="fw-bold text-primary fs-5">Ajouter un bénévole</span>
         </div>
 
         <div class="d-flex align-items-center gap-4">
