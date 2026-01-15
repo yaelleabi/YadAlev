@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}VolunteerEvent index{% endblock %}
+
+{% block body %}
+    <h1>VolunteerEvent index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>IsVisible</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for volunteer_event in volunteer_events %}
+            <tr>
+                <td>{{ volunteer_event.id }}</td>
+                <td>{{ volunteer_event.startDate ? volunteer_event.startDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ volunteer_event.endDate ? volunteer_event.endDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ volunteer_event.isVisible ? 'Yes' : 'No' }}</td>
+                <td>{{ volunteer_event.Title }}</td>
+                <td>{{ volunteer_event.Description }}</td>
+                <td>
+                    <a href="{{ path('app_volunteer_event_show', {'id': volunteer_event.id}) }}">show</a>
+                    <a href="{{ path('app_volunteer_event_edit', {'id': volunteer_event.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_volunteer_event_new') }}">Create new</a>
+{% endblock %}

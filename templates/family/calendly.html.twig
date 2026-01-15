@@ -1,130 +1,166 @@
 {% extends 'base.html.twig' %}
-{% block title %}Prendre rendez-vous - Yad Alev{% endblock %}
+{% block title %}Prendre rendez-vous - Yad Alev
+{% endblock %}
 
 {% block body %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
 
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('app_family_home') }}">
-                <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            </a>
-            <span class="fw-bold text-primary fs-5 d-none d-sm-block">Prendre rendez-vous</span> <span class="fw-bold text-primary fs-6 d-block d-sm-none">Rendez-vous</span>
-        </div>
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_family_home') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5 d-none d-sm-block">Prendre rendez-vous</span>
+				<span class="fw-bold text-primary fs-6 d-block d-sm-none">Rendez-vous</span>
+			</div>
 
-        <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
-                <i class="fas fa-home"></i>
-            </a>
-            <a href="{{ path('app_logout') }}" class="nav-icon" title="Déconnexion">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Déconnexion">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
 
-    </div>
-</nav>
+		</div>
+	</nav>
 
 
-<div class="main-container">
+	<div class="main-container">
 
-    <div class="container d-flex flex-column justify-content-start align-items-center">
+		<div class="container d-flex flex-column justify-content-start align-items-center">
 
-        <div class="text-center mb-4 fade-in">
-            <h2 class="text-primary fw-bold mt-3 fs-3">Prendre rendez-vous</h2>
-            <p class="text-muted small px-3">Choisissez un créneau directement avec l’assistante sociale.</p>
-        </div>
+			<div class="text-center mb-4 fade-in">
+				<h2 class="text-primary fw-bold mt-3 fs-3">Prendre rendez-vous</h2>
+				<p class="text-muted small px-3">Choisissez un créneau directement avec la permanence sociale.</p>
+			</div>
 
-        <div class="card shadow-sm p-0 p-md-4 calendly-card fade-in">
+			{# <div class="card shadow-sm p-0 p-md-4 calendly-card fade-in">
+			
+			            <div class="calendly-responsive">
+			                <div class="calendly-inline-widget"
+			                    data-url="https://calendly.com/yadalev/permanence-sociale-et-ecoutes-familiales-psy"
+			                    style="min-width: 320px; height: 700px;">
+			                </div>
+			            </div>
+			         </div> #}
+			<iframe src="https://guiltel.fr/book/yadalev/permanence-sociale-et-coutes-familiales-psy?embed=true&theme=light&color=%233B82F6" width="100%" height="700" frameborder="0" style="border-radius: 8px; border: 1px solid #e5e7eb;"></iframe>
 
-            <div class="calendly-responsive">
-                <div class="calendly-inline-widget"
-                    data-url="https://calendly.com/yadalev/permanence-sociale-et-ecoutes-familiales-psy"
-                    style="min-width: 320px; height: 700px;">
-                </div>
-            </div>
 
-        </div>
+			<div class="mt-4 mb-4 fade-in">
+				<a href="{{ path('app_family_home') }}" class="btn btn-outline-primary px-4 py-2 rounded-pill">
+					⬅️ Retour espace famille
+				</a>
+			</div>
 
-        <div class="mt-4 mb-4 fade-in">
-            <a href="{{ path('app_family_home') }}" class="btn btn-outline-primary px-4 py-2 rounded-pill">
-                ⬅️ Retour espace famille
-            </a>
-        </div>
+		</div>
 
-    </div>
+		<footer class="footer-custom text-center text-muted small py-4 mt-auto">
+			<div class="footer-line mx-auto"></div>
+			<div class="footer-content mt-3">
+				<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+				<p class="m-0">© 2025 Espace Famille Yad Alev</p>
+			</div>
+		</footer>
 
-    <footer class="footer-custom text-center text-muted small py-4 mt-auto">
-        <div class="footer-line mx-auto"></div>
-        <div class="footer-content mt-3">
-            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
-            <p class="m-0">© 2025 Espace Famille Yad Alev</p>
-        </div>
-    </footer>
+	</div>
 
-</div>
+	<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
-<script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+	<style>
+		/* NAVBAR */
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+			z-index: 2000;
+		}
+		.nav-logo {
+			width: 40px;
+		} /* Un peu plus petit pour mobile */
+		@media(min-width: 768px) {
+			.nav-logo {
+				width: 48px;
+			}
+		}
 
-<style>
-/* NAVBAR */
-.navbar { border-bottom: 1px solid #e2e8f0; z-index:2000; }
-.nav-logo { width:40px; } /* Un peu plus petit pour mobile */
-@media(min-width: 768px) { .nav-logo { width: 48px; } }
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
 
-.nav-icon { font-size:1.4rem; color:#444; transition:.2s; }
-.nav-icon:hover { color:#0d6efd; transform:translateY(-2px); }
+		/* LAYOUT PRINCIPAL */
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+			padding-top: 80px; /* CORRECTION IMPORTANTE : Compensate fixed navbar height */
+			background-color: #f8f9fa; /* Fond léger pour contraste avec la carte */
+		}
 
-/* LAYOUT PRINCIPAL */
-.main-container {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    padding-top: 80px; /* CORRECTION IMPORTANTE : Compensate fixed navbar height */
-    background-color: #f8f9fa; /* Fond léger pour contraste avec la carte */
-}
+		/* Carte Calendly */
+		.calendly-card {
+			width: 100%;
+			max-width: 900px;
+			border-radius: 1rem;
+			overflow: hidden; /* Empêche le débordement */
+			border: none; /* Plus propre sur mobile */
+		}
+		@media(min-width: 768px) {
+			.calendly-card {
+				border: 1px solid rgba(0, 0, 0, .125); /* Bordure seulement sur PC */
+			}
+		}
 
-/* Carte Calendly */
-.calendly-card {
-    width: 100%;
-    max-width: 900px;
-    border-radius: 1rem;
-    overflow: hidden; /* Empêche le débordement */
-    border: none; /* Plus propre sur mobile */
-}
-@media (min-width: 768px) {
-    .calendly-card {
-        border: 1px solid rgba(0,0,0,.125); /* Bordure seulement sur PC */
-    }
-}
+		/* Responsive Widget Container */
+		.calendly-responsive {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
 
-/* Responsive Widget Container */
-.calendly-responsive {
-    width: 100%;
-    height: 100%;
-    overflow: hidden; 
-}
+		/* Footer */
+		.footer-custom {
+			margin-top: auto;
+			background: #fff;
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 50px;
+			opacity: .9;
+		}
 
-/* Footer */
-.footer-custom { margin-top:auto; background: #fff; }
-.footer-line { width:85%; height:1px; background:#d0d7e0; }
-.footer-logo { width:50px; opacity:.9; }
+		/* Animation fade-in */
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.6s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
 
-/* Animation fade-in */
-.fade-in {
-    opacity:0;
-    animation: fadeSlide .6s ease forwards;
-}
-@keyframes fadeSlide {
-    from { opacity:0; transform:translateY(20px); }
-    to { opacity:1; transform:translateY(0); }
-}
-
-/* Global fixes */
-html, body {
-    width: 100%;
-    overflow-x: hidden; /* Empêche le scroll horizontal indésirable */
-}
-</style>
+		/* Global fixes */
+		html,
+		body {
+			width: 100%;
+			overflow-x: hidden; /* Empêche le scroll horizontal indésirable */
+		}
+	</style>
 
 {% endblock %}

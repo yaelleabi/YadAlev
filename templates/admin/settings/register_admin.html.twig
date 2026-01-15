@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un administrateur - Paramètres
+{% endblock %}
+
+{% block body %}
+	{% include 'admin/settings/_navbar.html.twig' %}
+
+	<div class="main-container">
+		<div class="content-wrapper d-flex flex-column justify-content-start align-items-center pt-5">
+
+			<div class="container mt-5" style="max-width: 600px;">
+				<h3 class="fw-bold mb-4 text-center">Créer un nouvel administrateur</h3>
+
+				<div class="card shadow-sm border-0 p-4">
+					{{ form_start(registrationForm) }}
+					<div class="mb-3">
+						{{ form_row(registrationForm.email) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(registrationForm.plainPassword) }}
+						<div class="input-group">
+							{{ form_widget(registrationForm.plainPassword, {
+                                'attr': {
+                                    'class': 'form-control', 
+                                    'placeholder': 'Mot de passe'
+                                }
+                            }) }}
+							<button class="btn btn-outline-secondary" type="button" onclick="togglePassword('{{ registrationForm.plainPassword.vars.id }}', 'iconRegPass')">
+								<i id="iconRegPass" class="bi bi-eye"></i>
+							</button>
+						</div>
+						{{ form_errors(registrationForm.plainPassword) }}
+						<div class="form-text text-muted small mt-1">
+							<i class="bi bi-info-circle me-1"></i>
+							Pour votre sécurité, utilisez au moins
+							<strong>8 caractères</strong>. 
+								                            Évitez les mots courants ou les suites logiques.
+						</div>
+					</div>
+
+					<script>
+						function togglePassword(inputId, iconId) {
+const input = document.getElementById(inputId);
+const icon = document.getElementById(iconId);
+
+if (input.type === "password") {
+input.type = "text";
+icon.classList.remove("bi-eye");
+icon.classList.add("bi-eye-slash");
+} else {
+input.type = "password";
+icon.classList.remove("bi-eye-slash");
+icon.classList.add("bi-eye");
+}
+}
+					</script>
+
+					<div class="d-flex justify-content-between mt-4">
+						<a href="{{ path('app_admin_settings_index') }}" class="btn btn-outline-secondary">Annuler</a>
+						<button type="submit" class="btn btn-primary">Créer l'administrateur</button>
+					</div>
+					{{ form_end(registrationForm) }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

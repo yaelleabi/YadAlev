@@ -19,13 +19,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class FamilyController extends AbstractController
 {
     #[Route('/home', name: 'app_family_home')]
-    public function home(AidRequestRepository $repo): Response
+    public function home(AidRequestRepository $repo, \App\Repository\AnnouncementRepository $announcementRepo): Response
     {
         $aidRequest = $repo->findOneBy(['family' => $this->getUser()]);
+        $announcement = $announcementRepo->findOneBy(['isActive' => true], ['createdAt' => 'DESC']);
 
         return $this->render('family/home.html.twig', [
             'aidRequest' => $aidRequest,
-            'family' => $this->getUser()
+            'family' => $this->getUser(),
+            'announcement' => $announcement
         ]);
     }
 

@@ -1,14 +1,15 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Créer un projet – Espace Administrateur
+{% block title %}Gestion Espace Famille - Espace Administrateur
 {% endblock %}
 
 {% block body %}
 
 	<!-- NAVBAR -->
 	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-		<div class="container d-flex justify-content-between align-items-center">
+		<div
+			class="container d-flex justify-content-between align-items-center">
 
+			<!-- Logo + titre -->
 			<div class="d-flex align-items-center gap-3">
 				<a href="{{ path('app_admin') }}">
 					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
@@ -16,6 +17,7 @@
 				<span class="fw-bold text-primary fs-5">Espace Administrateur</span>
 			</div>
 
+			<!-- Icônes alignées à droite -->
 			<div class="d-flex align-items-center gap-4">
 				<a href="{{ path('app_admin') }}" class="nav-icon" title="Retour">
 					<i class="fas fa-arrow-left"></i>
@@ -36,9 +38,9 @@
 
 			<!-- Titre -->
 			<div class="text-center mb-5 fade-in">
-				<h2 class="text-primary fw-bold">Créer un projet</h2>
+				<h2 class="text-primary fw-bold">Gestion Espace Famille</h2>
 				<p class="text-muted" style="animation-delay:.2s">
-					Choisissez le type de projet à créer.
+					Gérez les contenus visibles par les familles.
 				</p>
 			</div>
 
@@ -46,30 +48,31 @@
 			<div
 				class="card-zone row g-4 justify-content-center text-center px-3 w-100">
 
-				<!-- Projet Bénévoles -->
-				<div class="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
-					<a href="{{ path('app_admin') }}" class="admin-card text-decoration-none card-anim">
-						<img src="{{ asset('images/projetvol.png') }}" alt="Projet Bénévoles">
+
+				<!-- Carte 2 : Ateliers de Mumu -->
+				<div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
+					<a href="#" class="admin-card text-decoration-none card-anim" style="animation-delay:.15s">
+						<img src="{{ asset('images/ateliermumu.jpg') }}" alt="Les ateliers de mumu" style="object-position: top;">
 						<div class="p-3">
-							<h5 class="text-dark fw-semibold">Créer un projet Bénévoles</h5>
+							<h5 class="text-dark fw-semibold">Les ateliers de mumu</h5>
 						</div>
 					</a>
 				</div>
 
-				<!-- Projet Familles -->
-				<div class="col-lg-4 col-md-6 col-sm-12 d-flex justify-content-center">
-					<a href="{{ path('app_admin') }}" class="admin-card text-decoration-none card-anim" style="animation-delay:.15s">
-						<img src="{{ asset('images/projetfam.png') }}" alt="Projet Familles">
+				<!-- Carte 3 : Soutien scolaire -->
+				<div class="col-lg-4 col-md-6 col-sm-6 col-12 d-flex justify-content-center">
+					<a href="#" class="admin-card text-decoration-none card-anim" style="animation-delay:.3s">
+						<img src="{{ asset('images/soutienscolaire.png') }}" alt="Soutien scolaire" style="object-position: top;">
 						<div class="p-3">
-							<h5 class="text-dark fw-semibold">Créer un projet Familles</h5>
+							<h5 class="text-dark fw-semibold">Soutien scolaire</h5>
 						</div>
 					</a>
 				</div>
-
 
 			</div>
 
 		</div>
+
 
 		<!-- FOOTER -->
 		<footer class="footer-custom text-center text-muted small py-4">
@@ -123,7 +126,7 @@
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
 			border: 1px solid #e2e8f0;
 			width: 330px;
-			max-width: 100%;
+			max-width: 100%
 		}
 		.admin-card:hover {
 			transform: translateY(-6px);
@@ -168,6 +171,9 @@
 
 		/* RESPONSIVE */
 		@media(max-width: 768px) {
+			.admin-card {
+				max-width: 100%;
+			}
 			.admin-card img {
 				height: 150px;
 			}

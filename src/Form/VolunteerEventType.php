@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\Volunteer;
+use App\Entity\VolunteerEvent;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class VolunteerEventType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('startDate')
+            ->add('endDate')
+            ->add('isVisible')
+            ->add('Title')
+            ->add('Description')
+            ->add('assignedVolunteers', EntityType::class, [
+                'class' => Volunteer::class,
+                'choice_label' => 'id',
+                'multiple' => true,
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => VolunteerEvent::class,
+        ]);
+    }
+}

@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paramètres - Espace Administrateur
+{% endblock %}
+
+{% block body %}
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
+
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Espace Administrateur</span>
+			</div>
+
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_admin') }}" class="nav-icon" title="Retour dashboard">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="main-container">
+		<div class="content-wrapper d-flex flex-column justify-content-start align-items-center pt-5">
+
+			<div class="container mt-5">
+				<div class="text-center mb-5">
+					<h2 class="text-primary fw-bold">Paramètres de la plateforme</h2>
+					<p class="text-muted">Configuration générale et administration</p>
+				</div>
+
+				{% for message in app.flashes('success') %}
+					<div class="alert alert-success text-center mx-auto" style="max-width: 600px;">
+						{{ message }}
+					</div>
+				{% endfor %}
+
+				<div
+					class="row g-4 justify-content-center">
+
+					<!-- Carte 1: Couleur des titres -->
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<a href="{{ path('app_admin_settings_color') }}" class="admin-card text-decoration-none d-flex flex-column h-100 p-4 text-center align-items-center justify-content-center">
+							<div class="icon-circle bg-light text-primary mb-3">
+								<i class="fas fa-palette fs-3"></i>
+							</div>
+							<h5 class="text-dark fw-bold">Couleurs</h5>
+							<p class="text-muted small mb-0">Modifier la couleur des titres</p>
+						</a>
+					</div>
+
+					<!-- Carte 2: Mot de passe -->
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<a href="{{ path('app_admin_settings_password') }}" class="admin-card text-decoration-none d-flex flex-column h-100 p-4 text-center align-items-center justify-content-center">
+							<div class="icon-circle bg-light text-primary mb-3">
+								<i class="fas fa-key fs-3"></i>
+							</div>
+							<h5 class="text-dark fw-bold">Mot de passe</h5>
+							<p class="text-muted small mb-0">Changer mon mot de passe</p>
+						</a>
+					</div>
+
+					<!-- Carte 3: Nouvel Admin -->
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<a href="{{ path('app_admin_settings_new_admin') }}" class="admin-card text-decoration-none d-flex flex-column h-100 p-4 text-center align-items-center justify-content-center">
+							<div class="icon-circle bg-light text-primary mb-3">
+								<i class="fas fa-user-plus fs-3"></i>
+							</div>
+							<h5 class="text-dark fw-bold">Ajout Admin</h5>
+							<p class="text-muted small mb-0">Créer un autre administrateur</p>
+						</a>
+					</div>
+
+					<!-- Carte 4: Gestion Annonces (Déplacé ici) -->
+					<div class="col-lg-3 col-md-6 col-sm-12">
+						<a href="{{ path('app_admin_announcement_index') }}" class="admin-card text-decoration-none d-flex flex-column h-100 p-4 text-center align-items-center justify-content-center">
+							<div class="icon-circle bg-light text-primary mb-3">
+								<i class="fas fa-bullhorn fs-3"></i>
+							</div>
+							<h5 class="text-dark fw-bold">Annonces</h5>
+							<p class="text-muted small mb-0">Gérer le bandeau famille</p>
+						</a>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer-custom text-center text-muted small py-4 mt-auto">
+			<div class="footer-line mx-auto"></div>
+			<div class="footer-content mt-3">
+				<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+				<p class="m-0">© 2025 Espace Administrateur Yad Alev</p>
+			</div>
+		</footer>
+	</div>
+
+	<style>
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+			height: 48px;
+			object-fit: contain;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.content-wrapper {
+			padding-top: 80px;
+			width: 100%;
+			flex: 1;
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 60px;
+		}
+
+		.admin-card {
+			background: #fff;
+			border-radius: 1rem;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+			border: 1px solid #e2e8f0;
+			transition: 0.25s;
+		}
+		.admin-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+			border-color: #0d6efd;
+		}
+		.icon-circle {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	</style>
+{% endblock %}

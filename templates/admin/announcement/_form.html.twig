@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+<div class="mb-3">
+	{{ form_label(form.message, 'Message de l\'annonce', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.message, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Entrez votre message ici...'}}) }}
+        {{ form_errors(form.message) }}
+    </div>
+
+    <div class="mb-3 form-check">
+        {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input'}}) }}
+        {{ form_label(form.isActive, 'Annonce active (visible par les familles)', {'label_attr': {'class': 'form-check-label'}}) }}
+        {{ form_errors(form.isActive) }}
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

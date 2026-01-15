@@ -1,136 +1,146 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        
-
-        <title>{% block title %}Welcome!{% endblock %}</title>
-
-        <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+	<head>
+		<meta charset="UTF-8">
 
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet" data-turbo-track="reload">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-            rel="stylesheet" data-turbo-track="reload">
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-            data-turbo-track="reload">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
 
-         {% block stylesheets %}{% endblock %}
-
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- 🔥 CSS GLOBAL ICI -->
-    <style>
-        /* Fixe la navbar (évite le décalage) */
-        body {
-            padding-top: 80px;
-            background-color: #ffffff !important;
-        }
-
-        @media (max-width: 576px) {
-            body {
-                padding-top: 70px;
-            }
-            .container {
-                max-width: 100% !important;
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-        }
-
-        .navbar {
-            min-height: 68px;
-        }
-        @media (max-width: 576px) {
-            .navbar {
-                min-height: 60px;
-            }
-        }
-
-        .nav-logo {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-        }
-        @media (max-width: 576px) {
-            .nav-logo {
-                width: 38px;
-                height: 38px;
-            }
-        }
-
-        /* Conteneur pour les messages flash flottants */
-        .flash-container {
-            position: fixed;
-            top: 90px; 
-            right: 20px;
-            z-index: 9999;
-            width: auto;
-            min-width: 300px;
-            max-width: 450px;
-        }
-
-        /* Petit effet d'ombre pour bien détacher l'alerte */
-        .flash-container .alert {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            animation: slideIn 0.5s ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    </style>
+		<link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
 
 
-    </head>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" data-turbo-track="reload">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" data-turbo-track="reload">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" data-turbo-track="reload"> {% block stylesheets %}{% endblock %}
 
-    <body>
 
-        
+		<meta
+		name="viewport" content="width=device-width, initial-scale=1">
 
-        {% block body %}{% endblock %}
+		<!-- 🔥 CSS GLOBAL ICI -->
+		<style>
+			{{render(controller('App\\Controller\\HomeController::dynamicCss'))}}/* Fixe la navbar (évite le décalage) */
+			body {
+				padding-top: 80px;
+				background-color: #ffffff !important;
+			}
 
-        {# 🔥 MESSAGES FLASH FLOTTANTS #}
-        <div class="flash-container">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    {# Ajout de 'alert-dismissible' pour pouvoir fermer la croix #}
-                    <div class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : 'info') }} alert-dismissible fade show" role="alert">
-                        
-                        {# Petite icône selon le type (optionnel mais sympa) #}
-                        {% if label == 'success' %} <i class="fas fa-check-circle me-2"></i> {% endif %}
-                        {% if label == 'error' %} <i class="fas fa-exclamation-circle me-2"></i> {% endif %}
+			@media(max-width: 576px) {
+				body {
+					padding-top: 70px;
+				}
+				.container {
+					max-width: 100% !important;
+					padding-left: 15px;
+					padding-right: 15px;
+				}
+			}
 
-                        {{ message }}
-                        
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endfor %}
-        </div>
+			.navbar {
+				min-height: 68px;
+			}
+			@media(max-width: 576px) {
+				.navbar {
+					min-height: 60px;
+				}
+			}
 
-        <!-- Bootstrap JS (obligatoire avant les scripts enfants) -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+			.nav-logo {
+				width: 48px;
+				height: 48px;
+				object-fit: contain;
+			}
+			@media(max-width: 576px) {
+				.nav-logo {
+					width: 38px;
+					height: 38px;
+				}
+			}
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const alerts = document.querySelectorAll('.flash-container .alert');
-                alerts.forEach(function(alert) {
-                    setTimeout(function() {
-                        const bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    }, 5000);
-                });
-            });
-        </script>
+			/* Conteneur pour les messages flash flottants */
+			.flash-container {
+				position: fixed;
+				top: 90px;
+				right: 20px;
+				z-index: 9999;
+				width: auto;
+				min-width: 300px;
+				max-width: 450px;
+			}
 
-        <!--  Scripts des pages enfant-->
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </body>
+			/* Petit effet d'ombre pour bien détacher l'alerte */
+			.flash-container .alert {
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				animation: slideIn 0.5s ease-out;
+			}
+
+			@keyframes slideIn {
+				from {
+					transform: translateX(100%);
+					opacity: 0;
+				}
+				to {
+					transform: translateX(0);
+					opacity: 1;
+				}
+			}
+		</style>
+
+
+	</head>
+
+	<body>
+
+
+		{% block body %}{% endblock %}
+
+		{# 🔥 MESSAGES FLASH FLOTTANTS #}
+		<div class="flash-container">
+			{% for label, messages in app.flashes %}
+				{% for message in messages %}
+					{# Ajout de 'alert-dismissible' pour pouvoir fermer la croix #}
+					<div
+						class="alert alert-{{ label == 'error' ? 'danger' : (label == 'success' ? 'success' : 'info') }} alert-dismissible fade show" role="alert">
+
+						{# Petite icône selon le type (optionnel mais sympa) #}
+						{% if label == 'success' %}
+							<i class="fas fa-check-circle me-2"></i>
+						{% endif %}
+						{% if label == 'error' %}
+							<i class="fas fa-exclamation-circle me-2"></i>
+						{% endif %}
+
+						{{ message }}
+
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+
+		<!-- Bootstrap JS (obligatoire avant les scripts enfants) -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+const alerts = document.querySelectorAll('.flash-container .alert');
+alerts.forEach(function (alert) {
+setTimeout(function () {
+const bsAlert = new bootstrap.Alert(alert);
+bsAlert.close();
+}, 5000);
+});
+});
+		</script>
+
+		<!--  Scripts des pages enfant-->
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</body>
 </html>

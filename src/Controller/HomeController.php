@@ -194,4 +194,21 @@ class HomeController extends AbstractController
         $this->addFlash('success', 'Un email de vérification vous a été renvoyé.');
         return $this->redirectToRoute('app_home');
     }
+    #[Route('/_dynamic_css', name: 'app_dynamic_css')]
+    public function dynamicCss(\App\Repository\SettingRepository $settingRepository): Response
+    {
+        $color = $settingRepository->getValue('site_title_color', '#0d6efd');
+        
+        $css = "
+            :root { --primary-color: {$color}; }
+            .text-primary { color: {$color} !important; }
+            .btn-primary { background-color: {$color} !important; border-color: {$color} !important; }
+            .btn-outline-primary { color: {$color} !important; border-color: {$color} !important; }
+            .btn-outline-primary:hover { background-color: {$color} !important; color: #fff !important; }
+            .page-link { color: {$color} !important; }
+            .active > .page-link, .page-link.active { background-color: {$color} !important; border-color: {$color} !important; }
+        ";
+
+        return new Response($css, 200, ['Content-Type' => 'text/css']);
+    }
 }

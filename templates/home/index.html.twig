@@ -1,388 +1,424 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Yad Alev - Accueil{% endblock %}
+{% block title %}Yad Alev - Accueil
+{% endblock %}
 
 {% block body %}
-<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
-    <div class="text-center mb-4">
-        <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="logo">
+	<div class="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+		<div class="text-center mb-4">
+			<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="logo">
 
-        <h2 class="text-primary fw-bold">Yad Alev</h2>
-        <p class="text-muted">
-            Bienvenue sur la plateforme de l'association Yad Alev.<br>
-            Connectez-vous ou créez un compte pour accéder à nos services.
-        </p>
-    </div>
+			<h2 class="text-primary fw-bold">Yad Alev</h2>
+			<p class="text-muted">
+				Bienvenue sur la plateforme de l'association Yad Alev.<br>
+				Connectez-vous ou créez un compte pour accéder à nos services.
+			</p>
+		</div>
 
-    <div class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
-        <!-- Boutons bascule -->
-        <div class="btn-group w-100 mb-4" role="group">
-            <button id="loginBtn" class="btn btn-primary w-50 active">Connexion</button>
-            <button id="signupBtn" class="btn btn-outline-primary w-50">Créer un compte</button>
-        </div>
+		<div
+			class="card shadow-sm p-4" style="max-width: 400px; width: 100%;">
+			<!-- Boutons bascule -->
+			<div class="btn-group w-100 mb-4" role="group">
+				<button id="loginBtn" class="btn btn-primary w-50 active">Connexion</button>
+				<button id="signupBtn" class="btn btn-outline-primary w-50">Créer un compte</button>
+			</div>
 
-        <!-- 🔹 FORMULAIRE DE CONNEXION -->
-        {% for message in app.flashes('login_error') %}
-            <div class="alert alert-danger mt-3 shadow-sm fade-in">
-                <i class="fas fa-exclamation-circle me-2"></i> {{ message }}
-            </div>
-        {% endfor %}
+			<!-- 🔹 FORMULAIRE DE CONNEXION -->
+			{% for message in app.flashes('login_error') %}
+				<div class="alert alert-danger mt-3 shadow-sm fade-in">
+					<i class="fas fa-exclamation-circle me-2"></i>
+					{{ message }}
+				</div>
+			{% endfor %}
 
-        {# 🔸 NOUVEAU BLOC : compte non vérifié + renvoi de mail #}
-        {% for message in app.flashes('verify_email') %}
-            <div class="alert alert-warning mt-3 shadow-sm fade-in">
-                <i class="fas fa-info-circle me-2"></i> {{ message }}
+			{# 🔸 NOUVEAU BLOC : compte non vérifié + renvoi de mail #}
+			{% for message in app.flashes('verify_email') %}
+				<div class="alert alert-warning mt-3 shadow-sm fade-in">
+					<i class="fas fa-info-circle me-2"></i>
+					{{ message }}
 
-                <form method="post" action="{{ path('app_resend_verification') }}" class="mt-2">
-                    <input type="hidden" name="email" value="{{ last_username ?? '' }}">
-                    <button type="submit" class="btn btn-link p-0">
-                        Renvoyer l’email de vérification
-                    </button>
-                </form>
-            </div>
-        {% endfor %}
+					<form method="post" action="{{ path('app_resend_verification') }}" class="mt-2">
+						<input type="hidden" name="email" value="{{ last_username ?? '' }}">
+						<button type="submit" class="btn btn-link p-0">
+							Renvoyer l’email de vérification
+						</button>
+					</form>
+				</div>
+			{% endfor %}
 
-        <form id="loginForm" method="post" action="{{ path('app_login') }}" class="auth-form">
-            {% if error %}
-                <div class="alert alert-danger text-center py-2">Identifiants invalides</div>
-            {% endif %}
+			<form id="loginForm" method="post" action="{{ path('app_login') }}" class="auth-form">
+				{% if error %}
+					<div class="alert alert-danger text-center py-2">Identifiants invalides</div>
+				{% endif %}
 
-            <div class="mb-3">
-                <label for="inputEmail" class="form-label">Email</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input type="email" name="email" id="inputEmail" class="form-control"
-                           value="{{ last_username }}" placeholder="votre.email@example.com" required autofocus>
-                </div>
-            </div>
+				<div class="mb-3">
+					<label for="inputEmail" class="form-label">Email</label>
+					<div class="input-group">
+						<span class="input-group-text">
+							<i class="bi bi-envelope"></i>
+						</span>
+						<input type="email" name="email" id="inputEmail" class="form-control" value="{{ last_username }}" placeholder="votre.email@example.com" required autofocus>
+					</div>
+				</div>
 
-            <div class="mb-3">
-                <label for="inputPassword" class="form-label">Mot de passe</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" name="password" id="inputPassword" class="form-control" placeholder="••••••••" required>
-                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('inputPassword', 'iconLogin')">
-                        <i id="iconLogin" class="bi bi-eye"></i>
-                    </button>
-                </div>
-            </div>
+				<div class="mb-3">
+					<label for="inputPassword" class="form-label">Mot de passe</label>
+					<div class="input-group">
+						<span class="input-group-text">
+							<i class="bi bi-lock"></i>
+						</span>
+						<input type="password" name="password" id="inputPassword" class="form-control" placeholder="••••••••" required>
+						<button class="btn btn-outline-secondary" type="button" onclick="togglePassword('inputPassword', 'iconLogin')">
+							<i id="iconLogin" class="bi bi-eye"></i>
+						</button>
+					</div>
+				</div>
 
-            <div class="d-flex justify-content-end mb-3">
-                <a href="{{ path('app_forgot_password_request') }}" class="small text-decoration-none">
-                    Mot de passe oublié ?
-                </a>
-            </div>
+				<div class="mb-3 form-check">
+					<input type="checkbox" name="_remember_me" class="form-check-input" id="rememberMe">
+					<label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+				</div>
 
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-        </form>
+				<div class="d-flex justify-content-end mb-3">
+					<a href="{{ path('app_forgot_password_request') }}" class="small text-decoration-none">
+						Mot de passe oublié ?
+					</a>
+				</div>
 
-        <!-- 🔹 FORMULAIRE D’INSCRIPTION -->
-        <div id="signupForm" class="auth-form d-none">
+				<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+				<button type="submit" class="btn btn-primary w-100">Se connecter</button>
+			</form>
+
+			<!-- 🔹 FORMULAIRE D’INSCRIPTION -->
+			<div id="signupForm" class="auth-form d-none">
 
 
+				{{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
 
-            {{ form_start(form, {'attr': {'data-turbo': 'false'}}) }}
-
-                <div class="mb-3">
-                    {{ form_label(form.name, 'Nom  de famille*') }}
-                    {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Dupont'}}) }}
-                    {% for error in form.name.vars.errors %}
-                        <div class="invalid-feedback d-block">{{ error.message }}</div>
-                    {% endfor %}
-                </div>
-                <div class="mb-3">
-                    {{ form_label(form.firstName, 'Prénom *') }}
-                    {{ form_widget(form.firstName, {
+				<div class="mb-3">
+					{{ form_label(form.name, 'Nom  de famille*') }}
+					{{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form.name.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'Dupont'}}) }}
+					{% for error in form.name.vars.errors %}
+						<div class="invalid-feedback d-block">{{ error.message }}</div>
+					{% endfor %}
+				</div>
+				<div class="mb-3">
+					{{ form_label(form.firstName, 'Prénom *') }}
+					{{ form_widget(form.firstName, {
                         'attr': {
                             'class': 'form-control' ~ (form.firstName.vars.errors|length ? ' is-invalid' : ''),
                             'placeholder': 'Jean'
                         }
                     }) }}
-                    {% for error in form.firstName.vars.errors %}
-                        <div class="invalid-feedback d-block">{{ error.message }}</div>
-                    {% endfor %}
-                </div>
+					{% for error in form.firstName.vars.errors %}
+						<div class="invalid-feedback d-block">{{ error.message }}</div>
+					{% endfor %}
+				</div>
 
 
-                <div class="mb-3">
-                    {{ form_label(form.email, 'Email *') }}
-                    {{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'votre.email@example.com'}}) }}
-                    {% for error in form.email.vars.errors %}
-                        <div class="invalid-feedback d-block">{{ error.message }}</div>
-                    {% endfor %}
-                </div>
+				<div class="mb-3">
+					{{ form_label(form.email, 'Email *') }}
+					{{ form_widget(form.email, {'attr': {'class': 'form-control' ~ (form.email.vars.errors|length ? ' is-invalid' : ''), 'placeholder': 'votre.email@example.com'}}) }}
+					{% for error in form.email.vars.errors %}
+						<div class="invalid-feedback d-block">{{ error.message }}</div>
+					{% endfor %}
+				</div>
 
-                <div class="mb-3">
-                    {{ form_label(form.phoneNumber, 'Téléphone *') }}
-                    {{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control' ~ (form.phoneNumber.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '+33 6 12 34 56 78'}}) }}
-                    {% for error in form.phoneNumber.vars.errors %}
-                        <div class="invalid-feedback d-block">{{ error.message }}</div>
-                    {% endfor %}
-                </div>
-                  
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">Type de compte *</label>
-                    <div class="d-flex flex-row gap-4 align-items-center role-options">
-                        <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input" type="radio" id="role_family" name="{{ form.roles.vars.full_name }}" value="ROLE_FAMILY" {% if form.roles.vars.value == 'ROLE_FAMILY' %}checked{% endif %}>
-                            <label class="form-check-label" for="role_family">
-                                <i class="bi bi-house-heart me-1 text-primary"></i> Famille
-                            </label>
-                        </div>
-                        <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input" type="radio" id="role_volunteer" name="{{ form.roles.vars.full_name }}" value="ROLE_VOLUNTEER" {% if form.roles.vars.value == 'ROLE_VOLUNTEER' %}checked{% endif %}>
-                            <label class="form-check-label" for="role_volunteer">
-                                <i class="bi bi-people-fill me-1 text-success"></i> Bénévole
-                            </label>
-                        </div>
-                    </div>
-                    {% for error in form.roles.vars.errors %}
-                        <div class="invalid-feedback d-block">{{ error.message }}</div>
-                    {% endfor %}
-                </div>
+				<div class="mb-3">
+					{{ form_label(form.phoneNumber, 'Téléphone *') }}
+					{{ form_widget(form.phoneNumber, {'attr': {'class': 'form-control' ~ (form.phoneNumber.vars.errors|length ? ' is-invalid' : ''), 'placeholder': '+33 6 12 34 56 78'}}) }}
+					{% for error in form.phoneNumber.vars.errors %}
+						<div class="invalid-feedback d-block">{{ error.message }}</div>
+					{% endfor %}
+				</div>
 
-                {# --- MOT DE PASSE --- #}
-                {# --- MOT DE PASSE --- #}
-                <div class="mb-3">
-                    {{ form_label(form.plainPassword.first, 'Mot de passe *') }}
-                    
-                    <div class="input-group">
-                        {# On ajoute aria-describedby pour lier le champ au message d'aide #}
-                        {{ form_widget(form.plainPassword.first, {
+				<div class="mb-3">
+					<label class="form-label fw-semibold">Type de compte *</label>
+					<div class="d-flex flex-row gap-4 align-items-center role-options">
+						<div class="form-check d-flex align-items-center gap-2">
+							<input class="form-check-input" type="radio" id="role_family" name="{{ form.roles.vars.full_name }}" value="ROLE_FAMILY" {% if form.roles.vars.value == 'ROLE_FAMILY' %} checked {% endif %}>
+							<label class="form-check-label" for="role_family">
+								<i class="bi bi-house-heart me-1 text-primary"></i>
+								Famille
+							</label>
+						</div>
+						<div class="form-check d-flex align-items-center gap-2">
+							<input class="form-check-input" type="radio" id="role_volunteer" name="{{ form.roles.vars.full_name }}" value="ROLE_VOLUNTEER" {% if form.roles.vars.value == 'ROLE_VOLUNTEER' %} checked {% endif %}>
+							<label class="form-check-label" for="role_volunteer">
+								<i class="bi bi-people-fill me-1 text-success"></i>
+								Bénévole
+							</label>
+						</div>
+					</div>
+					{% for error in form.roles.vars.errors %}
+						<div class="invalid-feedback d-block">{{ error.message }}</div>
+					{% endfor %}
+				</div>
+
+				{# --- MOT DE PASSE --- #}
+				{# --- MOT DE PASSE --- #}
+				<div class="mb-3">
+					{{ form_label(form.plainPassword.first, 'Mot de passe *') }}
+
+					<div
+						class="input-group">
+						{# On ajoute aria-describedby pour lier le champ au message d'aide #}
+						{{ form_widget(form.plainPassword.first, {
                             'attr': {
                                 'class': 'form-control' ~ (form.plainPassword.first.vars.errors|length ? ' is-invalid' : ''), 
                                 'placeholder': '••••••••',
                                 'aria-describedby': 'passwordHelpBlock'
                             }
                         }) }}
-                        
-                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('{{ form.plainPassword.first.vars.id }}', 'iconRegisterPass')">
-                            <i id="iconRegisterPass" class="bi bi-eye"></i>
-                        </button>
 
-                        {# Affichage des erreurs #}
-                        {% for error in form.plainPassword.first.vars.errors %}
-                            <div class="invalid-feedback d-block">{{ error.message }}</div>
-                        {% endfor %}
-                    </div>
+						<button class="btn btn-outline-secondary" type="button" onclick="togglePassword('{{ form.plainPassword.first.vars.id }}', 'iconRegisterPass')">
+							<i id="iconRegisterPass" class="bi bi-eye"></i>
+						</button>
 
-                    {# --- LE MESSAGE D'AIDE ICI --- #}
-                    <div id="passwordHelpBlock" class="form-text text-muted small mt-1">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Pour votre sécurité, utilisez au moins <strong>8 caractères</strong>. 
-                        Évitez les mots courants ou les suites logiques (ex: "123456", "azerty") qui seraient rejetés car compromis.
-                    </div>
-                </div>
+						{# Affichage des erreurs #}
+						{% for error in form.plainPassword.first.vars.errors %}
+							<div class="invalid-feedback d-block">{{ error.message }}</div>
+						{% endfor %}
+					</div>
 
-                {# --- CONFIRMATION --- #}
-                <div class="mb-3">
-                    {{ form_label(form.plainPassword.second, 'Confirmer le mot de passe *') }}
-                    <div class="input-group">
-                        
-                        {{ form_widget(form.plainPassword.second, {
+					{# --- LE MESSAGE D'AIDE ICI --- #}
+					<div id="passwordHelpBlock" class="form-text text-muted small mt-1">
+						<i class="bi bi-info-circle me-1"></i>
+						Pour votre sécurité, utilisez au moins
+						<strong>8 caractères</strong>. 
+							                        Évitez les mots courants ou les suites logiques (ex: "123456", "azerty") qui seraient rejetés car compromis.
+					</div>
+				</div>
+
+				{# --- CONFIRMATION --- #}
+				<div class="mb-3">
+					{{ form_label(form.plainPassword.second, 'Confirmer le mot de passe *') }}
+					<div class="input-group">
+
+						{{ form_widget(form.plainPassword.second, {
                             'attr': {
                                 'class': 'form-control' ~ (form.plainPassword.second.vars.errors|length ? ' is-invalid' : ''), 
                                 'placeholder': '••••••••'
                             }
                         }) }}
-                        
-                        {# On utilise form.plainPassword.second.vars.id #}
-                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('{{ form.plainPassword.second.vars.id }}', 'iconRegisterConf')">
-                            <i id="iconRegisterConf" class="bi bi-eye"></i>
-                        </button>
 
-                        {% for error in form.plainPassword.second.vars.errors %}
-                            <div class="invalid-feedback d-block">{{ error.message }}</div>
-                        {% endfor %}
-                    </div>
-                </div>
+						{# On utilise form.plainPassword.second.vars.id #}
+						<button class="btn btn-outline-secondary" type="button" onclick="togglePassword('{{ form.plainPassword.second.vars.id }}', 'iconRegisterConf')">
+							<i id="iconRegisterConf" class="bi bi-eye"></i>
+						</button>
 
-                {{ form_widget(form._token) }}
-                <button type="submit" class="btn btn-primary w-100">Créer mon compte</button>
+						{% for error in form.plainPassword.second.vars.errors %}
+							<div class="invalid-feedback d-block">{{ error.message }}</div>
+						{% endfor %}
+					</div>
+				</div>
 
-            {{ form_end(form, {'render_rest': false}) }}
-        </div>
-    </div>
-</div>
+				{{ form_widget(form._token) }}
+				<button type="submit" class="btn btn-primary w-100">Créer mon compte</button>
 
-<style>
-body {
-  background: linear-gradient(135deg, #f8f9fc, #eef2f7);
-  overflow-x: hidden;
-}
-.card {
-  border: 1px solid #e2e8f0;
-  border-radius: 1rem;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
-}
-.btn-primary {
-  background-color: #0d6efd;
-  border: none;
-  transition: all 0.3s ease;
-}
-.btn-primary:hover {
-  background-color: #0b5ed7;
-  transform: translateY(-1px);
-}
-.btn-outline-primary {
-  color: #0d6efd;
-  border-color: #0d6efd;
-}
-.btn-outline-primary:hover {
-  background-color: #0d6efd;
-  color: #fff;
-}
-.form-control {
-  border-radius: 0.5rem;
-  transition: all 0.3s ease;
-}
-.form-control:focus {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
-}
-.form-check {
-  display: inline-block;
-  margin-right: 1.5rem;
-}
-.form-check-label {
-  margin-left: 0.25rem;
-  font-weight: 500;
-}
-.auth-form {
-  animation: fadeIn 0.5s ease-in-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.logo {
-  width: 120px;
-  height: auto;
-  margin-bottom: 1rem;
-  opacity: 0;
-  animation: fadeLogo 1.2s ease-out forwards;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
-}
+				{{ form_end(form, {'render_rest': false}) }}
+			</div>
+		</div>
+	</div>
 
-@keyframes fadeLogo {
-  0% { opacity: 0; transform: scale(0.98) translateY(-8px); }
-  100% { opacity: 1; transform: scale(1) translateY(0); }
-}
-/* ===== Correction responsive réelle ===== */
+	<style>
+		body {
+			background: linear-gradient(135deg, #f8f9fc, #eef2f7);
+			overflow-x: hidden;
+		}
+		.card {
+			border: 1px solid #e2e8f0;
+			border-radius: 1rem;
+			box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+		.card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 16px 50px rgba(0, 0, 0, 0.15);
+		}
+		.btn-primary {
+			background-color: #0d6efd;
+			border: none;
+			transition: all 0.3s ease;
+		}
+		.btn-primary:hover {
+			background-color: #0b5ed7;
+			transform: translateY(-1px);
+		}
+		.btn-outline-primary {
+			color: #0d6efd;
+			border-color: #0d6efd;
+		}
+		.btn-outline-primary:hover {
+			background-color: #0d6efd;
+			color: #fff;
+		}
+		.form-control {
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+		}
+		.form-control:focus {
+			border-color: #0d6efd;
+			box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+		}
+		.form-check {
+			display: inline-block;
+			margin-right: 1.5rem;
+		}
+		.form-check-label {
+			margin-left: 0.25rem;
+			font-weight: 500;
+		}
+		.auth-form {
+			animation: fadeIn 0.5s ease-in-out;
+		}
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: translateY(-10px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.logo {
+			width: 120px;
+			height: auto;
+			margin-bottom: 1rem;
+			opacity: 0;
+			animation: fadeLogo 1.2s ease-out forwards;
+			filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.1));
+		}
 
-@media (max-width: 480px) {
+		@keyframes fadeLogo {
+			0% {
+				opacity: 0;
+				transform: scale(0.98) translateY(-8px);
+			}
+			100% {
+				opacity: 1;
+				transform: scale(1) translateY(0);
+			}
+		}
+		/* ===== Correction responsive réelle ===== */
 
-    body {
-        padding-top: 30px !important;
-        padding-bottom: 50px !important;
-    }
+		@media(max-width: 480px) {
 
-    .min-vh-100 {
-        min-height: unset !important;
-        height: auto !important;
-        padding-top: 40px;
-        padding-bottom: 40px;
-    }
+			body {
+				padding-top: 30px !important;
+				padding-bottom: 50px !important;
+			}
 
-    .card {
-        width: 95% !important;
-        max-width: 360px;
-        margin-top: 10px;
-    }
+			.min-vh-100 {
+				min-height: unset !important;
+				height: auto !important;
+				padding-top: 40px;
+				padding-bottom: 40px;
+			}
 
-    .logo {
-        width: 85px;
-        margin-bottom: 10px;
-    }
+			.card {
+				width: 95% !important;
+				max-width: 360px;
+				margin-top: 10px;
+			}
 
-    h2 {
-        font-size: 1.3rem;
-    }
+			.logo {
+				width: 85px;
+				margin-bottom: 10px;
+			}
 
-    p {
-        font-size: 0.9rem;
-    }
+			h2 {
+				font-size: 1.3rem;
+			}
 
-    .btn-group button {
-        font-size: 0.85rem;
-        padding: 10px;
-    }
-    
-    .form-control,
-    button {
-        font-size: 0.9rem !important;
-    }
+			p {
+				font-size: 0.9rem;
+			}
 
-    /* Alignement vertical des radios = meilleur rendu mobile */
-    .role-options {
-        flex-direction: column !important;
-        gap: 8px;
-    }
-}
+			.btn-group button {
+				font-size: 0.85rem;
+				padding: 10px;
+			}
 
-</style>
+			.form-control,
+			button {
+				font-size: 0.9rem !important;
+			}
 
-<script>
-const loginBtn  = document.getElementById('loginBtn');
+			/* Alignement vertical des radios = meilleur rendu mobile */
+			.role-options {
+				flex-direction: column !important;
+				gap: 8px;
+			}
+		}
+	</style>
+
+	<script>
+		const loginBtn = document.getElementById('loginBtn');
 const signupBtn = document.getElementById('signupBtn');
 const loginForm = document.getElementById('loginForm');
-const signupForm= document.getElementById('signupForm');
+const signupForm = document.getElementById('signupForm');
 
 function activateLogin() {
-  loginBtn?.classList.add('btn-primary','active');
-  loginBtn?.classList.remove('btn-outline-primary');
-  signupBtn?.classList.remove('btn-primary','active');
-  signupBtn?.classList.add('btn-outline-primary');
-  signupForm?.classList.add('d-none');
-  loginForm?.classList.remove('d-none');
-  sessionStorage.setItem('activeTab', 'login');
+loginBtn ?. classList.add('btn-primary', 'active');
+loginBtn ?. classList.remove('btn-outline-primary');
+signupBtn ?. classList.remove('btn-primary', 'active');
+signupBtn ?. classList.add('btn-outline-primary');
+signupForm ?. classList.add('d-none');
+loginForm ?. classList.remove('d-none');
+sessionStorage.setItem('activeTab', 'login');
 }
 
 function activateSignup() {
-  signupBtn?.classList.add('btn-primary','active');
-  signupBtn?.classList.remove('btn-outline-primary');
-  loginBtn?.classList.remove('btn-primary','active');
-  loginBtn?.classList.add('btn-outline-primary');
-  loginForm?.classList.add('d-none');
-  signupForm?.classList.remove('d-none');
-  sessionStorage.setItem('activeTab', 'signup');
+signupBtn ?. classList.add('btn-primary', 'active');
+signupBtn ?. classList.remove('btn-outline-primary');
+loginBtn ?. classList.remove('btn-primary', 'active');
+loginBtn ?. classList.add('btn-outline-primary');
+loginForm ?. classList.add('d-none');
+signupForm ?. classList.remove('d-none');
+sessionStorage.setItem('activeTab', 'signup');
 }
 
-loginBtn?.addEventListener('click', (e) => { e.preventDefault(); activateLogin(); });
-signupBtn?.addEventListener('click', (e) => { e.preventDefault(); activateSignup(); });
+loginBtn ?. addEventListener('click', (e) => {
+e.preventDefault();
+activateLogin();
+});
+signupBtn ?. addEventListener('click', (e) => {
+e.preventDefault();
+activateSignup();
+});
 
 document.addEventListener('DOMContentLoaded', () => {
-  const savedTab = sessionStorage.getItem('activeTab');
-  if (savedTab === 'signup') activateSignup(); else activateLogin();
+const savedTab = sessionStorage.getItem('activeTab');
+if (savedTab === 'signup') 
+activateSignup();
+ else 
+activateLogin();
 
-  const goToLoginLink = document.getElementById('goToLogin');
-  if (goToLoginLink) {
-    goToLoginLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      activateLogin();
-    });
-  }
+
+const goToLoginLink = document.getElementById('goToLogin');
+if (goToLoginLink) {
+goToLoginLink.addEventListener('click', (e) => {
+e.preventDefault();
+activateLogin();
+});
+}
 });
 /* FONCTION POUR VOIR LE MOT DE PASSE */
 function togglePassword(inputId, iconId) {
-    const input = document.getElementById(inputId);
-    const icon = document.getElementById(iconId);
+const input = document.getElementById(inputId);
+const icon = document.getElementById(iconId);
 
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove("bi-eye");
-        icon.classList.add("bi-eye-slash"); // L'icône devient un œil barré
-    } else {
-        input.type = "password";
-        icon.classList.remove("bi-eye-slash");
-        icon.classList.add("bi-eye"); // L'icône redevient un œil normal
-    }
+if (input.type === "password") {
+input.type = "text";
+icon.classList.remove("bi-eye");
+icon.classList.add("bi-eye-slash"); // L'icône devient un œil barré
+} else {
+input.type = "password";
+icon.classList.remove("bi-eye-slash");
+icon.classList.add("bi-eye"); // L'icône redevient un œil normal
 }
-</script>
+}
+	</script>
 {% endblock %}
