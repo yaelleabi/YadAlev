@@ -44,6 +44,14 @@ final class AdminFamEventController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/requests', name: 'admin_family_event_requests', methods: ['GET'])]
+    public function requests(FamilyEvent $familyEvent): Response
+    {
+        return $this->render('admin/family_event/requests.html.twig', [
+            'family_event' => $familyEvent,
+        ]);
+    }
+
     #[Route('/{id}', name: 'admin_family_event_show', methods: ['GET'])]
     public function show(FamilyEvent $familyEvent): Response
     {
@@ -78,5 +86,41 @@ final class AdminFamEventController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_family_event_index');
+    }
+    #[Route('/request/{id}/accept', name: 'admin_family_event_accept_request', methods: ['POST'])]
+    public function acceptRequest(
+        \App\Entity\FamilyEventRequest $request,
+        EntityManagerInterface $em
+    ): Response {
+        $request->setStatus(\App\Entity\FamilyEventRequest::STATUS_ACCEPTED);
+        
+        // Ajouter la famille à l'événement
+        $event = $request->getEvent();
+        $family = $request->getFamily();
+        
+        if (!$event->getAssignedFamilies()->contains($family)) {
+            $event->addAssignedFamily($family);
+        }
+
+        $em->flush();
+        $this->addFlash('success', 'La demande a été acceptée et la famille inscrite.');
+
+        return $this->redirectToRoute('admin_family_event_requests', ['id' => $event->getId()]);
+    }
+
+    #[Route('/request/{id}/refuse', name: 'admin_family_event_refuse_request', methods: ['POST'])]
+    public function refuseRequest(
+        \App\Entity\FamilyEventRequest $request,
+        EntityManagerInterface $em
+    ): Response {
+        $request->setStatus(\App\Entity\FamilyEventRequest::STATUS_REFUSED);
+        
+        // Si la famille était inscrite, on la retire ? (Optionnel, ici on gère juste la demande)
+        // $request->getEvent()->removeAssignedFamily($request->getFamily());
+
+        $em->flush();
+        $this->addFlash('warning', 'La demande a été refusée.');
+
+        return $this->redirectToRoute('admin_family_event_requests', ['id' => $request->getEvent()->getId()]);
     }
 }

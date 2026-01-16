@@ -18,10 +18,10 @@ class Event
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $startDate = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $endDate = null;
 
     #[ORM\Column]
@@ -43,7 +43,7 @@ class Event
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTime $startDate): static
+    public function setStartDate(?\DateTime $startDate): static
     {
         $this->startDate = $startDate;
 
@@ -55,7 +55,7 @@ class Event
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTime $endDate): static
+    public function setEndDate(?\DateTime $endDate): static
     {
         $this->endDate = $endDate;
 
@@ -79,7 +79,7 @@ class Event
         return $this->Title;
     }
 
-    public function setTitle(string $Title): static
+    public function setTitle(?string $Title): static
     {
         $this->Title = $Title;
 
@@ -91,7 +91,7 @@ class Event
         return $this->Description;
     }
 
-    public function setDescription(string $Description): static
+    public function setDescription(?string $Description): static
     {
         $this->Description = $Description;
 

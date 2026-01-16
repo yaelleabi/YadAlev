@@ -57,7 +57,7 @@ final class FamilyController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_family_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_family_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(
         Family $family,
         AidRequestRepository $aidRequestRepository
@@ -127,7 +127,7 @@ final class FamilyController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'app_family_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_family_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Family $family, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$family->getId(), $request->getPayload()->getString('_token'))) {

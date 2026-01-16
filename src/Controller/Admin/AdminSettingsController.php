@@ -96,6 +96,14 @@ final class AdminSettingsController extends AbstractController
     public function newAdmin(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createFormBuilder()
+            ->add('firstName', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'label' => 'Prénom',
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Prénom']
+            ])
+            ->add('name', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control', 'placeholder' => 'Nom']
+            ])
             ->add('email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class, [
                 'label' => 'Adresse email',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'email@admin.com']
@@ -123,9 +131,8 @@ final class AdminSettingsController extends AbstractController
             
             $user = new User();
             $user->setEmail($data['email']);
-            // Remplissage automatique des champs obligatoires non demandés
-            $user->setName('Administrateur');
-            $user->setFirstName('Admin');
+            $user->setName($data['name']);
+            $user->setFirstName($data['firstName']);
             $user->setPhoneNumber('0000000000'); // Dummy valid phone
             
             $user->setPassword(
@@ -147,6 +154,38 @@ final class AdminSettingsController extends AbstractController
 
         return $this->render('admin/settings/register_admin.html.twig', [
             'registrationForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/profile', name: 'app_admin_settings_profile', methods: ['GET', 'POST'])]
+    public function profile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $form = $this->createFormBuilder($user)
+            ->add('name', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('firstName', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                'label' => 'Prénom',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->add('email', \Symfony\Component\Form\Extension\Core\Type\EmailType::class, [
+                'label' => 'Email',
+                'attr' => ['class' => 'form-control']
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Profil mis à jour avec succès.');
+            return $this->redirectToRoute('app_admin_settings_index');
+        }
+
+        return $this->render('admin/settings/profile.html.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

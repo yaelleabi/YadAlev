@@ -1,157 +1,193 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mes informations - Yad Alev{% endblock %}
+{% block title %}Mes informations - Yad Alev
+{% endblock %}
 
 {% block body %}
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div
+			class="container d-flex justify-content-between align-items-center">
 
-        <!-- Logo + titre -->
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('app_family_home') }}">
-                <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            </a>
-            <span class="fw-bold text-primary fs-5">Mes informations</span>
-        </div>
+			<!-- Logo + titre -->
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_family_home') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Mes informations</span>
+			</div>
 
-        <!-- Icônes -->
-        <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
-                <i class="fas fa-home"></i>
-            </a>
-            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
+			<!-- Icônes -->
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
 
-    </div>
-</nav>
+		</div>
+	</nav>
 
 
-<!-- PAGE -->
-<div class="main-container">
+	<!-- PAGE -->
+	<div class="main-container">
 
-    <div class="content-wrapper container">
+		<div
+			class="content-wrapper container">
 
-        <!-- TITRE -->
-        <div class="text-center mb-5">
-            <h2 class="text-primary fw-bold fade-in">Mes informations personnelles</h2>
-            <p class="text-muted fade-in" style="animation-delay:.2s">
-                Retrouvez ici les données que vous avez communiquées à l’association.
-            </p>
-        </div>
+			<!-- TITRE -->
+			<div class="text-center mb-5">
+				<h2 class="text-primary fw-bold fade-in">Mes informations personnelles</h2>
+				<p class="text-muted fade-in" style="animation-delay:.2s">
+					Retrouvez ici les données que vous avez communiquées à l’association.
+				</p>
+			</div>
 
-        <!-- ACCORDION WRAPPER -->
-        <div class="info-card shadow-sm fade-in">
+			<!-- ACCORDION WRAPPER -->
+			<div class="info-card shadow-sm fade-in">
 
-            <div class="accordion" id="infoAccordion">
+				<div
+					class="accordion" id="infoAccordion">
 
-                {# On récupère la dernière AidRequest liée à la Family #}
-                {% set lastRequest = family.aidRequests|last %}
+					{# On récupère la dernière AidRequest liée à la Family #}
+					{% set lastRequest = family.aidRequests|last %}
 
-                <!-- IDENTITÉ -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#identity" aria-expanded="true">
-                            1. Identité
-                        </button>
-                    </h2>
-                    <div id="identity" class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            <p><strong>Nom :</strong> {{ family.name }}</p>
-                            <p><strong>Prénom :</strong> {{ family.firstName }}</p>
-                            <p><strong>Email :</strong> {{ family.email }}</p>
-                            <p><strong>Téléphone :</strong> {{ family.phoneNumber }}</p>
-                            <p><strong>Date de naissance :</strong>
-                                {{ family.dateOfBirth ? family.dateOfBirth|date('d/m/Y') : '—' }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
+					<!-- IDENTITÉ -->
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#identity" aria-expanded="true">
+								1. Identité
+							</button>
+						</h2>
+						<div id="identity" class="accordion-collapse collapse show">
+							<div class="accordion-body">
+								<p>
+									<strong>Nom :</strong>
+									{{ family.name }}</p>
+								<p>
+									<strong>Prénom :</strong>
+									{{ family.firstName }}</p>
+								<p>
+									<strong>Email :</strong>
+									{{ family.email }}</p>
+								<p>
+									<strong>Téléphone :</strong>
+									{{ family.phoneNumber }}</p>
+								<p>
+									<strong>Date de naissance :</strong>
+									{{ family.dateOfBirth ? family.dateOfBirth|date('d/m/Y') : '—' }}
+								</p>
+							</div>
+						</div>
+					</div>
 
-                <!-- FAMILLE & LOGEMENT -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#familyHousing">
-                            2. Famille & logement
-                        </button>
-                    </h2>
-                    <div id="familyHousing" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <p><strong>Situation familiale :</strong> {{ family.maritalStatus }}</p>
-                            <p><strong>Enfants à charge :</strong> {{ family.dependantsCount }}</p>
-                            <p><strong>Logement :</strong> {{ family.housingStatus }}</p>
+					<!-- FAMILLE & LOGEMENT -->
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#familyHousing">
+								2. Famille & logement
+							</button>
+						</h2>
+						<div id="familyHousing" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								<p>
+									<strong>Situation familiale :</strong>
+									{{ family.maritalStatus }}</p>
+								<p>
+									<strong>Enfants à charge :</strong>
+									{{ family.dependantsCount }}</p>
+								<p>
+									<strong>Logement :</strong>
+									{{ family.housingStatus }}</p>
 
-                            <h5 class="mt-3">Adresse</h5>
-                            <p>{{ family.adress.streetNumber }} {{ family.adress.street }}</p>
-                            <p>{{ family.adress.postalCode }} {{ family.adress.city }}</p>
-                        </div>
-                    </div>
-                </div>
+								<h5 class="mt-3">Adresse</h5>
+								<p>{{ family.adress.streetNumber }}
+									{{ family.adress.street }}</p>
+								<p>{{ family.adress.postalCode }}
+									{{ family.adress.city }}</p>
+							</div>
+						</div>
+					</div>
 
-                <!-- FINANCES -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#finances">
-                            3. Finances
-                        </button>
-                    </h2>
-                    <div id="finances" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            <p><strong>Situation professionnelle :</strong> {{ family.employmentStatus }}</p>
-                            <p><strong>Revenu mensuel :</strong> {{ family.monthlyIncome }} €</p>
-                            <p><strong>Situation conjoint :</strong> {{ family.spouseEmploymentStatus }}</p>
-                            <p><strong>Revenu conjoint :</strong> {{ family.spouseMonthlyIncome }} €</p>
-                            <p><strong>Allocations familiales :</strong> {{ family.familyAllowanceAmount }} €</p>
-                            <p><strong>Pension alimentaire :</strong> {{ family.alimonyAmount }} €</p>
-                            <p><strong>Loyer net :</strong> {{ family.rentAmountNetAide }} €</p>
-                        </div>
-                    </div>
-                </div>
+					<!-- FINANCES -->
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#finances">
+								3. Finances
+							</button>
+						</h2>
+						<div id="finances" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								<p>
+									<strong>Situation professionnelle :</strong>
+									{{ family.employmentStatus }}</p>
+								<p>
+									<strong>Revenu mensuel :</strong>
+									{{ family.monthlyIncome }}
+									€</p>
+								<p>
+									<strong>Situation conjoint :</strong>
+									{{ family.spouseEmploymentStatus }}</p>
+								<p>
+									<strong>Revenu conjoint :</strong>
+									{{ family.spouseMonthlyIncome }}
+									€</p>
+								<p>
+									<strong>Allocations familiales :</strong>
+									{{ family.familyAllowanceAmount }}
+									€</p>
+								<p>
+									<strong>Pension alimentaire :</strong>
+									{{ family.alimonyAmount }}
+									€</p>
+								<p>
+									<strong>Loyer net :</strong>
+									{{ family.rentAmountNetAide }}
+									€</p>
+							</div>
+						</div>
+					</div>
 
-                {# <!-- DERNIÈRE DEMANDE D’AIDE -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#aidRequest">
-                            4. Demande d’aide
-                        </button>
-                    </h2>
-                    <div id="aidRequest" class="accordion-collapse collapse">
-                        <div class="accordion-body">
+					{# <!-- DERNIÈRE DEMANDE D’AIDE -->
+										                <div class="accordion-item">
+										                    <h2 class="accordion-header">
+										                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+										                                data-bs-target="#aidRequest">
+										                            4. Demande d’aide
+										                        </button>
+										                    </h2>
+										                    <div id="aidRequest" class="accordion-collapse collapse">
+										                        <div class="accordion-body">
+										
+										                            {% if lastRequest %}
+										                                <p><strong>Type :</strong> {{ lastRequest.requestType }}</p>
+										                                <p><strong>Durée :</strong> {{ lastRequest.requestDuration }}</p>
+										                                <p><strong>Autre durée :</strong> {{ lastRequest.otherRequestDuration }}</p>
+										                                <p><strong>Motif :</strong> {{ lastRequest.requestReason }}</p>
+										                                <p><strong>Autre besoin :</strong> {{ lastRequest.otherNeed }}</p>
+										                                <p><strong>Niveau d'urgence :</strong> {{ lastRequest.urgencyLevel }}/10</p>
+										                                <p><strong>Justification :</strong> {{ lastRequest.urgencyExplanation }}</p>
+										                            {% else %}
+										                                <p class="text-muted">Aucune demande d’aide n’a encore été enregistrée.</p>
+										                            {% endif %}
+										
+										                        </div>
+										                    </div>
+										                </div> #}
 
-                            {% if lastRequest %}
-                                <p><strong>Type :</strong> {{ lastRequest.requestType }}</p>
-                                <p><strong>Durée :</strong> {{ lastRequest.requestDuration }}</p>
-                                <p><strong>Autre durée :</strong> {{ lastRequest.otherRequestDuration }}</p>
-                                <p><strong>Motif :</strong> {{ lastRequest.requestReason }}</p>
-                                <p><strong>Autre besoin :</strong> {{ lastRequest.otherNeed }}</p>
-                                <p><strong>Niveau d'urgence :</strong> {{ lastRequest.urgencyLevel }}/10</p>
-                                <p><strong>Justification :</strong> {{ lastRequest.urgencyExplanation }}</p>
-                            {% else %}
-                                <p class="text-muted">Aucune demande d’aide n’a encore été enregistrée.</p>
-                            {% endif %}
+					<!-- DOCUMENTS FOURNIS -->
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#documents">
+								4. Documents fournis
+							</button>
+						</h2>
+						<div id="documents" class="accordion-collapse collapse">
+							<div class="accordion-body">
 
-                        </div>
-                    </div>
-                </div> #}
-
-                <!-- DOCUMENTS FOURNIS -->
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#documents">
-                            4. Documents fournis
-                        </button>
-                    </h2>
-                    <div id="documents" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-
-                            {% set docs = {
+								{% set docs = {
                                 'Justificatif d’identité': family.identityProofFilename,
                                 'Justificatif de revenus': family.incomeProofFilename,
                                 'Avis d’imposition': family.taxNoticeFilename,
@@ -163,141 +199,184 @@
                                 'Autre document': family.otherDocumentFilename
                             } %}
 
-                            {% if docs|filter(d => d)|length > 0 %}
-                                {% for label, file in docs %}
-                                    {% if file %}
-                                        <p>
-                                            <strong>{{ label }} :</strong>
-                                            <a href="{{ asset('uploads/' ~ file) }}" target="_blank" class="text-primary">
-                                                Voir le document
-                                            </a>
-                                        </p>
-                                    {% endif %}
-                                {% endfor %}
-                            {% else %}
-                                <p class="text-muted">Aucun document fourni.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+								{% if docs|filter(d => d)|length > 0 %}
+									{% for label, file in docs %}
+										{% if file %}
+											<p>
+												<strong>{{ label }}
+													:</strong>
+												<a href="{{ asset('uploads/' ~ file) }}" target="_blank" class="text-primary">
+													Voir le document
+												</a>
+											</p>
+										{% endif %}
+									{% endfor %}
+								{% else %}
+									<p class="text-muted">Aucun document fourni.</p>
+								{% endif %}
+							</div>
+						</div>
+					</div>
 
-        <div class="accordion-item">
-        <h2 class="accordion-header">
-            <button class="accordion-button collapsed" type="button"
-                    data-bs-toggle="collapse" data-bs-target="#aidesAttribuees">
-                5. Mes aides attribuées
-            </button>
-        </h2>
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#aidesAttribuees">
+								5. Mes aides attribuées
+							</button>
+						</h2>
 
-        <div id="aidesAttribuees" class="accordion-collapse collapse">
-            <div class="accordion-body">
-
-                
-                <h5 class="fw-bold">Aides validées</h5>
+						<div id="aidesAttribuees" class="accordion-collapse collapse">
+							<div class="accordion-body">
 
 
-                {% if validatedRequests is empty %}
-                    <p class="text-muted">Aucune aide validée n’a encore été attribuée.</p>
-                {% else %}
-                    <ul class="ps-3">
-                        {% for aide in validatedRequests %}
-                            <li>
-                                <strong>{{ aide.requestType }}</strong>
-                                — {{ aide.createdAt|date('d/m/Y') }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+								<h5 class="fw-bold">Aides validées</h5>
 
 
-                <!-- 🟣 AID LIST (ManyToMany) -->
-                <h5 class="fw-bold">Aides enregistrées pour votre foyer</h5>
-
-                {% if family.familyEvents is empty %}
-                    <p class="text-muted">Aucune aide enregistrée.</p>
-                {% else %}
-                    <ul class="ps-3">
-                        {% for aide in family.familyEvents %}
-                            <li>
-                                <strong>{{ aide.name }}</strong>
-                                {% if aide.description %}
-                                    — {{ aide.description }}
-                                {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-
-            </div>
-        </div>
-    </div>
+								{% if validatedRequests is empty %}
+									<p class="text-muted">Aucune aide validée n’a encore été attribuée.</p>
+								{% else %}
+									<ul class="ps-3">
+										{% for aide in validatedRequests %}
+											<li>
+												<strong>{{ aide.requestType }}</strong>
+												—
+												{{ aide.createdAt|date('d/m/Y') }}
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
 
 
-    </div>
-</div>
+								<!-- 🟣 AID LIST (ManyToMany) -->
+								<h5 class="fw-bold">Aides enregistrées pour votre foyer</h5>
 
-        <!-- BOUTONS -->
-        <div class="text-center mt-4 fade-in" style="animation-delay:.4s">
+								{% if family.familyEvents is empty %}
+									<p class="text-muted">Aucune aide enregistrée.</p>
+								{% else %}
+									<ul class="ps-3">
+										{% for aide in family.familyEvents %}
+											<li>
+												<strong>{{ aide.Title }}</strong>
+												{% if aide.description %}
+													—
+													{{ aide.description }}
+												{% endif %}
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
 
-            {% if lastRequest %}
-                {# ✔️ Une demande existe → on affiche le bouton modifier #}
-                <a href="{{ path('app_family_edit', {id: family.id}) }}"
-                class="btn btn-primary btn-lg shadow-sm edit-btn">
-                    ✏️ Modifier mes informations
-                </a>
-
-            {% else %}
-                {# ❌ Aucune demande → message explicatif + bouton créer demande #}
-                <div class="alert alert-warning mt-3" style="max-width: 650px; margin: auto; font-size:1.05rem;">
-                    Pour compléter vos informations, veuillez d’abord créer une 
-                    <strong>demande d’aide</strong>.  
-                    Vous pourrez ensuite modifier vos informations dans cet espace.
-                </div>
-
-                <a href="{{ path('app_aidrequest_new') }}"
-                class="btn btn-success btn-lg shadow-sm edit-btn mt-3">
-                    ➕ Créer ma première demande d’aide
-                </a>
-            {% endif %}
-
-        </div>
-
-        <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
-            <a href="{{ path('app_family_home') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
-                ⬅️ Retour à mon espace famille
-            </a>
-        </div>
+							</div>
+						</div>
+					</div>
 
 
-    </div>
+				</div>
+			</div>
 
-    <!-- FOOTER -->
-    <footer class="footer-custom text-center text-muted small py-4">
-        <div class="footer-line mx-auto"></div>
+			<!-- BOUTONS -->
+			<div
+				class="text-center mt-4 fade-in" style="animation-delay:.4s">
 
-        <div class="footer-content mt-3">
-            <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
-            <p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
-        </div>
-    </footer>
+				{# ✔️ Le bouton modifier est TOUJOURS accessible désormais #}
+				<a href="{{ path('app_family_edit', {id: family.id}) }}" class="btn btn-primary btn-lg shadow-sm edit-btn mb-3">
+					✏️ Modifier mes informations
+				</a>
 
-</div>
+				{% if not lastRequest %}
+					{# ❌ Si aucune demande n'existe, on propose d'en créer une #}
+					<div class="mt-2 text-center">
+						<p class="text-muted mb-2 small">Vous n'avez pas encore fait de demande d'aide ?</p>
+						<a href="{{ path('app_aidrequest_new') }}" class="btn btn-success shadow-sm edit-btn">
+							➕ Créer ma première demande d’aide
+						</a>
+					</div>
+				{% endif %}
 
-<style>
-/* CSS conservé identique */
-.navbar { border-bottom: 1px solid #e2e8f0; }
-.nav-logo { width: 48px; }
-.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
-.nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
-.main-container { min-height: 100vh; display: flex; flex-direction: column; }
-.info-card { background: #fff; border-radius: 1rem; border: 1px solid #e2e8f0; }
-.accordion-button { font-weight: 600; color: #0d6efd; }
-.accordion-button:not(.collapsed) { background: #e8f0ff; color: #0d6efd; }
-.edit-btn { border-radius: 10px; padding: 10px 25px; }
-.fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
-@keyframes fadeSlide { from { opacity:0; transform: translateY(25px); } to { opacity:1; transform:translateY(0); } }
-.footer-line { width: 85%; height: 1px; background:#d0d7e0; }
-.footer-logo { width: 60px; }
-</style>
+			</div>
+
+			<div class="text-center mt-4 fade-in" style="animation-delay:.3s">
+				<a href="{{ path('app_family_home') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
+					⬅️ Retour à mon espace famille
+				</a>
+			</div>
+
+
+		</div>
+
+		<!-- FOOTER -->
+		<footer class="footer-custom text-center text-muted small py-4">
+			<div class="footer-line mx-auto"></div>
+
+			<div class="footer-content mt-3">
+				<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+				<p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
+			</div>
+		</footer>
+
+	</div>
+
+	<style>
+		/* CSS conservé identique */
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			border: 1px solid #e2e8f0;
+		}
+		.accordion-button {
+			font-weight: 600;
+			color: #0d6efd;
+		}
+		.accordion-button:not(.collapsed) {
+			background: #e8f0ff;
+			color: #0d6efd;
+		}
+		.edit-btn {
+			border-radius: 10px;
+			padding: 10px 25px;
+		}
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 60px;
+		}
+	</style>
 
 {% endblock %}

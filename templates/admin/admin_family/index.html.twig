@@ -1,168 +1,209 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des familles - Admin{% endblock %}
+{% block title %}Liste des familles - Admin
+{% endblock %}
 
 {% block body %}
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
 
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('app_admin') }}">
-                <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            </a>
-            <span class="fw-bold text-primary fs-5">Liste des familles</span>
-        </div>
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Liste des familles</span>
+			</div>
 
-        <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_admin') }}" class="nav-icon"><i class="fas fa-home"></i></a>
-            <a href="{{ path('app_logout') }}" class="nav-icon"><i class="fas fa-sign-out-alt"></i></a>
-        </div>
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_admin') }}" class="nav-icon">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
 
-    </div>
-</nav>
+		</div>
+	</nav>
 
-<!-- PAGE -->
-<div class="main-container ">
+	<!-- PAGE -->
+	<div class="main-container ">
 
-    <div class="content-wrapper container">
+		<div class="content-wrapper container">
 
-        <div class="text-center mb-5">
-            <h2 class="text-primary fw-bold fade-in">👨‍👩‍👧 Liste des familles</h2>
-            <p class="text-muted fade-in" style="animation-delay:.2s">
-                Consultez les informations essentielles et les aides attribuées.
-            </p>
-        </div>
-        <div class="d-flex justify-content-end mb-3 fade-in" style="animation-delay:.25s">
-            <a href="{{ path('admin_family_new') }}" class="btn btn-primary btn-lg shadow-sm">
-                ➕ Créer une famille
-            </a>
-        </div>    
+			<div class="text-center mb-5">
+				<h2 class="text-primary fw-bold fade-in">👨‍👩‍👧 Liste des familles</h2>
+				<p class="text-muted fade-in" style="animation-delay:.2s">
+					Consultez les informations essentielles et les aides attribuées.
+				</p>
+			</div>
+			<div class="d-flex justify-content-end mb-3 fade-in" style="animation-delay:.25s">
+				<a href="{{ path('admin_family_new') }}" class="btn btn-primary btn-lg shadow-sm">
+					➕ Créer une famille
+				</a>
+			</div>
 
-        <div class="info-card shadow-sm fade-in">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prénom</th>
-                            <th>Email</th>
-                            <th>Téléphone</th>
-                            <th>Aides d’urgence attribuées</th>
-                            <th>Autres aides</th>
-                            <th class="text-center">Actions</th>
-                        </tr>
-                    </thead>
+			<div class="info-card shadow-sm fade-in">
+				<div class="table-responsive">
+					<table class="table table-hover align-middle">
+						<thead class="table-light">
+							<tr>
+								<th>Nom</th>
+								<th>Prénom</th>
+								<th>Email</th>
+								<th>Téléphone</th>
+								<th>Aides d’urgence attribuées</th>
+								<th>Autres aides</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
 
-                    <tbody>
-                    {% for family in families %}
-                        {% set attribuees = validatedRequests[family.id] ?? [] %}
+						<tbody>
+							{% for family in families %}
+								{% set attribuees = validatedRequests[family.id] ?? [] %}
 
-                        <tr>
-                            <td>{{ family.name }}</td>
-                            <td>{{ family.firstName }}</td>
-                            <td>{{ family.email }}</td>
-                            <td>{{ family.phoneNumber }}</td>
+								<tr>
+									<td>{{ family.name }}</td>
+									<td>{{ family.firstName }}</td>
+									<td>{{ family.email }}</td>
+									<td>{{ family.phoneNumber }}</td>
 
-                            <!-- AIDES URGENCE VALIDÉES -->
-                            <td>
-                                {% if attribuees is empty %}
-                                    <span class="text-muted">Aucune</span>
-                                {% else %}
-                                    <ul class="ps-3 m-0">
-                                        {% for aide in attribuees %}
-                                            <li>
-                                                <strong>{{ aide.requestType }}</strong> 
-                                                — {{ aide.createdAt|date('d/m/Y') }}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </td>
+									<!-- AIDES URGENCE VALIDÉES -->
+									<td>
+										{% if attribuees is empty %}
+											<span class="text-muted">Aucune</span>
+										{% else %}
+											<ul class="ps-3 m-0">
+												{% for aide in attribuees %}
+													<li>
+														<strong>{{ aide.requestType }}</strong>
+														—
+														{{ aide.createdAt|date('d/m/Y') }}
+													</li>
+												{% endfor %}
+											</ul>
+										{% endif %}
+									</td>
 
-                            <!-- 🔵 AUTRES AIDES (FamilyEvent) -->
-                            <td>
-                                {% if family.familyEvents is empty %}
-                                    <span class="text-muted">Aucune</span>
-                                {% else %}
-                                    <ul class="ps-3 m-0">
-                                        {% for aide in family.familyEvents %}
-                                            <li>{{ aide.name }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </td>
+									<!-- 🔵 AUTRES AIDES (FamilyEvent) -->
+									<td>
+										{% if family.familyEvents is empty %}
+											<span class="text-muted">Aucune</span>
+										{% else %}
+											<ul class="ps-3 m-0">
+												{% for aide in family.familyEvents %}
+													<li>{{ aide.Title }}
+														({{ aide.startDate|date('Y') }})</li>
+												{% endfor %}
+											</ul>
+										{% endif %}
+									</td>
 
-                            <td class="text-center">
-                                <a href="{{ path('admin_family_show', {'id': family.id}) }}"
-                                   class="btn btn-sm btn-outline-primary me-1">
-                                    <i class="fas fa-eye"></i>
-                                </a>
+									<td class="text-center">
+										<div class="d-flex justify-content-center gap-2">
+											<a href="{{ path('admin_family_show', {'id': family.id}) }}" class="btn btn-sm btn-outline-primary" title="Voir">
+												<i class="fas fa-eye"></i>
+											</a>
 
-                                <a href="{{ path('admin_family_edit', {'id': family.id}) }}"
-                                   class="btn btn-sm btn-outline-success">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{{ path('admin_aidrequest_new_for_family', {'id': family.id}) }}"
-                                   class="btn btn-sm btn-outline-warning" title="Créer une demande">
-                                    <i class="fas fa-plus-circle"></i>
-                                </a>
-                                <form method="post"
-                                    action="{{ path('admin_family_delete', {'id': family.id}) }}"
-                                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette famille ?');"
-                                    class="d-inline-block m-0 p-0">
+											<a href="{{ path('admin_family_edit', {'id': family.id}) }}" class="btn btn-sm btn-outline-success" title="Modifier">
+												<i class="fas fa-edit"></i>
+											</a>
 
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ family.id) }}">
+											<a href="{{ path('admin_aidrequest_new_for_family', {'id': family.id}) }}" class="btn btn-sm btn-outline-warning" title="Créer une demande">
+												<i class="fas fa-plus-circle"></i>
+											</a>
 
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+											<form method="post" action="{{ path('admin_family_delete', {'id': family.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette famille ?');" class="d-inline-block m-0 p-0">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ family.id) }}">
+												<button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+													<i class="fas fa-trash"></i>
+												</button>
+											</form>
+										</div>
+									</td>
+								</tr>
 
-                            </td>
-                        </tr>
+							{% else %}
+								<tr>
+									<td colspan="6" class="text-center py-4 text-muted">
+										<i class="fas fa-users-slash"></i>
+										Aucune famille enregistrée.
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
 
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                <i class="fas fa-users-slash"></i> Aucune famille enregistrée.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
+					</table>
+				</div>
+			</div>
 
-                </table>
-            </div>
-        </div>
+			<div class="text-center mt-4 fade-in" style="animation-delay:.3s">
+				<a href="{{ path('app_family_export_excel') }}" class="btn btn-success btn-lg mt-4">
+					📤 Exporter en Excel
+				</a>
 
-        <div class="text-center mt-4 fade-in" style="animation-delay:.3s">
-           <a href="{{ path('app_family_export_excel') }}" 
-            class="btn btn-success btn-lg mt-4">
-                📤 Exporter en Excel
-            </a>
+			</div>
 
-        </div>
+			<footer class="footer-custom text-center text-muted small py-4 mt-5">
+				<div class="footer-line mx-auto"></div>
+				<p class="m-0">© 2025 Yad Alev — Tous droits réservés.</p>
+			</footer>
 
-        <footer class="footer-custom text-center text-muted small py-4 mt-5">
-            <div class="footer-line mx-auto"></div>
-            <p class="m-0">© 2025 Yad Alev — Tous droits réservés.</p>
-        </footer>
+		</div>
+	</div>
 
-    </div>
-</div>
-
-<style>
-.navbar { border-bottom: 1px solid #e2e8f0; }
-.nav-logo { width: 48px; }
-.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
-.nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
-.main-container { min-height: 100vh;  display:flex; flex-direction:column; }
-.info-card { background:#fff; border-radius:1rem; padding:20px; border:1px solid #e2e8f0; }
-.table-hover tbody tr:hover { background:#eaf1ff; transition:.2s; }
-.fade-in { opacity:0; animation: fadeSlide .7s ease forwards; }
-@keyframes fadeSlide { from{opacity:0;transform:translateY(25px);} to{opacity:1;transform:translateY(0);} }
-.footer-line { width:85%; height:1px; background:#d0d7e0; }
-</style>
+	<style>
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			padding: 20px;
+			border: 1px solid #e2e8f0;
+		}
+		.table-hover tbody tr:hover {
+			background: #eaf1ff;
+			transition: 0.2s;
+		}
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+	</style>
 
 {% endblock %}

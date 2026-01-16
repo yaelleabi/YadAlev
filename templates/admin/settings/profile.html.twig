@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - Paramètres
+{% endblock %}
+
+{% block body %}
+	{% include 'admin/settings/_navbar.html.twig' %}
+
+	<div class="main-container">
+		<div class="content-wrapper d-flex flex-column justify-content-start align-items-center pt-5">
+
+			<div class="container mt-5" style="max-width: 600px;">
+				<h3 class="fw-bold mb-4 text-center">Modifier mon profil</h3>
+
+				<div class="card shadow-sm border-0 p-4">
+					{{ form_start(form) }}
+
+					<div class="row mb-3">
+						<div class="col-md-6">
+							{{ form_row(form.firstName) }}
+						</div>
+						<div class="col-md-6">
+							{{ form_row(form.name) }}
+						</div>
+					</div>
+
+					<div class="mb-3">
+						{{ form_row(form.email) }}
+					</div>
+
+					<div class="d-flex justify-content-between mt-4">
+						<a href="{{ path('app_admin_settings_index') }}" class="btn btn-outline-secondary">Annuler</a>
+						<button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+					</div>
+					{{ form_end(form) }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

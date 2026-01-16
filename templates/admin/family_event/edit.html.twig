@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Projet Famille
+{% endblock %}
+
+{% block body %}
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Modifier Projet</span>
+			</div>
+
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('admin_family_event_index') }}" class="nav-icon" title="Retour liste">
+					<i class="fas fa-arrow-left"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+	</nav>
+
+	<div class="main-container">
+		<div class="content-wrapper container" style="padding-top: 100px;">
+
+			<div class="text-center mb-5 fade-in">
+				<h2 class="text-primary fw-bold">Modifier le projet famille</h2>
+				<p class="text-muted" style="animation-delay:.2s">
+					Mettez à jour les informations de cet évènement.
+				</p>
+			</div>
+
+			{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+			<div class="info-card shadow-sm fade-in p-4" style="max-width: 800px; margin: 0 auto;">
+
+				<div class="mb-3">
+					{{ form_row(form.Title) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_row(form.Description) }}
+				</div>
+
+				<div class="row mb-3">
+					<div class="col-md-6">
+						{{ form_row(form.startDate) }}
+					</div>
+					<div class="col-md-6">
+						{{ form_row(form.endDate) }}
+					</div>
+				</div>
+
+				<div class="row mb-3 align-items-end">
+					<div class="col-md-6">
+						{{ form_row(form.Quantity) }}
+					</div>
+					<div class="col-md-6">
+						<div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-2">
+							{{ form_widget(form.isVisible, {'attr': {'class': 'form-check-input ms-0'}}) }}
+							{{ form_label(form.isVisible, null, {'label_attr': {'class': 'form-check-label'}}) }}
+						</div>
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label text-primary fw-bold">Familles Assignées</label>
+					<div class="alert alert-info small">
+						<i class="fas fa-search me-2"></i>
+						Utilisez la barre de recherche pour filtrer les familles, puis cochez celles à d'ajouter.
+					</div>
+
+					<!-- Barre de recherche JS -->
+					<div class="input-group mb-2">
+						<span class="input-group-text">
+							<i class="fas fa-search"></i>
+						</span>
+						<input type="text" id="familySearch" class="form-control" placeholder="Rechercher une famille..." onkeyup="filterFamilies()">
+					</div>
+
+					<!-- Conteneur scrollable pour les checkboxes -->
+					<div class="border rounded p-3 bg-light" style="max-height: 250px; overflow-y: auto;" id="familyListContainer">
+						{% for child in form.assignedFamilies %}
+							<div class="form-check family-item">
+								{{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+								{{ form_label(child, null, {'label_attr': {'class': 'form-check-label fw-semibold'}}) }}
+							</div>
+						{% endfor %}
+						<!-- Astuce pour afficher l'erreur globale du champs si nécessaire -->
+						{% do form.assignedFamilies.setRendered() %}
+					</div>
+					{{ form_errors(form.assignedFamilies) }}
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center mt-4">
+					<a href="{{ path('admin_family_event_index') }}" class="btn btn-outline-secondary">Annuler</a>
+					<button class="btn btn-primary btn-lg shadow-sm px-5">
+						💾 Mettre à jour
+					</button>
+				</div>
+
+			</div>
+
+			{{ form_end(form) }}
+
+			<!-- Zone Danger -->
+			<div class="text-center mt-5 fade-in" style="animation-delay:.3s">
+				<form method="post" action="{{ path('admin_family_event_delete', {'id': family_event.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');">
+					<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ family_event.id) }}">
+					<button class="btn btn-outline-danger btn-sm">
+						<i class="fas fa-trash me-1"></i>
+						Supprimer ce projet
+					</button>
+				</form>
+			</div>
+
+		</div>
+
+		<footer class="footer-custom text-center text-muted small py-4 mt-5">
+			<div class="footer-line mx-auto"></div>
+			<p class="m-0">© 2025 Yad Alev — Tous droits réservés.</p>
+		</footer>
+	</div>
+
+	<script>
+		function filterFamilies() { // Récupérer la valeur de recherche
+let input = document.getElementById('familySearch');
+let filter = input.value.toLowerCase();
+
+// Récupérer tous les items
+let container = document.getElementById('familyListContainer');
+let items = container.getElementsByClassName('family-item');
+
+// Boucler sur tous les items et cacher ceux qui ne correspondent pas
+for (let i = 0; i < items.length; i++) {
+let label = items[i].getElementsByTagName("label")[0];
+if (label) {
+let txtValue = label.textContent || label.innerText;
+if (txtValue.toLowerCase().indexOf(filter) > -1) {
+items[i].style.display = "";
+} else {
+items[i].style.display = "none";
+}
+}
+}
+}
+	</script>
+
+	<style>
+		/* Custom Error Styling */
+		.invalid-feedback,
+		.list-unstyled.text-danger {
+			display: block;
+			color: #dc3545;
+			font-size: 0.875em;
+			margin-top: 0.25rem;
+			list-style: none; /* remove bullet points from standard Symfony error lists */
+			padding-left: 0;
+		}
+
+		label.required::after {
+			content: " *";
+			color: red;
+			font-weight: bold;
+		}
+
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			border: 1px solid #e2e8f0;
+		}
+
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: none;
+			}
+		}
+
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+	</style>
+
+{% endblock %}

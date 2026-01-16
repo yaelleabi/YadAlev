@@ -17,11 +17,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class AdminController extends AbstractController
 {
     #[Route('/admin', name: 'app_admin')]
-    public function index(): Response
+    public function index(AidRequestRepository $repo): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $pendingCount = $repo->count(['status' => \App\Enum\AidRequestStatus::PENDING]);
 
-        return $this->render('admin/index.html.twig');
+        return $this->render('admin/index.html.twig', [
+            'pendingCount' => $pendingCount
+        ]);
     }
 
     #[Route('/admin/aidproject/new', name: 'app_admin_aidproject_new')]

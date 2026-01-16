@@ -1,215 +1,434 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier mes informations - Espace Famille{% endblock %}
+{% block title %}Modifier mes informations - Espace Famille
+{% endblock %}
 
 {% block body %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
-    <div class="container d-flex justify-content-between align-items-center">
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
 
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ path('app_family_home') }}">
-                <img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
-            </a>
-            <span class="fw-bold text-primary fs-5">Modifier mes informations</span>
-        </div>
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_family_home') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Modifier mes informations</span>
+			</div>
 
-        <div class="d-flex align-items-center gap-4">
-            <a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
-                <i class="fas fa-home"></i>
-            </a>
-            <a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_family_home') }}" class="nav-icon" title="Retour espace famille">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
 
-    </div>
-</nav>
-
-
-<div class="main-container ">
-
-    <div class="content-wrapper container" style="padding-top: 100px;">
-
-        <div class="text-center mb-5 fade-in">
-            <h2 class="text-primary fw-bold">Modifier mes informations personnelles</h2>
-            <p class="text-muted" style="animation-delay:.2s">
-                Mettez à jour vos informations si nécessaire.<br>
-                <small>Ces modifications n'altèrent pas vos anciennes demandes d’aide.</small>
-            </p>
-        </div>
-
-        {{ form_start(form) }}
-
-        {% if form_errors(form) %}
-            <div class="alert alert-danger mt-3">
-                {{ form_errors(form) }}
-            </div>
-        {% endif %}
-
-        <div class="info-card shadow-sm fade-in p-4">
-            <div class="accordion" id="editAccordion">
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#id1" aria-expanded="true">
-                            1. Identité
-                        </button>
-                    </h2>
-                    <div id="id1" class="accordion-collapse collapse show">
-                        <div class="accordion-body">
-                            {{ form_row(form.name) }}
-                            {{ form_row(form.firstName) }}
-                            {{ form_row(form.dateOfBirth) }}
-                            {{ form_row(form.email) }}
-                            {{ form_row(form.phoneNumber) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id2">
-                            2. Famille & logement
-                        </button>
-                    </h2>
-                    <div id="id2" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            {{ form_row(form.maritalStatus) }}
-                            {{ form_row(form.dependantsCount) }}
-                            {{ form_row(form.housingStatus) }}
-
-                            <h5 class="mt-3">Adresse complète</h5>
-                            {{ form_row(form.adress.streetNumber) }}
-                            {{ form_row(form.adress.street) }}
-                            {{ form_row(form.adress.postalCode) }}
-                            {{ form_row(form.adress.city) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id3">
-                            3. Finances
-                        </button>
-                    </h2>
-                    <div id="id3" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            {{ form_row(form.employmentStatus) }}
-                            {{ form_row(form.monthlyIncome) }}
-                            {{ form_row(form.spouseEmploymentStatus) }}
-                            {{ form_row(form.spouseMonthlyIncome) }}
-                            {{ form_row(form.familyAllowanceAmount) }}
-                            {{ form_row(form.alimonyAmount) }}
-                            {{ form_row(form.rentAmountNetAide) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#id5">
-                            4. Documents & justificatifs
-                        </button>
-                    </h2>
-                    <div id="id5" class="accordion-collapse collapse">
-                        <div class="accordion-body">
-                            {{ form_row(form.identityProofFilename) }}
-                            {{ form_row(form.incomeProofFilename) }}
-                            {{ form_row(form.taxNoticeFilename) }}
-                            {{ form_row(form.quittanceLoyer) }}
-                            {{ form_row(form.avisCharge) }}
-                            {{ form_row(form.taxeFonciere) }}
-                            {{ form_row(form.fraisScolarite) }}
-                            {{ form_row(form.attestationCaf) }}
-                            {{ form_row(form.otherDocumentFilename) }}
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="text-center mt-4 fade-in">
-            <button type="submit" class="btn btn-primary btn-lg shadow-sm edit-btn">
-                💾 Enregistrer les modifications
-            </button>
-        </div>
-
-        {{ form_widget(form._token) }}
-
-        {{ form_end(form, { render_rest: false }) }}
-
-        <div class="text-center mt-4 fade-in">
-            <a href="{{ path('app_family_home') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
-                ⬅️ Retour à mon espace famille
-            </a>
-        </div>
-    </div>
-
-    <footer class="footer-custom text-center text-muted small py-4">
-        <div class="footer-line mx-auto"></div>
-        <img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
-        <p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
-    </footer>
-
-</div>
+		</div>
+	</nav>
 
 
-<style>
-/* mêmes styles que ton template */
-.navbar { border-bottom: 1px solid #e2e8f0; }
-.nav-logo { width: 48px; }
-.nav-icon { font-size: 1.4rem; color:#444; transition:.2s; }
-.nav-icon:hover { color:#0d6efd; transform: translateY(-2px); }
+	<div class="main-container ">
 
-.main-container { min-height: 100vh; display:flex; flex-direction:column; }
-.info-card { background:#fff; border-radius:1rem; border:1px solid #e2e8f0; }
+		<div class="content-wrapper container" style="padding-top: 100px;">
 
-.accordion-button{ font-weight:600; color:#0d6efd; }
-.accordion-button:not(.collapsed){ background:#e8f0ff; color:#0d6efd; }
+			<div class="text-center mb-5 fade-in">
+				<h2 class="text-primary fw-bold">Modifier mes informations personnelles</h2>
+				<p class="text-muted" style="animation-delay:.2s">
+					Mettez à jour vos informations si nécessaire.<br>
+					<small>Ces modifications n'altèrent pas vos anciennes demandes d’aide.</small>
+				</p>
+			</div>
 
-.edit-btn{ border-radius:10px; padding:10px 25px; }
+			{{ form_start(form) }}
 
-.fade-in{ opacity:0; animation:fadeSlide .7s ease forwards; }
-@keyframes fadeSlide{ from{opacity:0; transform:translateY(25px);} to{opacity:1; transform:translateY(0);} }
+			{% if form_errors(form) %}
+				<div class="alert alert-danger mt-3">
+					{{ form_errors(form) }}
+				</div>
+			{% endif %}
 
-.footer-line{ width:85%; height:1px; background:#d0d7e0; }
-.footer-logo{ width:60px; }
-</style>
+			<div class="info-card shadow-sm fade-in p-4">
+				<div class="accordion" id="editAccordion">
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Auto-open accordion if there is an error inside
-        var invalidFields = document.querySelectorAll('.is-invalid, .invalid-feedback');
-        
-        if (invalidFields.length > 0) {
-            var firstInvalid = invalidFields[0];
-            // Find the closest accordion collapse div
-            var collapseDiv = firstInvalid.closest('.accordion-collapse');
-            
-            if (collapseDiv) {
-                // S'assure que bootstrap est bien chargé
-                if (typeof bootstrap !== 'undefined') {
-                    var bsCollapse = new bootstrap.Collapse(collapseDiv, {
-                        toggle: false
-                    });
-                    bsCollapse.show();
-                } else {
-                    // Fallback si Bootstrap JS n'est pas détecté
-                    collapseDiv.classList.add('show');
-                }
-                
-                // Optional: scroll to the error
-                setTimeout(() => {
-                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-            }
-        }
-    });
-</script>
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#id1" aria-expanded="true">
+								1. Identité
+							</button>
+						</h2>
+						<div id="id1" class="accordion-collapse collapse show">
+							<div class="accordion-body">
+								{{ form_row(form.name) }}
+								{{ form_row(form.firstName) }}
+								{{ form_row(form.dateOfBirth) }}
+								{{ form_row(form.email) }}
+								{{ form_row(form.phoneNumber) }}
+							</div>
+						</div>
+					</div>
 
-{% endblock %}
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id2">
+								2. Famille & logement
+							</button>
+						</h2>
+						<div id="id2" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								{{ form_row(form.maritalStatus) }}
+								{{ form_row(form.dependantsCount) }}
+								{{ form_row(form.housingStatus) }}
+
+								<h5 class="mt-3">Adresse complète</h5>
+								{{ form_row(form.adress.streetNumber) }}
+								{{ form_row(form.adress.street) }}
+								{{ form_row(form.adress.postalCode) }}
+								{{ form_row(form.adress.city) }}
+								<div id="city-wrapper"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id3">
+								3. Finances
+							</button>
+						</h2>
+						<div id="id3" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								{{ form_row(form.employmentStatus) }}
+								{{ form_row(form.monthlyIncome) }}
+								{{ form_row(form.spouseEmploymentStatus) }}
+								{{ form_row(form.spouseMonthlyIncome) }}
+								{{ form_row(form.familyAllowanceAmount) }}
+								{{ form_row(form.alimonyAmount) }}
+								{{ form_row(form.rentAmountNetAide) }}
+							</div>
+						</div>
+					</div>
+
+					<div class="accordion-item">
+						<h2 class="accordion-header">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#id5">
+								4. Documents & justificatifs
+							</button>
+						</h2>
+						<div id="id5" class="accordion-collapse collapse">
+							<div class="accordion-body">
+								{{ form_row(form.identityProofFilename) }}
+								{{ form_row(form.incomeProofFilename) }}
+								{{ form_row(form.taxNoticeFilename) }}
+								{{ form_row(form.quittanceLoyer) }}
+								{{ form_row(form.avisCharge) }}
+								{{ form_row(form.taxeFonciere) }}
+								{{ form_row(form.fraisScolarite) }}
+								{{ form_row(form.attestationCaf) }}
+								{{ form_row(form.otherDocumentFilename) }}
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="text-center mt-4 fade-in">
+				<button type="submit" class="btn btn-primary btn-lg shadow-sm edit-btn">
+					💾 Enregistrer les modifications
+				</button>
+			</div>
+
+			{{ form_widget(form._token) }}
+
+			{{ form_end(form, { render_rest: false }) }}
+
+			<div class="text-center mt-4 fade-in">
+				<a href="{{ path('app_family_home') }}" class="btn btn-outline-primary btn-lg shadow-sm edit-btn">
+					⬅️ Retour à mon espace famille
+				</a>
+			</div>
+		</div>
+
+		<footer class="footer-custom text-center text-muted small py-4">
+			<div class="footer-line mx-auto"></div>
+			<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+			<p class="m-0">© 2025 Espace Famille Yad Alev — Tous droits réservés.</p>
+		</footer>
+
+	</div>
+
+
+	<style>
+		/* mêmes styles que ton template */
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			border: 1px solid #e2e8f0;
+		}
+
+		.accordion-button {
+			font-weight: 600;
+			color: #0d6efd;
+		}
+		.accordion-button:not(.collapsed) {
+			background: #e8f0ff;
+			color: #0d6efd;
+		}
+
+		.edit-btn {
+			border-radius: 10px;
+			padding: 10px 25px;
+		}
+
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 60px;
+		}
+	</style>
+
+	<script>
+		function initAddressApi() {
+const cpField = document.getElementById('family_adress_postalCode');
+const cityField = document.getElementById('family_adress_city');
+const cityWrapper = document.getElementById('city-wrapper');
+
+if (! cpField || ! cityField || ! cityWrapper) 
+return;
+
+
+// Prevent double init
+if (cpField.dataset.addressInit) 
+return;
+
+cpField.dataset.addressInit = "true";
+
+cpField.addEventListener('input', function () {
+const cp = this.value.trim();
+// Regex laxiste pour l'app : 5 chiffres
+if (!/^\d{5}$/.test(cp)) 
+return;
+
+
+fetch (`https://api-adresse.data.gouv.fr/search/?q=${cp}&type=municipality`).then(response => response.json()).then(data => {
+const results = data.features;
+
+const oldSelect = cityWrapper.querySelector(".dynamic-city");
+if (oldSelect) 
+oldSelect.remove();
+
+
+if (! results || ! results.length) 
+return;
+
+
+if (results.length === 1) {
+cityField.value = results[0].properties.city;
+return;
+}
+
+const select = document.createElement('select');
+select.classList.add('form-select', 'dynamic-city', 'mt-2');
+
+const optDefault = document.createElement('option');
+optDefault.textContent = "Choisir une ville...";
+optDefault.value = "";
+select.appendChild(optDefault);
+
+results.forEach(r => {
+const opt = document.createElement('option');
+opt.value = r.properties.city;
+opt.textContent = r.properties.city;
+select.appendChild(opt);
+});
+
+cityWrapper.appendChild(select);
+
+select.addEventListener('change', function () {
+cityField.value = this.value;
+});
+}).catch(console.error);
+});
+}
+
+// ⭐ Ajout des étoiles rouges
+function addRequiredStars() {
+document.querySelectorAll('label[for]').forEach(label => {
+const fieldId = label.getAttribute('for');
+const field = document.getElementById(fieldId);
+
+if (field && (field.required || field.getAttribute('aria-required') === 'true')) {
+if (!label.querySelector('.text-danger')) {
+label.innerHTML += ' <span class="text-danger">*</span>';
+}
+}
+});
+}
+
+// 🚨 Validation client-side
+function setupValidation() {
+const form = document.querySelector('form');
+if (! form) 
+return;
+
+
+// Prevent double init
+if (form.dataset.validationInit) 
+return;
+
+form.dataset.validationInit = "true";
+
+form.setAttribute('novalidate', 'novalidate');
+
+form.addEventListener('submit', function (e) {
+let isValid = true;
+const requiredFields = form.querySelectorAll('[required]');
+
+requiredFields.forEach(field => {
+if (!validateField(field)) {
+isValid = false;
+}
+});
+
+if (! isValid) {
+e.preventDefault();
+// Scroll au premier champ invalide
+const firstError = form.querySelector('.is-invalid');
+if (firstError) {
+firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+// Ouvre l'accordéon correspondant si besoin
+const collapseDiv = firstError.closest('.accordion-collapse');
+if (collapseDiv && typeof bootstrap !== 'undefined') {
+new bootstrap.Collapse(collapseDiv, {toggle: false}).show();
+} else if (collapseDiv) {
+collapseDiv.classList.add('show');
+}
+}
+}
+});
+
+// Validation en temps réel
+form.querySelectorAll('input, select, textarea').forEach(input => {
+input.addEventListener('blur', () => validateField(input));
+input.addEventListener('input', () => {
+if (input.classList.contains('is-invalid')) 
+validateField(input);
+
+});
+});
+}
+
+function validateField(field) {
+const container = field.closest('.mb-3') || field.parentElement;
+let errorDiv = container.querySelector('.invalid-feedback.js-error');
+if (! errorDiv) {
+errorDiv = container.querySelector('.invalid-feedback');
+}
+
+let isValid = true;
+let message = "";
+
+if (field.hasAttribute('required') && ! field.value.trim()) {
+isValid = false;
+message = "Ce champ est obligatoire.";
+}
+
+// Custom checks
+if (field.value.trim() && field.id.includes('postalCode') && !/^\d{5}$/.test(field.value.trim())) {
+isValid = false;
+message = "Le code postal doit contenir 5 chiffres.";
+}
+if (field.value.trim() && field.name.includes('phoneNumber') && !/^\+?\d{9,15}$/.test(field.value.trim())) {
+isValid = false;
+message = "Numéro de téléphone invalide.";
+}
+
+if (! isValid) {
+field.classList.add('is-invalid');
+if (! errorDiv) {
+errorDiv = document.createElement('div');
+errorDiv.className = 'invalid-feedback js-error';
+field.insertAdjacentElement('afterend', errorDiv);
+}
+errorDiv.textContent = message;
+errorDiv.style.display = 'block';
+} else {
+field.classList.remove('is-invalid');
+if (errorDiv && errorDiv.classList.contains('js-error')) {
+errorDiv.remove();
+} else if (errorDiv) {
+errorDiv.style.display = 'none';
+}
+}
+return isValid;
+}
+
+function initAll() {
+initAddressApi();
+addRequiredStars();
+setupValidation();
+
+// Réouverture accordéon si erreurs PHP
+var invalidFields = document.querySelectorAll('.is-invalid, .invalid-feedback');
+if (invalidFields.length > 0) {
+var firstInvalid = invalidFields[0];
+var collapseDiv = firstInvalid.closest('.accordion-collapse');
+
+if (collapseDiv) {
+if (typeof bootstrap !== 'undefined') {
+new bootstrap.Collapse(collapseDiv, {toggle: false}).show();
+} else {
+collapseDiv.classList.add('show');
+}
+setTimeout(() => {
+firstInvalid.scrollIntoView({behavior: 'smooth', block: 'center'});
+}, 300);
+}
+}
+}
+
+// Support Turbo & Standard loads
+document.addEventListener("turbo:load", initAll);
+document.addEventListener("DOMContentLoaded", initAll);
+	</script>
+</script>{% endblock %}

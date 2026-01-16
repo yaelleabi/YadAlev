@@ -1,0 +1,217 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projets Famille - Admin
+{% endblock %}
+
+{% block body %}
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
+
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Projets Famille</span>
+			</div>
+
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_admin') }}" class="nav-icon" title="Accueil admin">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+
+		</div>
+	</nav>
+
+	<div class="main-container">
+
+		<div class="content-wrapper container" style="padding-top: 100px;">
+
+			<div class="text-center mb-5">
+				<h2 class="text-primary fw-bold fade-in">🎁 Liste des projets familles</h2>
+				<p class="text-muted fade-in" style="animation-delay:.2s">
+					Gérez les évènements et distributions pour les familles.
+				</p>
+			</div>
+
+			<div class="d-flex justify-content-end mb-3 fade-in" style="animation-delay:.25s">
+				<a href="{{ path('admin_family_event_new') }}" class="btn btn-primary btn-lg shadow-sm">
+					➕ Créer un projet
+				</a>
+			</div>
+
+			<div class="info-card shadow-sm fade-in">
+				<div class="table-responsive">
+					<table class="table table-hover align-middle">
+						<thead class="table-light">
+							<tr>
+								<th>Titre</th>
+								<th>Dates</th>
+								<th class="text-center">Visible</th>
+								<th class="text-center">Qté</th>
+								<th class="text-center">Disponible</th>
+								<th class="text-center">Actions</th>
+							</tr>
+						</thead>
+
+						<tbody>
+							{% for family_event in family_events %}
+								<tr>
+									<td>
+										<div class="fw-bold text-dark">{{ family_event.Title }}</div>
+										<small class="text-muted">{{ family_event.Description|slice(0, 50) }}...</small>
+									</td>
+									<td>
+										<small class="d-block text-muted">Du :
+											{{ family_event.startDate ? family_event.startDate|date('d/m/Y H:i') : '-' }}</small>
+										<small class="d-block text-muted">Au :
+											{{ family_event.endDate ? family_event.endDate|date('d/m/Y H:i') : '-' }}</small>
+									</td>
+									<td class="text-center">
+										{% if family_event.isVisible %}
+											<span class="badge bg-success">Oui</span>
+										{% else %}
+											<span class="badge bg-secondary">Non</span>
+										{% endif %}
+									</td>
+									<td class="text-center fw-bold text-primary">
+										{{ family_event.Quantity }}
+									</td>
+									<td class="text-center">
+										{% set assignedCount = family_event.assignedFamilies|length %}
+										{% set available = family_event.Quantity - assignedCount %}
+										<span class="badge {{ available > 0 ? 'bg-info text-dark' : 'bg-danger' }}">
+											{{ available }}
+										</span>
+									</td>
+
+									<td class="text-center">
+										<div class="d-flex justify-content-center align-items-center gap-1">
+
+											{% set pendingCount = 0 %}
+											{% for req in family_event.familyEventRequests %}
+												{% if req.status == 'PENDING' %}
+													{% set pendingCount = pendingCount + 1 %}
+												{% endif %}
+											{% endfor %}
+
+											{% if pendingCount > 0 %}
+												<a href="{{ path('admin_family_event_requests', {'id': family_event.id}) }}" class="btn btn-sm btn-warning position-relative me-1" title="Gérer {{ pendingCount }} demandes">
+													<i class="fas fa-clock"></i>
+													<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+														{{ pendingCount }}
+													</span>
+												</a>
+											{% else %}
+												<a href="{{ path('admin_family_event_requests', {'id': family_event.id}) }}" class="btn btn-sm btn-outline-warning me-1" title="Gérer les demandes">
+													<i class="fas fa-clock"></i>
+												</a>
+											{% endif %}
+
+											<a href="{{ path('admin_family_event_show', {'id': family_event.id}) }}" class="btn btn-sm btn-outline-primary" title="Voir">
+												<i class="fas fa-eye"></i>
+											</a>
+
+											<a href="{{ path('admin_family_event_edit', {'id': family_event.id}) }}" class="btn btn-sm btn-outline-success" title="Modifier">
+												<i class="fas fa-edit"></i>
+											</a>
+
+											<form method="post" action="{{ path('admin_family_event_delete', {'id': family_event.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');" class="d-inline-block m-0 p-0">
+
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ family_event.id) }}">
+
+												<button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+													<i class="fas fa-trash"></i>
+												</button>
+											</form>
+
+										</div>
+									</td>
+								</tr>
+
+							{% else %}
+								<tr>
+									<td colspan="5" class="text-center py-4 text-muted">
+										<i class="fas fa-box-open"></i>
+										Aucun projet famille enregistré.
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+
+					</table>
+				</div>
+			</div>
+
+			<footer class="footer-custom text-center text-muted small py-4 mt-5">
+				<div class="footer-line mx-auto"></div>
+				<p class="m-0">© 2025 Yad Alev — Tous droits réservés.</p>
+			</footer>
+
+		</div>
+	</div>
+
+	<style>
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			padding: 20px;
+			border: 1px solid #e2e8f0;
+		}
+
+		.table-hover tbody tr:hover {
+			background: #eaf1ff;
+			transition: 0.2s;
+		}
+
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: none;
+			}
+		}
+
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+	</style>
+
+{% endblock %}

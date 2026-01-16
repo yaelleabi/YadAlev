@@ -19,6 +19,10 @@
 
 			<!-- Icônes à droite -->
 			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_family_project_index') }}" class="nav-icon" title="Projets et Distributions">
+					<i class="fas fa-hand-holding-heart"></i>
+				</a>
+
 				{% if family %}
 					<a href="{{ path('app_family_show', { id: family.id }) }}" class="nav-icon" title="Mes informations">
 						<i class="fas fa-user-circle"></i>

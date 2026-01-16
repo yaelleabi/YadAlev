@@ -39,10 +39,29 @@
 
 			<!-- Titre -->
 			<div class="text-center mb-5 fade-in">
-				<h2 class="text-primary fw-bold">Bienvenue sur l'espace administrateur</h2>
+				<h3 class="fw-bold text-dark fade-in">Bonjour
+					{{ app.user.firstName|capitalize|default('Administrateur') }}
+					!</h3>
+				<h2 class="text-primary fw-bold mt-2 fade-in">Bienvenue sur votre espace administrateur</h2>
 				<p class="text-muted" style="animation-delay:.2s">
 					Choisissez une section ci-dessous pour gérer la plateforme.
 				</p>
+
+				{% if pendingCount is defined and pendingCount > 0 %}
+					<div class="alert alert-primary alert-dismissible d-flex align-items-center justify-content-between fade-in mx-auto mt-4" role="alert" style="border-radius: 50px; background-color: #e8f0fe; border: 1px solid #d0e1fd; max-width: 800px; padding-right: 20px;">
+						<div class="d-flex align-items-center">
+							<i class="fas fa-info-circle text-primary fs-4 me-3"></i>
+							<div class="text-dark text-start pe-4">
+								Attention vous avez
+								<strong>{{ pendingCount }}</strong>
+								demandes d'aide en attente
+							</div>
+						</div>
+						<a href="{{ path('app_admin_aidrequest_list') }}" class="btn btn-sm btn-outline-primary rounded-pill">
+							Voir
+						</a>
+					</div>
+				{% endif %}
 			</div>
 
 			<!-- Cartes -->

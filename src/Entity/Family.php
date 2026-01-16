@@ -113,6 +113,7 @@ class Family extends User
         $this->aidRequests = new ArrayCollection();
         $this->adress = new Adress();
         $this->familyEvents = new ArrayCollection();
+        $this->familyEventRequests = new ArrayCollection();
     }
 
     /* ======================= GETTERS / SETTERS ======================= */
@@ -245,4 +246,38 @@ class Family extends User
 
 
 
+    #[ORM\OneToMany(targetEntity: FamilyEventRequest::class, mappedBy: 'family', orphanRemoval: true)]
+    private Collection $familyEventRequests;
+
+    public function getFamilyEventRequests(): Collection
+    {
+        return $this->familyEventRequests;
+    }
+
+    public function addFamilyEventRequest(FamilyEventRequest $familyEventRequest): static
+    {
+        if (!$this->familyEventRequests->contains($familyEventRequest)) {
+            $this->familyEventRequests->add($familyEventRequest);
+            $familyEventRequest->setFamily($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFamilyEventRequest(FamilyEventRequest $familyEventRequest): static
+    {
+        if ($this->familyEventRequests->removeElement($familyEventRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($familyEventRequest->getFamily() === $this) {
+                $familyEventRequest->setFamily(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() . ' ' . $this->getFirstName();
+    }
 }

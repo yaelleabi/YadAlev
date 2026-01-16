@@ -23,6 +23,7 @@ class FamilyEvent extends Event
     public function __construct()
     {
         $this->assignedFamilies = new ArrayCollection();
+        $this->familyEventRequests = new ArrayCollection();
     }
 
     /**
@@ -57,6 +58,35 @@ class FamilyEvent extends Event
     public function setQuantity(int $Quantity): static
     {
         $this->Quantity = $Quantity;
+
+        return $this;
+    }
+    #[ORM\OneToMany(targetEntity: FamilyEventRequest::class, mappedBy: 'event', orphanRemoval: true)]
+    private Collection $familyEventRequests;
+
+    public function getFamilyEventRequests(): Collection
+    {
+        return $this->familyEventRequests;
+    }
+
+    public function addFamilyEventRequest(FamilyEventRequest $familyEventRequest): static
+    {
+        if (!$this->familyEventRequests->contains($familyEventRequest)) {
+            $this->familyEventRequests->add($familyEventRequest);
+            $familyEventRequest->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFamilyEventRequest(FamilyEventRequest $familyEventRequest): static
+    {
+        if ($this->familyEventRequests->removeElement($familyEventRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($familyEventRequest->getEvent() === $this) {
+                $familyEventRequest->setEvent(null);
+            }
+        }
 
         return $this;
     }
