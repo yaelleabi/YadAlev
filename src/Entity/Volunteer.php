@@ -16,10 +16,14 @@ class Volunteer extends User
     #[ORM\ManyToMany(targetEntity: VolunteerEvent::class, mappedBy: 'assignedVolunteers')]
     private Collection $volunteerEvents;
 
+    #[ORM\OneToMany(mappedBy: 'volunteer', targetEntity: VolunteerEventRequest::class, orphanRemoval: true)]
+    private Collection $volunteerEventRequests;
+
     public function __construct()
     {
         parent::__construct();
         $this->volunteerEvents = new ArrayCollection();
+        $this->volunteerEventRequests = new ArrayCollection();
     }
 
     /**
@@ -44,6 +48,36 @@ class Volunteer extends User
     {
         if ($this->volunteerEvents->removeElement($volunteerEvent)) {
             $volunteerEvent->removeAssignedVolunteer($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, VolunteerEventRequest>
+     */
+    public function getVolunteerEventRequests(): Collection
+    {
+        return $this->volunteerEventRequests;
+    }
+
+    public function addVolunteerEventRequest(VolunteerEventRequest $volunteerEventRequest): static
+    {
+        if (!$this->volunteerEventRequests->contains($volunteerEventRequest)) {
+            $this->volunteerEventRequests->add($volunteerEventRequest);
+            $volunteerEventRequest->setVolunteer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVolunteerEventRequest(VolunteerEventRequest $volunteerEventRequest): static
+    {
+        if ($this->volunteerEventRequests->removeElement($volunteerEventRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($volunteerEventRequest->getVolunteer() === $this) {
+                $volunteerEventRequest->setVolunteer(null);
+            }
         }
 
         return $this;

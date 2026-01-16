@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choisir un type de projet - Admin
+{% endblock %}
+
+{% block body %}
+
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
+
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Création Bénévole</span>
+			</div>
+
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_admin') }}" class="nav-icon" title="Retour">
+					<i class="fas fa-arrow-left"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="main-container ">
+
+		<div class="content-wrapper d-flex flex-column justify-content-start align-items-center">
+
+			<div class="text-center mb-5 fade-in">
+				<h2 class="text-primary fw-bold">Quel type de projet voulez-vous créer ?</h2>
+				<p class="text-muted" style="animation-delay:.2s">Sélectionnez une option ci-dessous.</p>
+			</div>
+
+			<div
+				class="card-zone row g-4 justify-content-center px-3 w-100" style="max-width: 900px;">
+
+				<!-- 1. CRÉER UN PROJET (Classique) -->
+				<div class="col-md-6 d-flex justify-content-center">
+					<a href="{{ path('app_volunteer_event_index') }}" class="admin-card text-decoration-none card-anim d-flex align-items-center p-4">
+						<div class="icon-circle bg-primary-soft text-primary me-4">
+							<i class="fas fa-calendar-check fs-2"></i>
+						</div>
+						<div class="text-start">
+							<h4 class="text-dark fw-bold mb-1">Créer un Projet</h4>
+							<p class="text-muted small m-0">Événement, mission ponctuelle, collecte...</p>
+						</div>
+						<div class="ms-auto text-primary">
+							<i class="fas fa-chevron-right"></i>
+						</div>
+					</a>
+				</div>
+
+				<!-- 2. CRÉER UNE LIVRAISON (Futur) -->
+				<div class="col-md-6 d-flex justify-content-center">
+					<a href="#" class="admin-card text-decoration-none card-anim d-flex align-items-center p-4" style="animation-delay:.15s; opacity: 0.6; cursor: not-allowed;" title="Bientôt disponible">
+						<div class="icon-circle bg-secondary-soft text-secondary me-4">
+							<i class="fas fa-truck fs-2"></i>
+						</div>
+						<div class="text-start">
+							<h4 class="text-secondary fw-bold mb-1">Créer une Livraison</h4>
+							<p class="text-muted small m-0">Gestion de tournées et livraisons</p>
+						</div>
+						<div class="ms-auto text-secondary">
+							<i class="fas fa-lock"></i>
+						</div>
+					</a>
+				</div>
+
+			</div>
+		</div>
+
+		<footer class="footer-custom text-center text-muted small py-4">
+			<div class="footer-line mx-auto"></div>
+			<div class="footer-content mt-3">
+				<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+				<p class="m-0">© 2025 Espace Administrateur Yad Alev</p>
+			</div>
+		</footer>
+
+	</div>
+
+	<style>
+		/* Reprise du style existant */
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.content-wrapper {
+			padding-top: 120px;
+			flex: 1;
+		}
+
+		.admin-card {
+			background: #fff;
+			border-radius: 1rem;
+			overflow: hidden;
+			transition: 0.25s;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Shadow plus léger comme settings */
+			border: 1px solid #e2e8f0;
+			width: 100%;
+			max-width: 450px;
+		}
+		.admin-card:hover {
+			transform: translateY(-4px);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+			border-color: #0d6efd;
+		}
+
+		.icon-circle {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+		}
+		.bg-primary-soft {
+			background-color: #e8f0fe;
+		}
+		.bg-secondary-soft {
+			background-color: #f1f5f9;
+		}
+
+		.fade-in,
+		.card-anim {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 60px;
+		}
+	</style>
+{% endblock %}

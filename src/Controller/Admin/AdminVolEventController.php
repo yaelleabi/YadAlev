@@ -11,9 +11,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/volunteer/event')]
+#[Route('/admin/volunteer/event')]
 final class AdminVolEventController extends AbstractController
 {
+    #[Route('/choose', name: 'app_volunteer_event_choose', methods: ['GET'])]
+    public function choose(): Response
+    {
+        return $this->render('volunteer_event/choose.html.twig');
+    }
+
     #[Route(name: 'app_volunteer_event_index', methods: ['GET'])]
     public function index(VolunteerEventRepository $volunteerEventRepository): Response
     {
@@ -77,5 +83,35 @@ final class AdminVolEventController extends AbstractController
         }
 
         return $this->redirectToRoute('app_volunteer_event_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{id}/requests', name: 'app_volunteer_event_requests', methods: ['GET'])]
+    public function requests(VolunteerEvent $volunteerEvent): Response
+    {
+        return $this->render('volunteer_event/requests.html.twig', [
+            'volunteer_event' => $volunteerEvent,
+        ]);
+    }
+
+    #[Route('/request/{id}/{status}', name: 'app_volunteer_event_handle_request', methods: ['POST', 'GET'])]
+    public function handleRequest(\App\Entity\VolunteerEventRequest $request, string $status, EntityManagerInterface $entityManager): Response
+    {
+        if (!in_array($status, [\App\Entity\VolunteerEventRequest::STATUS_ACCEPTED, \App\Entity\VolunteerEventRequest::STATUS_REFUSED])) {
+            throw $this->createNotFoundException('Invalid status');
+        }
+
+        $request->setStatus($status);
+        $event = $request->getEvent();
+
+        if ($status === \App\Entity\VolunteerEventRequest::STATUS_ACCEPTED) {
+            $event->addAssignedVolunteer($request->getVolunteer());
+        } elseif ($status === \App\Entity\VolunteerEventRequest::STATUS_REFUSED) {
+            $event->removeAssignedVolunteer($request->getVolunteer());
+        }
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La demande a été mise à jour.');
+
+        return $this->redirectToRoute('app_volunteer_event_requests', ['id' => $event->getId()]);
     }
 }

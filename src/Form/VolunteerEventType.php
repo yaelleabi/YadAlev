@@ -14,15 +14,32 @@ class VolunteerEventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('startDate')
-            ->add('endDate')
-            ->add('isVisible')
-            ->add('Title')
-            ->add('Description')
+            ->add('startDate', \Symfony\Component\Form\Extension\Core\Type\DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de début',
+                'html5' => true,
+            ])
+            ->add('endDate', \Symfony\Component\Form\Extension\Core\Type\DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin',
+                'html5' => true,
+            ])
+            ->add('isVisible', null, [
+                'label' => 'Est visible ?',
+            ])
+            ->add('Title', null, [
+                'label' => 'Titre',
+            ])
+            ->add('Description', null, [
+                'label' => 'Description',
+            ])
             ->add('assignedVolunteers', EntityType::class, [
                 'class' => Volunteer::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Volunteer $volunteer) {
+                    return $volunteer->getFirstName() . ' ' . $volunteer->getName();
+                },
                 'multiple' => true,
+                'expanded' => true,
             ])
         ;
     }

@@ -1,42 +1,173 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}VolunteerEvent{% endblock %}
+{% block title %}Détails Projet Bénévole
+{% endblock %}
 
 {% block body %}
-    <h1>VolunteerEvent</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ volunteer_event.id }}</td>
-            </tr>
-            <tr>
-                <th>StartDate</th>
-                <td>{{ volunteer_event.startDate ? volunteer_event.startDate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>EndDate</th>
-                <td>{{ volunteer_event.endDate ? volunteer_event.endDate|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>IsVisible</th>
-                <td>{{ volunteer_event.isVisible ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ volunteer_event.Title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ volunteer_event.Description }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div class="container d-flex justify-content-between align-items-center">
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_admin') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Détails Projet</span>
+			</div>
 
-    <a href="{{ path('app_volunteer_event_index') }}">back to list</a>
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_volunteer_event_index') }}" class="nav-icon" title="Retour liste">
+					<i class="fas fa-arrow-left"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+	</nav>
 
-    <a href="{{ path('app_volunteer_event_edit', {'id': volunteer_event.id}) }}">edit</a>
+	<div class="main-container">
 
-    {{ include('volunteer_event/_delete_form.html.twig') }}
+		<div class="content-wrapper container" style="padding-top: 100px;">
+
+			<div class="row justify-content-center">
+				<div class="col-md-10 col-lg-8">
+
+					<div class="info-card shadow-sm p-5 fade-in">
+
+						<div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3">
+							<div>
+								<h1 class="text-primary fw-bold mb-1">{{ volunteer_event.Title }}</h1>
+								<span class="badge {{ volunteer_event.isVisible ? 'bg-success' : 'bg-secondary' }}">
+									{{ volunteer_event.isVisible ? 'Visible' : 'Masqué' }}
+								</span>
+							</div>
+							<div class="text-end">
+								<a href="{{ path('app_volunteer_event_edit', {'id': volunteer_event.id}) }}" class="btn btn-outline-primary shadow-sm btn-sm">
+									<i class="fas fa-edit me-2"></i>Modifier
+								</a>
+							</div>
+						</div>
+
+						<div class="mb-4">
+							<h5 class="text-muted fw-bold text-uppercase small ls-1">Description</h5>
+							<p class="lead text-dark" style="font-size: 1.1rem; line-height: 1.6;">
+								{{ volunteer_event.Description|nl2br }}
+							</p>
+						</div>
+
+						<div class="row mb-5">
+							<div class="col-md-6">
+								<h5 class="text-muted fw-bold text-uppercase small ls-1 mb-3">
+									<i class="far fa-calendar-alt me-2"></i>Dates
+								</h5>
+								<div class="bg-light p-3 rounded border">
+									<div class="d-flex justify-content-between mb-2">
+										<span class="text-muted">Début :</span>
+										<span class="fw-bold">{{ volunteer_event.startDate ? volunteer_event.startDate|date('d/m/Y') : '-' }}</span>
+									</div>
+									<div class="d-flex justify-content-between">
+										<span class="text-muted">Fin :</span>
+										<span class="fw-bold">{{ volunteer_event.endDate ? volunteer_event.endDate|date('d/m/Y') : '-' }}</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6 mt-4 mt-md-0">
+								<h5 class="text-muted fw-bold text-uppercase small ls-1 mb-3">
+									<i class="fas fa-users me-2"></i>Bénévoles Inscrits
+								</h5>
+								<div class="bg-light p-3 rounded border" style="max-height: 150px; overflow-y: auto;">
+									{% if volunteer_event.assignedVolunteers is empty %}
+										<span class="text-muted small fst-italic">Aucun bénévole assigné.</span>
+									{% else %}
+										<ul class="list-unstyled m-0">
+											{% for vol in volunteer_event.assignedVolunteers %}
+												<li class="mb-1">
+													<i class="fas fa-user-circle text-primary me-2"></i>
+													{{ vol.firstName }}
+													{{ vol.lastName|upper }}
+												</li>
+											{% endfor %}
+										</ul>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+
+
+						<div class="d-flex justify-content-between align-items-center pt-3 border-top mt-4">
+							<a href="{{ path('app_volunteer_event_index') }}" class="btn btn-link text-decoration-none text-muted p-0">
+								<i class="fas fa-arrow-left me-1"></i>
+								Retour à la liste
+							</a>
+
+							{{ include('volunteer_event/_delete_form.html.twig') }}
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+
+			<footer class="footer-custom text-center text-muted small py-4 mt-5">
+				<div class="footer-line mx-auto"></div>
+				<p class="m-0">© 2025 Espace Administrateur Yad Alev</p>
+			</footer>
+
+		</div>
+	</div>
+
+	<style>
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.info-card {
+			background: #fff;
+			border-radius: 1rem;
+			border: 1px solid #e2e8f0;
+		}
+
+		.ls-1 {
+			letter-spacing: 1px;
+		}
+
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(25px);
+			}
+			to {
+				opacity: 1;
+				transform: none;
+			}
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+	</style>
+
 {% endblock %}

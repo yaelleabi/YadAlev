@@ -1,20 +1,267 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello VolunteerController!{% endblock %}
+{% block title %}Espace Bénévole - Yad Alev
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 fixed-top">
+		<div
+			class="container d-flex justify-content-between align-items-center">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/PC/PROJETS/YadAlev/src/Controller/VolunteerController.php</code></li>
-        <li>Your template at <code>C:/Users/PC/PROJETS/YadAlev/templates/volunteer/index.html.twig</code></li>
-    </ul>
-</div>
+			<!-- Logo + titre -->
+			<div class="d-flex align-items-center gap-3">
+				<a href="{{ path('app_volunteer') }}">
+					<img src="{{ asset('images/LOGO.PNG') }}" alt="Logo Yad Alev" class="nav-logo">
+				</a>
+				<span class="fw-bold text-primary fs-5">Espace Bénévole</span>
+			</div>
+
+			<!-- Icônes à droite -->
+			<div class="d-flex align-items-center gap-4">
+				<a href="{{ path('app_volunteer_project_index') }}" class="nav-icon" title="Missions et Évènements">
+					<i class="fas fa-hand-holding-heart"></i>
+				</a>
+				<a href="{{ path('app_volunteer') }}" class="nav-icon" title="Accueil">
+					<i class="fas fa-home"></i>
+				</a>
+				<a href="{{ path('app_logout') }}" class="nav-icon" title="Se déconnecter">
+					<i class="fas fa-sign-out-alt"></i>
+				</a>
+			</div>
+		</div>
+	</nav>
+
+
+	<!-- CONTENU PRINCIPAL -->
+	<div class="main-container ">
+
+		<div
+			class="content-wrapper d-flex flex-column justify-content-start align-items-center">
+
+			<!-- Titre -->
+			<div class="text-center mb-5" style="margin-top: 50px;">
+				<h3 class="fw-bold text-dark fade-in">Bonjour
+					{{ volunteer.firstName|capitalize }}
+					!</h3>
+				<h2 class="text-primary fw-bold mt-2 fade-in">Bienvenue sur votre espace bénévole</h2>
+			</div>
+
+
+			<!-- DASHBOARD STATS -->
+			<div
+				class="row g-4 justify-content-center px-3 w-100 mw-100" style="max-width: 1000px;">
+
+				<!-- 1. Missions Réalisées -->
+				<div class="col-md-6 col-lg-3">
+					<div class="stat-card bg-white shadow-sm h-100 p-4 d-flex flex-column align-items-center text-center border-bottom border-4 border-success card-anim">
+						<div class="icon-circle bg-light-success text-success mb-3">
+							<i class="fas fa-check-circle fa-2x"></i>
+						</div>
+						<h1 class="fw-bold text-dark mb-0">{{ completedMissions }}</h1>
+						<p class="text-muted small fw-bold text-uppercase ls-1">Missions Réalisées</p>
+						<p class="small text-muted flex-grow-1">Bravo pour votre engagement !</p>
+					</div>
+				</div>
+
+				<!-- 2. Missions à Venir -->
+				<div class="col-md-6 col-lg-3">
+					<div class="stat-card bg-white shadow-sm h-100 p-4 d-flex flex-column align-items-center text-center border-bottom border-4 border-primary card-anim" style="animation-delay: 0.1s;">
+						<div class="icon-circle bg-light-primary text-primary mb-3">
+							<i class="far fa-calendar-check fa-2x"></i>
+						</div>
+						<h1 class="fw-bold text-dark mb-0">{{ upcomingMissions }}</h1>
+						<p class="text-muted small fw-bold text-uppercase ls-1">Missions à Venir</p>
+						<p class="small text-muted flex-grow-1">Préparez-vous pour vos prochaines actions.</p>
+					</div>
+				</div>
+
+				<!-- 3. Demandes en Attente -->
+				<div class="col-md-6 col-lg-3">
+					<div class="stat-card bg-white shadow-sm h-100 p-4 d-flex flex-column align-items-center text-center border-bottom border-4 border-warning card-anim" style="animation-delay: 0.2s;">
+						<div class="icon-circle bg-light-warning text-warning mb-3">
+							<i class="fas fa-clock fa-2x"></i>
+						</div>
+						<h1 class="fw-bold text-dark mb-0">{{ pendingRequests }}</h1>
+						<p class="text-muted small fw-bold text-uppercase ls-1">En Attente</p>
+						<p class="small text-muted flex-grow-1">Demandes en cours de validation.</p>
+					</div>
+				</div>
+
+				<!-- 4. Nouvelles Opportunités -->
+				<div class="col-md-6 col-lg-3">
+					<a href="{{ path('app_volunteer_project_index') }}" class="text-decoration-none h-100 w-100">
+						<div class="stat-card bg-white shadow-sm h-100 p-4 d-flex flex-column align-items-center text-center border-bottom border-4 border-info card-anim hover-scale" style="animation-delay: 0.3s;">
+							<div class="icon-circle bg-light-info text-info mb-3">
+								<i class="fas fa-plus fa-2x"></i>
+							</div>
+							<h1 class="fw-bold text-dark mb-0">{{ newOpportunities }}</h1>
+							<p class="text-muted small fw-bold text-uppercase ls-1">Nouvelles Missions</p>
+							<p class="small text-muted flex-grow-1">Pensez à vous inscrire pour aider !</p>
+						</div>
+					</a>
+				</div>
+
+			</div>
+
+
+		</div>
+
+		<!-- FOOTER -->
+		<footer class="footer-custom text-center text-muted small py-4">
+			<div class="footer-line mx-auto"></div>
+
+			<div class="footer-content mt-3">
+				<img src="{{ asset('images/LOGO.PNG') }}" alt="Yad Alev" class="footer-logo mb-1">
+				<p class="m-0">© 2025 Espace Bénévole Yad Alev — Tous droits réservés.</p>
+			</div>
+		</footer>
+
+	</div>
+
+
+	<style>
+
+		/* --- NAVBAR --- */
+		.navbar {
+			border-bottom: 1px solid #e2e8f0;
+			z-index: 2000;
+		}
+		.nav-logo {
+			width: 48px;
+		}
+		.nav-icon {
+			font-size: 1.4rem;
+			color: #444;
+			transition: 0.2s;
+		}
+		.nav-icon:hover {
+			color: #0d6efd;
+			transform: translateY(-2px);
+		}
+
+
+		/* --- LAYOUT PRINCIPAL --- */
+		.main-container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		.content-wrapper {
+			flex: 1;
+			width: 100%;
+			padding-top: 100px;
+		}
+
+		/* --- CARTES --- */
+		.family-card {
+			background: #fff;
+			border-radius: 1rem;
+			overflow: hidden;
+			transition: 0.25s;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+			border: 1px solid #e2e8f0;
+			max-width: 330px;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+		.family-card:hover {
+			transform: translateY(-6px);
+			box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+		}
+		.family-card img {
+			width: 100%;
+			height: 170px;
+			object-fit: cover;
+			transition: 0.3s;
+		}
+		.family-card:hover img {
+			filter: brightness(0.9);
+		}
+		.family-card div {
+			flex-grow: 1;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		/* --- STAT CARDS --- */
+		.stat-card {
+			border-radius: 1rem;
+			transition: transform 0.2s;
+		}
+		.hover-scale:hover {
+			transform: translateY(-5px);
+			background-color: #f8fbff;
+		}
+		.icon-circle {
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.bg-light-success {
+			background-color: #e6fffa;
+		}
+		.bg-light-primary {
+			background-color: #e6f6ff;
+		}
+		.bg-light-warning {
+			background-color: #fffaf0;
+		}
+		.bg-light-info {
+			background-color: #e0f7fa;
+		}
+		.ls-1 {
+			letter-spacing: 1px;
+		}
+
+		/* Animation */
+		.fade-in {
+			opacity: 0;
+			animation: fadeSlide 0.7s ease forwards;
+		}
+		@keyframes fadeSlide {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* --- FOOTER --- */
+		.footer-custom {
+			margin-top: auto;
+		}
+		.footer-line {
+			width: 85%;
+			height: 1px;
+			background: #d0d7e0;
+		}
+		.footer-logo {
+			width: 60px;
+			opacity: .9;
+		}
+
+		/* RESPONSIVE */
+		@media(max-width: 768px) {
+			.nav-logo {
+				width: 40px;
+			}
+			h2 {
+				font-size: 1.5rem;
+			}
+			.footer-logo {
+				width: 50px;
+			}
+		}
+	</style>
 {% endblock %}
